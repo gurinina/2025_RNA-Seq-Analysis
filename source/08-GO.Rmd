@@ -1,0 +1,274 @@
+# GO
+```{r, message=FALSE,warning=FALSE, echo=FALSE}
+
+knitr::opts_chunk$set(
+message = FALSE,
+warning = FALSE,
+comment = NA,
+echo = TRUE
+)
+
+source("source/solutions.R")
+library(ggplot2)
+library(details)
+library(GOenrichment)
+library(tidyverse)
+
+```
+
+CLASS SOURCE
+
+```{r}
+
+print("classSOURCE")
+```
+
+```{r solutions-go-network, echo=FALSE}
+solutions(expression(
+  res_tableKD <- readRDS("data/res_tableKD.RDS"),
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble(),
+
+  foldchanges <- res_tableKD_tb$log2FoldChange,
+  names(foldchanges) <- res_tableKD_tb$gene,
+  foldchanges <- sort(foldchanges, decreasing = TRUE),
+
+  matx <- cbind(foldchanges, foldchanges),
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58),
+  kresp <- runGORESP(fdrThresh = 0.2, scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20,
+    maxSetSize = 300),
+
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat),
+
+  runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+))
+
+
+```
+
+
+<div class="fold s o">
+### Click to Show/Hide Solution
+```{r , echo=FALSE}
+solutions(expression(
+  res_tableKD <- readRDS("data/res_tableKD.RDS"),
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble(),
+
+  foldchanges <- res_tableKD_tb$log2FoldChange,
+  names(foldchanges) <- res_tableKD_tb$gene,
+  foldchanges <- sort(foldchanges, decreasing = TRUE),
+
+  matx <- cbind(foldchanges, foldchanges),
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58),
+  kresp <- runGORESP(fdrThresh = 0.2, scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20,
+    maxSetSize = 300),
+
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat),
+
+  runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+))
+```
+</div>
+
+
+
+
+<div class="fold s o">
+### Click to Show/Hide Solution
+```{r, echo = FALSE}
+
+
+```{r, class.source='fold-hide', echo=FALSE}
+  res_tableKD <- readRDS("data/res_tableKD.RDS")
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()
+  
+  foldchanges <- res_tableKD_tb$log2FoldChange
+  names(foldchanges) <- res_tableKD_tb$gene
+  foldchanges <- sort(foldchanges, decreasing = TRUE)
+  
+  matx <- cbind(foldchanges, foldchanges)
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58)
+  
+  kresp <- runGORESP(
+    fdrThresh = 0.2, 
+    scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, 
+    go_input = NULL, 
+    minSetSize = 20, 
+    maxSetSize = 300
+  )
+  
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
+  
+  runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+```
+
+
+NEETWORK ONLY FOLD SO
+```{r}
+
+print("Network OMLY")
+```
+
+<div class="fold s o">
+### Network OMLY SO
+```{r, echo = FALSE}
+
+  runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+
+
+
+```
+</div>
+
+<details markdown='1'><summary>Toggle</summary>
+```{r,fig.show='hide'}
+
+
+  res_tableKD <- readRDS("data/res_tableKD.RDS")
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()
+  
+  foldchanges <- res_tableKD_tb$log2FoldChange
+  names(foldchanges) <- res_tableKD_tb$gene
+  foldchanges <- sort(foldchanges, decreasing = TRUE)
+  
+  matx <- cbind(foldchanges, foldchanges)
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58)
+  
+  kresp <- runGORESP(
+    fdrThresh = 0.2, 
+    scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, 
+    go_input = NULL, 
+    minSetSize = 20, 
+    maxSetSize = 300
+  )
+  
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
+  
+  v = runNetwork(kvis$nodes, kvis$edges, 
+             main = "MOV10 Knockdown GO Enrichment Network")
+  print(v)
+
+```
+</details>
+
+
+EXPRESSION
+
+```{r}
+
+print("solutioEXPRESS")
+```
+
+
+
+```{r solutions-go-network, fig.show='hide'}
+
+
+
+solutions(expression(
+  res_tableKD <- readRDS("data/res_tableKD.RDS"),
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble(),
+
+  foldchanges <- res_tableKD_tb$log2FoldChange,
+  names(foldchanges) <- res_tableKD_tb$gene,
+  foldchanges <- sort(foldchanges, decreasing = TRUE),
+
+  matx <- cbind(foldchanges, foldchanges),
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58),
+  kresp <- runGORESP(fdrThresh = 0.2, scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20,
+    maxSetSize = 300),
+
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat),
+
+  v = runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+  
+))
+print(v)
+```
+
+`
+
+FOLD SO
+```{r}
+
+
+
+print("fold s o")
+```
+
+<div class="fold s">
+### Click to SFOLD SO Solution
+```{r , fig.show='hide'}
+
+
+  res_tableKD <- readRDS("data/res_tableKD.RDS")
+  res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()
+
+  foldchanges <- res_tableKD_tb$log2FoldChange
+  names(foldchanges) <- res_tableKD_tb$gene
+  foldchanges <- sort(foldchanges, decreasing = TRUE)
+
+  matx <- cbind(foldchanges, foldchanges)
+  scoreMat <- compSCORE(matx, coln = 1, sig = 0.58)
+  
+  kresp <- runGORESP(fdrThresh = 0.2, scoreMat = scoreMat,
+    bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20,
+    maxSetSize = 300)
+
+  kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
+ v= runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
+ print(v)
+
+
+```
+</div>
+
+
+<div class="fold s">
+### Click to SFOLD SO Solution
+```{r ,fig.show='hide'}
+
+
+res_tableKD <- readRDS("data/res_tableKD.RDS")
+
+res_tableKD_tb <- res_tableKD %>% 
+    data.frame() %>% rownames_to_column(var = "gene") %>% 
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()
+    
+  
+kdfoldchanges <- res_tableKD_tb$log2FoldChange
+
+names(kdfoldchanges) <- res_tableKD_tb$gene
+
+kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)
+
+matkd <- cbind(kdfoldchanges,kdfoldchanges)
+
+scoreMatkd = compSCORE(matkd, coln = 1, sig =  0.58)
+
+kresp = runGORESP(fdrThresh = 0.2,bp_input = hGOBP.gmt,go_input = NULL,minSetSize = 20,maxSetSize = 300,scoreMat = scoreMatkd)
+
+
+kvis = visSetup(kresp$enrichInfo,kresp$edgeMat)
+
+v=runNetwork(kvis$nodes,kvis$edges)
+
+print(v)
+```
+</div>

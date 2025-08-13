@@ -1,0 +1,208 @@
+---
+title: "R versions"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+**Subject**: Important: R Installation Instructions for 2024_RNA-seq-analysis
+
+**Please read this entire message carefully.**
+
+**For those of you who are on a Mac, please install the x86_64 version of R, even if you are using an M1 Mac.** This is important for compatibility with the packages we will be using, especially Bioconductor (e.g. `igraph`).
+
+Here’s how to do it:
+
+1. **Download R**:
+
+- Visit the [CRAN R Project](https://cran.r-project.org/).
+
+- Click on "Download R for (Mac) OS X".
+
+- Select the **R-4.2.3.pkg** (or the latest x86_64 version) for Intel Macs.
+
+2. **Installing R**:
+
+- Make sure you have the latest version of RStudio installed on your computer. You can download it [here](https://www.rstudio.com/products/rstudio/download/).
+
+- Make sure you quit RStudio before installing R.
+- Open the downloaded `.pkg` file and follow the installation instructions.
+
+3. **Using Rosetta for those of you using an M1 Mac**: 
+
+- Rosetta 2 enables a Mac with Apple silicon chip M1 to use apps built for a Mac with an Intel processor.
+
+- Rosetta 2 is available only for Mac computers with Apple silicon chip M1.
+
+- Make sure that your Mac is connected to the internet.
+
+- If you are using an M1 Mac, you may need to install Rosetta 2 to run the x86_64 version of R. Here’s how to do it:
+
+- When you first open RStudio, you may see a message asking if you want to install Rosetta 2. Click "Install" to proceed.
+
+- If you have the option, ensure that your terminal or RStudio is running under   Rosetta 2. To do this:
+
+- Right-click on the RStudio icon in the Applications folder. Select **Get Info**.
+
+- Check **Open using Rosetta**
+
+After installation, please check that you are using the x86_64 version of R by running the following command in your R console:
+
+```{r}
+
+R.version
+
+```
+
+It should return something like this:
+
+platform       x86_64-apple-darwin20       
+arch           x86_64                      
+os             darwin20                    
+system         x86_64, darwin20            
+status                                     
+major          4                           
+minor          4.2                         
+year           2024                        
+month          10                          
+day            31                          
+svn rev        87279                       
+language       R                           
+version.string R version 4.4.2 (2024-10-31)
+nickname       Pile of Leaves              
+
+## Syncing with the Course Repository
+
+Given all the issues we had in class, I think you should all reclone the course repository (unless everything is already working for you). Here's how to do it:
+
+1. First delete the current 2024_RNA-seq-analysis RStudio projedct on your computer. You can do this by navigating to the project in your file explorer and deleting it. 
+
+2. Open RStudio and select `File -> New Project -> Version Control -> Git`.
+
+**Note**: If you don't have git installed on your device, you might have to first download and install it from [github](https://git-scm.com/downloads). Close Rstudio before installing git and re-open it afterwards.
+	
+3. In the "Repository URL" field, paste the following URL for the course material repository: `https://github.com/gurinina/2024_RNA-seq-analysis.git`
+
+4. Choose a local folder on your computer to store the project files.
+
+5. Click "Create Project" to clone the repository.
+
+After the repository is cloned, you can sync your copy of 2024_RNA-seq-analysis with the GitHub course repository 2024_RNA-seq-analysis by clicking the "Pull" button in the "Git" tab in RStudio. This ensures that you have the latest version of the course materials.
+
+## Installing Required R Packages
+
+Once you have R, RStudio, and the course repository set up, you will need to install some R packages to work with the course material.
+
+Copy and paste the following command into the RStudio console to install all the required packages:
+
+```{r, results = "hide", message = FALSE, eval = FALSE}
+
+remove.packages("GOenrichment")
+
+# Install the "GOenrichment" package from GitHub
+if (!requireNamespace("devtools", quietly = TRUE)) {
+ install.packages("devtools")
+}
+
+devtools::install_github("gurinina/GOenrichment", force = TRUE)
+
+# Install Bioconductor packages using BiocManager
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+ install.packages("BiocManager")
+}
+
+# Install required Bioconductor and CRAN packages
+BiocManager::install(c(
+ "bookdown", "clusterProfiler", "DESeq2", "dplyr", "enrichplot", "fgsea", "apeglm",
+ "ggplot2", "ggrepel", "gplots", "knitr", "org.Hs.eg.db", "pheatmap", 
+ "purrr", "RColorBrewer", "rmarkdown", "rsconnect", "tidyverse", "ggraph", "igraph", "visNetwork", "GO.db", "GOSemSim"
+), force = TRUE)
+
+```
+
+## Verifying Your Installation
+
+To verify that everything is installed correctly, load the packages by copying and pasting this into your RStudio console:
+
+```{r, eval = FALSE}
+
+library(knitr)
+library(pheatmap)
+library(bookdown)
+library(DESeq2)
+library(RColorBrewer)
+library(tidyverse)
+library(dplyr)
+library(gplots)
+library(ggrepel)
+library(ggplot2)
+library(GOenrichment)
+library(GO.db)
+library(fgsea)
+library(enrichplot)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(purrr)
+library(rmarkdown)
+library(GOSemSim)
+library(visNetwork)
+library(igraph)
+library(ggraph)
+
+```
+
+If the libraries load without any error messages, everything is set up correctly.
+
+### Running R code; compiling the book
+
+1. **Open the bookdown project:**
+
+- Navigate to the `Files` pane in RStudio and open the `index.Rmd` file.
+   
+2. **Compile the book:**
+
+- Copy and paste the following code in the R console to compile the book:
+
+```{r, eval = FALSE}
+
+# load the bookdown package
+library(bookdown)
+
+# removes all files from the _book  directory
+clean_book(clean = TRUE)
+
+# renders the book in GitBook format
+bookdown::render_book("index.Rmd", "bookdown::gitbook")
+
+# opens the GitBook in your browser
+rstudioapi::viewer("_book/index.html")
+
+# To see the book in your Viewer pane, open 'index.Rmd' in your main directory and click the 'Knit' button.
+```
+
+## Resyncing with the course repository
+
+If you have changed any files in the course repository and want to get the latest version from GitHub, you can do so by following these steps:
+
+1. **Open the Terminal in RStudio:**
+
+- Navigate to the `Tools` menu and select `Terminal` > `New Terminal`.
+
+2. **Type in the Commands:**
+
+- In the terminal, run:
+   
+```bash
+
+git fetch origin
+git reset --hard origin/main
+     
+```
+
+- These commands will update your 2024_RNA-seq-analysis copy to match the remote 2024_RNA-seq-analysis course `main` branch, discarding your changes.
+
+- If you have any questions or need assistance with any part of the above, please let me know, and I will help you troubleshoot. I would like to hear from each of you to confirm that you have successfully knitted the bookdown file.
+
+Please email me either way regardless of what computer you are using.
+
+Thank you, Guri

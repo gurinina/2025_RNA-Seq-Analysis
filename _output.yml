@@ -1,0 +1,29 @@
+bookdown::gitbook:
+  fig_caption: false  # Disable figure captions in Gitbook
+  css: [css/git.css,css/toc.css]
+  includes:
+    in_header: includes/header.html
+    highlight: tango
+    after_body: "source/collapse-output.html"
+  df_print: kable
+  mathjax: default
+  config:
+    toc:
+      collapse: section
+    download: ["pdf", "epub"]
+    fig_height: 5.3
+    fig_width: 8.5
+
+bookdown::pdf_book:
+  fig_caption: false  # Disable figure captions in PDF output
+  includes:
+    in_header: source/preamble.tex
+  latex_engine: xelatex
+  toc: true
+  number_sections: true
+  lof: false    # Disable List of Figures
+  lot: false    # Disable List of Tables
+
+bookdown::epub_book:
+  fig_caption: false  # Disable figure captions in EPUB output
+  epub_version: "epub3"

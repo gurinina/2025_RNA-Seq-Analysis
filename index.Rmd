@@ -1,15 +1,8 @@
 ---
-title: "2024_RNA-seq-analysis"
-output:
-  bookdown::gitbook:
-    css: [css/git.css, css/toc.css]
-    mathjax: default
-    config:
-      toc:
-        collapse: section
-      download: ["pdf", "epub"]
-github-repo: "gurinina/2024_RNA-seq-analysis"
-url: "https://bookdown.org/ggiaever/2024_RNA-seq-analysis"
+title: "PHAR520: Applied Omics Science for Drug Discovery and Development"
+subtitle: "ModuleII: 2025_RNA-Seq-Analysis"
+github-repo: "gurinina/2025_RNA-seq-analysis"
+url: "https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis"
 site: bookdown::bookdown_site
 documentclass: book
 cover-image: "img/football.png"

@@ -1,23 +1,35 @@
 bookdown::gitbook:
-  fig_caption: false  # Disable figure captions in Gitbook
-  df_print: kable
+  fig_caption: false
   css: [css/git.css, css/toc.css]
-  mathjax: default
   config:
     toc:
       collapse: section
     download: ["pdf", "epub"]
+    sharing: no
+    search: no
+    
+bookdown::html_document2:
+  fig_caption: false
+  toc: true
+  toc_float: 
+    collapsed: false
+    smooth_scroll: true
+  theme: bootstrap
+  css: [css/git.css, css/toc.css]
+  number_sections: true
 
 bookdown::pdf_book:
-  fig_caption: false  # Disable figure captions in PDF output
+  fig_caption: false
+  pandoc_args: --listings
   includes:
-    in_header: lessons/preamble.tex
+    in_header: preamble.tex
   latex_engine: xelatex
   toc: true
   number_sections: true
-  lof: false    # Disable List of Figures
-  lot: false    # Disable List of Tables
+  lof: false
+  lot: false
+  keep_tex: true
 
 bookdown::epub_book:
-  fig_caption: false  # Disable figure captions in EPUB output
+  fig_caption: false
   epub_version: "epub3"

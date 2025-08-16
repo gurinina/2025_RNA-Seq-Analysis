@@ -220,7 +220,7 @@ Here is a comparison of the three most highy used software packages for differen
 
 We will go in-depth into each of these steps in the following lessons, but additional details and helpful suggestions regarding DESeq2 can be found in the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). As you go through this workflow and questions arise, you can reference the vignette from within RStudio:
 
-```{r}
+```{r, eval=FALSE}
 vignette("DESeq2")
 ```
 

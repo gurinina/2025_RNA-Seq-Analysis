@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 8 Functional analysis of RNAseq data | PHAR520: Applied Omics Science for Drug Discovery and Development</title>
+  <meta name="description" content="Chapter 8 Functional analysis of RNAseq data | PHAR520: Applied Omics Science for Drug Discovery and Development" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 8 Functional analysis of RNAseq data | PHAR520: Applied Omics Science for Drug Discovery and Development" />
+  <meta property="og:type" content="book" />
+  <meta property="og:image" content="https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis/img/football.png" />
+  
+  <meta name="github-repo" content="gurinina/2025_RNA-seq-analysis" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 8 Functional analysis of RNAseq data | PHAR520: Applied Omics Science for Drug Discovery and Development" />
+  
+  
+  <meta name="twitter:image" content="https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis/img/football.png" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="summary-of-dge-workflow.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="css/git.css" type="text/css" />
+<link rel="stylesheet" href="css/toc.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>RNA-seq analysis workshop</a></li>
+<li class="chapter" data-level="1" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html"><i class="fa fa-check"></i><b>1</b> Differential gene expression (DGE) analysis overview</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#review-of-the-dataset"><i class="fa fa-check"></i><b>1.1</b> Review of the dataset</a></li>
+<li class="chapter" data-level="1.2" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#setting-up"><i class="fa fa-check"></i><b>1.2</b> Setting up</a>
+<ul>
+<li class="chapter" data-level="1.2.1" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#loading-libraries"><i class="fa fa-check"></i><b>1.2.1</b> Loading libraries</a></li>
+<li class="chapter" data-level="1.2.2" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#loading-data"><i class="fa fa-check"></i><b>1.2.2</b> Loading data</a></li>
+<li class="chapter" data-level="1.2.3" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#viewing-data"><i class="fa fa-check"></i><b>1.2.3</b> Viewing data</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#differential-gene-expression-analysis-overview"><i class="fa fa-check"></i><b>1.3</b> Differential gene expression analysis overview</a>
+<ul>
+<li class="chapter" data-level="1.3.1" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#rna-seq-count-distribution"><i class="fa fa-check"></i><b>1.3.1</b> RNA-seq count distribution</a></li>
+<li class="chapter" data-level="1.3.2" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#modeling-count-data"><i class="fa fa-check"></i><b>1.3.2</b> Modeling count data</a></li>
+<li class="chapter" data-level="1.3.3" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#improving-mean-estimates-i.e.-reducing-variance-with-biological-replicates"><i class="fa fa-check"></i><b>1.3.3</b> Improving mean estimates (i.e. reducing variance) with biological replicates</a></li>
+<li class="chapter" data-level="1.3.4" data-path="differential-gene-expression-dge-analysis-overview.html"><a href="differential-gene-expression-dge-analysis-overview.html#differential-expression-analysis-workflow"><i class="fa fa-check"></i><b>1.3.4</b> Differential expression analysis workflow</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="count-normalization.html"><a href="count-normalization.html"><i class="fa fa-check"></i><b>2</b> Count normalization</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="count-normalization.html"><a href="count-normalization.html#normalization"><i class="fa fa-check"></i><b>2.1</b> Normalization</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="count-normalization.html"><a href="count-normalization.html#common-normalization-methods"><i class="fa fa-check"></i><b>2.1.1</b> Common normalization methods</a></li>
+<li class="chapter" data-level="2.1.2" data-path="count-normalization.html"><a href="count-normalization.html#tpm-not-recommended"><i class="fa fa-check"></i><b>2.1.2</b> TPM (Not Recommended)</a></li>
+<li class="chapter" data-level="2.1.3" data-path="count-normalization.html"><a href="count-normalization.html#rpkmfpkm-not-recommended"><i class="fa fa-check"></i><b>2.1.3</b> RPKM/FPKM (Not Recommended)</a></li>
+<li class="chapter" data-level="2.1.4" data-path="count-normalization.html"><a href="count-normalization.html#deseq2-normalization-median-of-ratios-method"><i class="fa fa-check"></i><b>2.1.4</b> DESeq2 Normalization: Median of Ratios Method</a></li>
+<li class="chapter" data-level="2.1.5" data-path="count-normalization.html"><a href="count-normalization.html#summary-of-key-reasons-for-using-deseq2"><i class="fa fa-check"></i><b>2.1.5</b> Summary of Key Reasons for Using DESeq2</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="count-normalization.html"><a href="count-normalization.html#count-normalization-of-mov10"><i class="fa fa-check"></i><b>2.2</b> Count normalization of Mov10</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="count-normalization.html"><a href="count-normalization.html#match-the-metadata-and-counts-data"><i class="fa fa-check"></i><b>2.2.1</b> 1. Match the metadata and counts data</a></li>
+<li class="chapter" data-level="2.2.2" data-path="count-normalization.html"><a href="count-normalization.html#create-deseq2-object"><i class="fa fa-check"></i><b>2.2.2</b> 2. Create DESEq2 object</a></li>
+<li class="chapter" data-level="2.2.3" data-path="count-normalization.html"><a href="count-normalization.html#generate-the-mov10-normalized-counts"><i class="fa fa-check"></i><b>2.2.3</b> 3. Generate the Mov10 normalized counts</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="quality-control.html"><a href="quality-control.html"><i class="fa fa-check"></i><b>3</b> Quality Control</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="quality-control.html"><a href="quality-control.html#sample-level-qc"><i class="fa fa-check"></i><b>3.1</b> Sample-level QC</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="quality-control.html"><a href="quality-control.html#recommended-resources"><i class="fa fa-check"></i><b>3.1.1</b> Recommended Resources</a></li>
+<li class="chapter" data-level="3.1.2" data-path="quality-control.html"><a href="quality-control.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.1.2</b> Hierarchical Clustering Heatmap</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="quality-control.html"><a href="quality-control.html#gene-level-qc"><i class="fa fa-check"></i><b>3.2</b> Gene-level QC</a></li>
+<li class="chapter" data-level="3.3" data-path="quality-control.html"><a href="quality-control.html#mov10-quality-assessment-and-exploratory-analysis-using-deseq2"><i class="fa fa-check"></i><b>3.3</b> Mov10 quality assessment and exploratory analysis using DESeq2</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="quality-control.html"><a href="quality-control.html#transform-normalized-counts-using-the-rlog-transformation"><i class="fa fa-check"></i><b>3.3.1</b> Transform normalized counts using the rlog transformation</a></li>
+<li class="chapter" data-level="3.3.2" data-path="quality-control.html"><a href="quality-control.html#principal-components-analysis-pca"><i class="fa fa-check"></i><b>3.3.2</b> Principal components analysis (PCA)</a></li>
+<li class="chapter" data-level="3.3.3" data-path="quality-control.html"><a href="quality-control.html#hierarchical-clustering"><i class="fa fa-check"></i><b>3.3.3</b> Hierarchical Clustering</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html"><i class="fa fa-check"></i><b>4</b> DGE analysis workflow</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#running-deseq2"><i class="fa fa-check"></i><b>4.1</b> Running DESeq2</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#set-the-design-formula"><i class="fa fa-check"></i><b>4.1.1</b> Set the Design Formula</a></li>
+<li class="chapter" data-level="4.1.2" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#mov10-differential-expression-analysis"><i class="fa fa-check"></i><b>4.1.2</b> MOV10 Differential Expression Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#deseq2-differential-gene-expression-analysis-workflow"><i class="fa fa-check"></i><b>4.2</b> DESeq2 differential gene expression analysis workflow</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#step-1-estimate-size-factors"><i class="fa fa-check"></i><b>4.2.1</b> Step 1: Estimate size factors</a></li>
+<li class="chapter" data-level="4.2.2" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#step-2-estimate-gene-wise-dispersion"><i class="fa fa-check"></i><b>4.2.2</b> Step 2: Estimate Gene-wise Dispersion</a></li>
+<li class="chapter" data-level="4.2.3" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#step-3-fit-curve-to-gene-wise-dispersion-estimates"><i class="fa fa-check"></i><b>4.2.3</b> Step 3: Fit Curve to Gene-wise Dispersion Estimates</a></li>
+<li class="chapter" data-level="4.2.4" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#step-4-assessing-model-fit-with-dispersion-plots"><i class="fa fa-check"></i><b>4.2.4</b> Step 4: Assessing Model Fit with Dispersion Plots</a></li>
+<li class="chapter" data-level="4.2.5" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#assessing-and-addressing-issues"><i class="fa fa-check"></i><b>4.2.5</b> Assessing and Addressing Issues</a></li>
+<li class="chapter" data-level="4.2.6" data-path="dge-analysis-workflow.html"><a href="dge-analysis-workflow.html#mov10-differential-expression-analysis-exploring-dispersion-estimates"><i class="fa fa-check"></i><b>4.2.6</b> MOV10 Differential Expression Analysis: Exploring Dispersion Estimates</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html"><i class="fa fa-check"></i><b>5</b> Negative Binomial model fitting</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#generalized-linear-model-fit-for-each-gene"><i class="fa fa-check"></i><b>5.1</b> Generalized Linear Model fit for each gene</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#negative-binomial-model-formula"><i class="fa fa-check"></i><b>5.1.1</b> Negative Binomial Model Formula</a></li>
+<li class="chapter" data-level="5.1.2" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#estimating-beta-coefficients-using-the-design-matrix"><i class="fa fa-check"></i><b>5.1.2</b> Estimating Beta Coefficients Using the Design Matrix</a></li>
+<li class="chapter" data-level="5.1.3" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#step-by-step-process"><i class="fa fa-check"></i><b>5.1.3</b> Step-by-Step Process:</a></li>
+<li class="chapter" data-level="5.1.4" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#example"><i class="fa fa-check"></i><b>5.1.4</b> Example:</a></li>
+<li class="chapter" data-level="5.1.5" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#calculation"><i class="fa fa-check"></i><b>5.1.5</b> Calculation:</a></li>
+<li class="chapter" data-level="5.1.6" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#matrix-multiplication-form"><i class="fa fa-check"></i><b>5.1.6</b> Matrix Multiplication Form:</a></li>
+<li class="chapter" data-level="5.1.7" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#log2-fold-change-and-adjustments"><i class="fa fa-check"></i><b>5.1.7</b> <strong>Log2 Fold Change and Adjustments</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#shrunken-log2-foldchanges-lfc"><i class="fa fa-check"></i><b>5.2</b> Shrunken log2 foldchanges (LFC)</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#hypothesis-testing"><i class="fa fa-check"></i><b>5.2.1</b> Hypothesis Testing</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#statistical-test-for-lfc-estimates-wald-test"><i class="fa fa-check"></i><b>5.3</b> Statistical test for LFC estimates: Wald test</a></li>
+<li class="chapter" data-level="5.4" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#mov10-differential-expression-analysis-control-versus-overexpression"><i class="fa fa-check"></i><b>5.4</b> MOV10 Differential Expression Analysis: Control versus Overexpression</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#creating-contrasts-for-hypothesis-testing"><i class="fa fa-check"></i><b>5.4.1</b> Creating Contrasts for Hypothesis Testing</a></li>
+<li class="chapter" data-level="5.4.2" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#ma-plot"><i class="fa fa-check"></i><b>5.4.2</b> MA Plot</a></li>
+<li class="chapter" data-level="5.4.3" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#multiple-testing-correction"><i class="fa fa-check"></i><b>5.4.3</b> Multiple Testing Correction</a></li>
+<li class="chapter" data-level="5.4.4" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#benjamini-hochberg-adjustment"><i class="fa fa-check"></i><b>5.4.4</b> Benjamini-Hochberg Adjustment</a></li>
+<li class="chapter" data-level="5.4.5" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#mov10-de-analysis-control-vs.-knockdown"><i class="fa fa-check"></i><b>5.4.5</b> MOV10 DE Analysis: <strong>Control vs. Knockdown</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#summarizing-results"><i class="fa fa-check"></i><b>5.5</b> Summarizing Results</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#extracting-significant-differentially-expressed-genes"><i class="fa fa-check"></i><b>5.5.1</b> Extracting Significant Differentially Expressed Genes</a></li>
+<li class="chapter" data-level="5.5.2" data-path="negative-binomial-model-fitting.html"><a href="negative-binomial-model-fitting.html#mov10-knockdown-analysis-control-vs.-knockdown"><i class="fa fa-check"></i><b>5.5.2</b> MOV10 Knockdown Analysis: Control vs. Knockdown</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="visualizing-rna-seq-results.html"><a href="visualizing-rna-seq-results.html"><i class="fa fa-check"></i><b>6</b> Visualizing RNA-seq results</a>
+<ul>
+<li class="chapter" data-level="6.0.1" data-path="visualizing-rna-seq-results.html"><a href="visualizing-rna-seq-results.html#plotting-signicant-de-genes"><i class="fa fa-check"></i><b>6.0.1</b> Plotting signicant DE genes</a></li>
+<li class="chapter" data-level="6.0.2" data-path="visualizing-rna-seq-results.html"><a href="visualizing-rna-seq-results.html#heatmap"><i class="fa fa-check"></i><b>6.0.2</b> Heatmap</a></li>
+<li class="chapter" data-level="6.0.3" data-path="visualizing-rna-seq-results.html"><a href="visualizing-rna-seq-results.html#volcano-plots"><i class="fa fa-check"></i><b>6.0.3</b> Volcano plots</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html"><i class="fa fa-check"></i><b>7</b> Summary of DGE workflow</a>
+<ul>
+<li class="chapter" data-level="7.0.1" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#import-data-into-dds-object"><i class="fa fa-check"></i><b>7.0.1</b> 1. Import data into dds object:</a></li>
+<li class="chapter" data-level="7.0.2" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#exploratory-data-analysis-pca-heirarchical-clustering---identifying-outliers-and-sources-of-variation-in-the-data"><i class="fa fa-check"></i><b>7.0.2</b> 2. Exploratory data analysis (PCA &amp; heirarchical clustering) - identifying outliers and sources of variation in the data:</a></li>
+<li class="chapter" data-level="7.0.3" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#run-deseq2"><i class="fa fa-check"></i><b>7.0.3</b> 3. Run DESeq2:</a></li>
+<li class="chapter" data-level="7.0.4" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#check-the-fit-of-the-dispersion-estimates"><i class="fa fa-check"></i><b>7.0.4</b> 4. Check the fit of the dispersion estimates:</a></li>
+<li class="chapter" data-level="7.0.5" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#create-contrasts-to-perform-wald-testing-on-the-shrunken-log2-foldchanges-between-specific-conditions"><i class="fa fa-check"></i><b>7.0.5</b> 5. Create contrasts to perform Wald testing on the shrunken log2 foldchanges between specific conditions:</a></li>
+<li class="chapter" data-level="7.0.6" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#output-significant-results"><i class="fa fa-check"></i><b>7.0.6</b> 6. Output significant results:</a></li>
+<li class="chapter" data-level="7.0.7" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#visualize-results-volcano-plots-heatmaps-normalized-counts-plots-of-top-genes-etc."><i class="fa fa-check"></i><b>7.0.7</b> 7. Visualize results: volcano plots, heatmaps, normalized counts plots of top genes, etc.</a></li>
+<li class="chapter" data-level="7.0.8" data-path="summary-of-dge-workflow.html"><a href="summary-of-dge-workflow.html#make-sure-to-output-the-versions-of-all-tools-used-in-the-de-analysis"><i class="fa fa-check"></i><b>7.0.8</b> 8. Make sure to output the versions of all tools used in the DE analysis:</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html"><i class="fa fa-check"></i><b>8</b> Functional analysis of RNAseq data</a>
+<ul>
+<li class="chapter" data-level="8.0.1" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#ontology-and-go-terms"><i class="fa fa-check"></i><b>8.0.1</b> Ontology and GO Terms</a></li>
+<li class="chapter" data-level="8.0.2" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#go-terms-gene-ontology-terms"><i class="fa fa-check"></i><b>8.0.2</b> GO Terms (Gene Ontology Terms)</a></li>
+<li class="chapter" data-level="8.0.3" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#go-enrichment-methods"><i class="fa fa-check"></i><b>8.0.3</b> GO Enrichment Methods</a></li>
+<li class="chapter" data-level="8.0.4" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#example-1"><i class="fa fa-check"></i><b>8.0.4</b> Example</a></li>
+<li class="chapter" data-level="8.0.5" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#over-representation-analysis-ora-using-clusterprofiler"><i class="fa fa-check"></i><b>8.0.5</b> Over-representation Analysis (ORA) using <code>clusterProfiler</code></a></li>
+<li class="chapter" data-level="8.0.6" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#visualizing-enrichment-results"><i class="fa fa-check"></i><b>8.0.6</b> Visualizing Enrichment Results</a></li>
+<li class="chapter" data-level="8.0.7" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#gsea-using-clusterprofiler-and-fgsea"><i class="fa fa-check"></i><b>8.0.7</b> GSEA Using clusterProfiler and fgsea</a></li>
+<li class="chapter" data-level="8.0.8" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#visualizing-gsea-results"><i class="fa fa-check"></i><b>8.0.8</b> Visualizing GSEA Results</a></li>
+<li class="chapter" data-level="8.0.9" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#gsea-using-fgsea"><i class="fa fa-check"></i><b>8.0.9</b> GSEA using fgsea</a></li>
+<li class="chapter" data-level="8.0.10" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#goenrichment-package-analysis"><i class="fa fa-check"></i><b>8.0.10</b> <code>GOenrichment</code> Package Analysis</a></li>
+<li class="chapter" data-level="8.0.11" data-path="functional-analysis-of-rnaseq-data.html"><a href="functional-analysis-of-rnaseq-data.html#other-tools-and-resources"><i class="fa fa-check"></i><b>8.0.11</b> Other tools and resources</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PHAR520: Applied Omics Science for Drug Discovery and Development</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="functional-analysis-of-rnaseq-data" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">Chapter 8</span> Functional analysis of RNAseq data<a href="functional-analysis-of-rnaseq-data.html#functional-analysis-of-rnaseq-data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="ontology-and-go-terms" class="section level3 hasAnchor" number="8.0.1">
+<h3><span class="header-section-number">8.0.1</span> Ontology and GO Terms<a href="functional-analysis-of-rnaseq-data.html#ontology-and-go-terms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Ontology</strong>:
+An ontology is a representation of something we know about. Ontologies consist of representations of things that are detectable or directly observable and the relationships between those things.
+The <strong>Gene Ontology (GO)</strong> project provides an ontology of defined terms representing gene product properties. These terms are connected to each other via formally defined relationships, allowing for consistent annotation and analysis of gene functions across different species and research areas.</p>
+</div>
+<div id="go-terms-gene-ontology-terms" class="section level3 hasAnchor" number="8.0.2">
+<h3><span class="header-section-number">8.0.2</span> GO Terms (Gene Ontology Terms)<a href="functional-analysis-of-rnaseq-data.html#go-terms-gene-ontology-terms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The GO terms describe three aspects of gene products:</p>
+<ul>
+<li><strong>Biological Process</strong>: Refers to the biological objectives achieved by gene products, such as “cell division” or “response to stress.”</li>
+</ul>
+<p><img src="img/go_heirarchy.jpg" alt="Alt text" /></p>
+<ul>
+<li><p><strong>Molecular Function</strong>: Describes the biochemical activities at the molecular level, such as “enzyme activity” or “DNA binding.”</p></li>
+<li><p><strong>Cellular Component</strong>: Indicates where gene products are located within the cell, like “nucleus” or “mitochondrion.”</p></li>
+</ul>
+</div>
+<div id="go-enrichment-methods" class="section level3 hasAnchor" number="8.0.3">
+<h3><span class="header-section-number">8.0.3</span> GO Enrichment Methods<a href="functional-analysis-of-rnaseq-data.html#go-enrichment-methods" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="img/pathway_analysis.png" alt="Alt text" /></p>
+<p>GO enrichment methods help interpret differentially expressed gene lists from RNA-Seq data and include the following:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Overrepresentation Analysis (ORA)</strong>:</li>
+</ol>
+<ul>
+<li>ORA assesses whether specific GO terms are over-represented in a gene list compared to the background set of genes (e.g., all genes in the genome). Over-represented GO terms indicate biological functions or processes that are significantly associated with the genes of interest.</li>
+</ul>
+<p><img src="img/go_proportions.png" width="600" alt="Alt text" /></p>
+<p><img src="img/go_proportions_table3.png" width="600" alt="Alt text" />`</p>
+<ul>
+<li><strong>Hypergeometric Test</strong>:
+The hypergeometric test in GO enrichment analysis is used to determine whether a set of genes is enriched for specific GO terms compared to the background set of genes. The test calculates the probability of observing the overlap between the query gene set and the gene set associated with a particular GO term, given the total number of genes in the dataset and the number of genes in the background set.</li>
+</ul>
+<p>The formula for the cumulative probability of observing <strong>at most <span class="math inline">\(q\)</span></strong> successes (the lower-tail probability) in a sample of size <span class="math inline">\(k\)</span> from a population with <span class="math inline">\(m\)</span> successes and <span class="math inline">\(N - m\)</span> failures is:
+<span class="math display">\[
+P(X \leq q) = \sum_{i=0}^{q} \frac{\binom{m}{i} \binom{N - m}{k - i}}{\binom{N}{k}}
+\]</span>
+Where:</p>
+<p><strong><code>q</code></strong>: The <strong>number of genes in your list of interest that are annotated with a specific GO term</strong> (e.g., genes in your differential expression results that are associated with “cell cycle regulation”).</p>
+<p><strong><code>m</code></strong>: The <strong>total number of genes in the background set (e.g., all genes in the genome) that are annotated with the specific GO term</strong> (e.g., all genes associated with “cell cycle regulation” in the entire dataset or genome).</p>
+<p><strong><code>N</code></strong>: The <strong>total number of genes in the background set.</strong></p>
+<p><strong><code>k</code></strong>: The <strong>total number of genes in your gene list of interest</strong></p>
+</div>
+<div id="example-1" class="section level3 hasAnchor" number="8.0.4">
+<h3><span class="header-section-number">8.0.4</span> Example<a href="functional-analysis-of-rnaseq-data.html#example-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Suppose:your background population has <span class="math inline">\(N = 20,000\)</span> genes (e.g., the entire genome). Out of these, <span class="math inline">\(m = 500\)</span> genes are associated with a specific GO term (e.g., “cell cycle regulation”). You have a list of <span class="math inline">\(k = 1000\)</span> genes of interest. In this list, <span class="math inline">\(q = 30\)</span> genes are associated with the “cell cycle regulation” GO term.</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="functional-analysis-of-rnaseq-data.html#cb135-1" tabindex="-1"></a><span class="co"># Define parameters</span></span>
+<span id="cb135-2"><a href="functional-analysis-of-rnaseq-data.html#cb135-2" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">20000</span>         <span class="co"># Total genes in the background (population)</span></span>
+<span id="cb135-3"><a href="functional-analysis-of-rnaseq-data.html#cb135-3" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">500</span>           <span class="co"># Total genes associated with the GO term in the background</span></span>
+<span id="cb135-4"><a href="functional-analysis-of-rnaseq-data.html#cb135-4" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">1000</span>          <span class="co"># Sample size (genes in your list)</span></span>
+<span id="cb135-5"><a href="functional-analysis-of-rnaseq-data.html#cb135-5" tabindex="-1"></a>q <span class="ot">&lt;-</span> <span class="dv">50</span>            <span class="co"># Observed number of successes (overlap with GO term)</span></span>
+<span id="cb135-6"><a href="functional-analysis-of-rnaseq-data.html#cb135-6" tabindex="-1"></a></span>
+<span id="cb135-7"><a href="functional-analysis-of-rnaseq-data.html#cb135-7" tabindex="-1"></a><span class="co"># Perform the hypergeometric test (upper-tail probability)</span></span>
+<span id="cb135-8"><a href="functional-analysis-of-rnaseq-data.html#cb135-8" tabindex="-1"></a>p_value <span class="ot">&lt;-</span> <span class="fu">phyper</span>(q <span class="sc">-</span> <span class="dv">1</span>, m, N <span class="sc">-</span> m, k, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb135-9"><a href="functional-analysis-of-rnaseq-data.html#cb135-9" tabindex="-1"></a>p_value</span></code></pre></div>
+<pre><code>## [1] 2.551199e-06</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Gene Set Enrichment Analysis (GSEA)</strong>:
+Instead of only considering genes above a certain threshold (e.g., differentially expressed genes), GSEA looks at the <strong>entire ranked list of genes</strong> (e.g., ranked by their expression levels) and checks whether genes associated with a certain GO term are <em>statistically over-represented at the top or bottom of a ranked gene list, indicating coordinated changes in gene expression</em>.</li>
+</ol>
+<p>Here’s how GSEA works:</p>
+<ul>
+<li><p><strong>Gene Ranking</strong>:
+Genes are ranked based on a metric that reflects their differential expression, such as log2FoldChange.</p></li>
+<li><p><strong>Enrichment Score (ES)</strong>:
+GSEA calculates an <strong>Enrichment Score (ES)</strong> for each gene set by walking down the ranked list, increasing the score when a gene belongs to the set and decreasing it otherwise. A positive ES suggests upregulation, while a negative ES suggests downregulation of the gene set.</p></li>
+<li><p><strong>Example:</strong>
+The GSEA enrichment plot provides a graphical view of the enrichment score for a gene set:</p></li>
+</ul>
+<p><img src="img/GSEA.jpg" alt="Alt text" />
+- The top portion of the plot shows the running ES for the gene set as the analysis walks down the ranked list. The score at the peak of the plot (the score furthest from 0.0) is the ES for the gene set.</p>
+<ul>
+<li><p>The middle portion of the plot shows where the members of the gene set appear in the ranked list of genes.</p></li>
+<li><p>The leading edge subset of a gene set is the subset of members that contribute most to the ES.</p></li>
+<li><p>The bottom portion of the plot shows the value of the ranking metric (such as log2FoldChange) as you move down the list of ranked genes.</p></li>
+</ul>
+</div>
+<div id="over-representation-analysis-ora-using-clusterprofiler" class="section level3 hasAnchor" number="8.0.5">
+<h3><span class="header-section-number">8.0.5</span> Over-representation Analysis (ORA) using <code>clusterProfiler</code><a href="functional-analysis-of-rnaseq-data.html#over-representation-analysis-ora-using-clusterprofiler" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="functional-analysis-of-rnaseq-data.html#cb137-1" tabindex="-1"></a><span class="do">## Load required libraries</span></span>
+<span id="cb137-2"><a href="functional-analysis-of-rnaseq-data.html#cb137-2" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb137-3"><a href="functional-analysis-of-rnaseq-data.html#cb137-3" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb137-4"><a href="functional-analysis-of-rnaseq-data.html#cb137-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb137-5"><a href="functional-analysis-of-rnaseq-data.html#cb137-5" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb137-6"><a href="functional-analysis-of-rnaseq-data.html#cb137-6" tabindex="-1"></a><span class="fu">library</span>(fgsea) </span>
+<span id="cb137-7"><a href="functional-analysis-of-rnaseq-data.html#cb137-7" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb137-8"><a href="functional-analysis-of-rnaseq-data.html#cb137-8" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span>
+<span id="cb137-9"><a href="functional-analysis-of-rnaseq-data.html#cb137-9" tabindex="-1"></a><span class="fu">library</span>(visNetwork)</span>
+<span id="cb137-10"><a href="functional-analysis-of-rnaseq-data.html#cb137-10" tabindex="-1"></a><span class="fu">library</span>(GO.db)</span>
+<span id="cb137-11"><a href="functional-analysis-of-rnaseq-data.html#cb137-11" tabindex="-1"></a><span class="fu">library</span>(GOSemSim)</span>
+<span id="cb137-12"><a href="functional-analysis-of-rnaseq-data.html#cb137-12" tabindex="-1"></a><span class="fu">library</span>(GOenrichment)</span>
+<span id="cb137-13"><a href="functional-analysis-of-rnaseq-data.html#cb137-13" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code></pre></div>
+<div id="running-clusterprofiler-we-first-need-to-load-the-results-of-the-differential-expression-analysis." class="section level4 hasAnchor" number="8.0.5.1">
+<h4><span class="header-section-number">8.0.5.1</span> Running clusterProfiler: we first need to load the results of the differential expression analysis.<a href="functional-analysis-of-rnaseq-data.html#running-clusterprofiler-we-first-need-to-load-the-results-of-the-differential-expression-analysis." class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="functional-analysis-of-rnaseq-data.html#cb138-1" tabindex="-1"></a>res_tableOE <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/res_tableOE.RDS&quot;</span>)</span>
+<span id="cb138-2"><a href="functional-analysis-of-rnaseq-data.html#cb138-2" tabindex="-1"></a></span>
+<span id="cb138-3"><a href="functional-analysis-of-rnaseq-data.html#cb138-3" tabindex="-1"></a>res_tableOE_tb <span class="ot">&lt;-</span> res_tableOE <span class="sc">%&gt;%</span> </span>
+<span id="cb138-4"><a href="functional-analysis-of-rnaseq-data.html#cb138-4" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span> <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb138-5"><a href="functional-analysis-of-rnaseq-data.html#cb138-5" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(log2FoldChange))  <span class="sc">%&gt;%</span> <span class="fu">as_tibble</span>()</span></code></pre></div>
+<p>To perform the over-representation analysis, we need a list of background genes and a list of significant genes:</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="functional-analysis-of-rnaseq-data.html#cb139-1" tabindex="-1"></a><span class="do">## background set of genes</span></span>
+<span id="cb139-2"><a href="functional-analysis-of-rnaseq-data.html#cb139-2" tabindex="-1"></a>allOE_genes <span class="ot">&lt;-</span> res_tableOE_tb<span class="sc">$</span>gene</span>
+<span id="cb139-3"><a href="functional-analysis-of-rnaseq-data.html#cb139-3" tabindex="-1"></a></span>
+<span id="cb139-4"><a href="functional-analysis-of-rnaseq-data.html#cb139-4" tabindex="-1"></a></span>
+<span id="cb139-5"><a href="functional-analysis-of-rnaseq-data.html#cb139-5" tabindex="-1"></a>sigOE <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(res_tableOE_tb, padj <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb139-6"><a href="functional-analysis-of-rnaseq-data.html#cb139-6" tabindex="-1"></a></span>
+<span id="cb139-7"><a href="functional-analysis-of-rnaseq-data.html#cb139-7" tabindex="-1"></a><span class="do">## significant genes</span></span>
+<span id="cb139-8"><a href="functional-analysis-of-rnaseq-data.html#cb139-8" tabindex="-1"></a>sigOE_genes <span class="ot">=</span> sigOE<span class="sc">$</span>gene</span></code></pre></div>
+<p>The<code>enrichGO()</code> function performs the ORA for the significant genes of interest (<code>sigOE_genes</code>) compared to the background gene list (<code>allOE_genes</code>) and returns the enriched GO terms and their associated p-values.</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="functional-analysis-of-rnaseq-data.html#cb140-1" tabindex="-1"></a><span class="do">## Run GO enrichment analysis</span></span>
+<span id="cb140-2"><a href="functional-analysis-of-rnaseq-data.html#cb140-2" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(<span class="at">gene =</span> sigOE_genes,</span>
+<span id="cb140-3"><a href="functional-analysis-of-rnaseq-data.html#cb140-3" tabindex="-1"></a> <span class="at">universe =</span> allOE_genes,</span>
+<span id="cb140-4"><a href="functional-analysis-of-rnaseq-data.html#cb140-4" tabindex="-1"></a> <span class="at">keyType =</span> <span class="st">&quot;SYMBOL&quot;</span>,</span>
+<span id="cb140-5"><a href="functional-analysis-of-rnaseq-data.html#cb140-5" tabindex="-1"></a> <span class="at">OrgDb =</span> org.Hs.eg.db,</span>
+<span id="cb140-6"><a href="functional-analysis-of-rnaseq-data.html#cb140-6" tabindex="-1"></a> <span class="at">minGSSize =</span> <span class="dv">20</span>,</span>
+<span id="cb140-7"><a href="functional-analysis-of-rnaseq-data.html#cb140-7" tabindex="-1"></a> <span class="at">maxGSSize =</span> <span class="dv">300</span>,</span>
+<span id="cb140-8"><a href="functional-analysis-of-rnaseq-data.html#cb140-8" tabindex="-1"></a> <span class="at">ont =</span> <span class="st">&quot;BP&quot;</span>,</span>
+<span id="cb140-9"><a href="functional-analysis-of-rnaseq-data.html#cb140-9" tabindex="-1"></a> <span class="at">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb140-10"><a href="functional-analysis-of-rnaseq-data.html#cb140-10" tabindex="-1"></a> <span class="at">qvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb140-11"><a href="functional-analysis-of-rnaseq-data.html#cb140-11" tabindex="-1"></a> <span class="at">readable =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>We can extract the gene lists associated with each enriched GO term from the <code>ego</code> object to create edges between terms based on shared genes.</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="functional-analysis-of-rnaseq-data.html#cb141-1" tabindex="-1"></a><span class="co"># Extract the result as a data frame</span></span>
+<span id="cb141-2"><a href="functional-analysis-of-rnaseq-data.html#cb141-2" tabindex="-1"></a>enrich_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ego)</span>
+<span id="cb141-3"><a href="functional-analysis-of-rnaseq-data.html#cb141-3" tabindex="-1"></a></span>
+<span id="cb141-4"><a href="functional-analysis-of-rnaseq-data.html#cb141-4" tabindex="-1"></a><span class="fu">names</span>(enrich_df)</span></code></pre></div>
+<pre><code>##  [1] &quot;ID&quot;             &quot;Description&quot;    &quot;GeneRatio&quot;      &quot;BgRatio&quot;        &quot;RichFactor&quot;    
+##  [6] &quot;FoldEnrichment&quot; &quot;zScore&quot;         &quot;pvalue&quot;         &quot;p.adjust&quot;       &quot;qvalue&quot;        
+## [11] &quot;geneID&quot;         &quot;Count&quot;</code></pre>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="functional-analysis-of-rnaseq-data.html#cb143-1" tabindex="-1"></a><span class="fu">head</span>(enrich_df)</span></code></pre></div>
+<pre><code>##                    ID
+## GO:0006403 GO:0006403
+## GO:0042254 GO:0042254
+## GO:0051168 GO:0051168
+## GO:0043484 GO:0043484
+## GO:0000375 GO:0000375
+## GO:0000377 GO:0000377
+##                                                                                     Description
+## GO:0006403                                                                     RNA localization
+## GO:0042254                                                                  ribosome biogenesis
+## GO:0051168                                                                       nuclear export
+## GO:0043484                                                           regulation of RNA splicing
+## GO:0000375                                      RNA splicing, via transesterification reactions
+## GO:0000377 RNA splicing, via transesterification reactions with bulged adenosine as nucleophile
+##            GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue     p.adjust
+## GO:0006403  111/5296 189/14554  0.5873016       1.613970 6.425652 2.818880e-10 5.450732e-07
+## GO:0042254  152/5296 278/14554  0.5467626       1.502565 6.398863 2.833757e-10 5.450732e-07
+## GO:0051168   94/5296 156/14554  0.6025641       1.655914 6.229446 9.953107e-10 1.276320e-06
+## GO:0043484  102/5296 174/14554  0.5862069       1.610962 6.131985 1.701497e-09 1.636414e-06
+## GO:0000375  151/5296 284/14554  0.5316901       1.461144 5.935747 4.382494e-09 2.823435e-06
+## GO:0000377  149/5296 280/14554  0.5321429       1.462388 5.908870 5.137522e-09 2.823435e-06
+##                  qvalue
+## GO:0006403 4.644379e-07
+## GO:0042254 4.644379e-07
+## GO:0051168 1.087508e-06
+## GO:0043484 1.394332e-06
+## GO:0000375 2.405751e-06
+## GO:0000377 2.405751e-06
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      geneID
+## GO:0006403                                                                                                                                                                                                                                                                                    ALKBH5/ALYREF/ARC/ATR/ATXN2/BICD1/CAPRIN1/CASC3/CCT2/CCT3/CCT5/CCT6A/CCT7/CETN2/CETN3/CHTOP/DCP2/DDX19A/DDX39A/DHX9/DKC1/EIF4A3/ENY2/EXOSC10/FBL/FMR1/FUBP3/FXR2/FYTTD1/GLE1/HNRNPU/HSF1/IGF2BP1/IGF2BP2/KHDRBS1/KHSRP/KPNB1/MCM3AP/MVP/NCBP1/NEAT1/NHP2/NOL6/NOP10/NSUN2/NUP107/NUP133/NUP188/NUP205/NUP210/NUP214/NUP50/NUP54/NUP85/NUP88/NUP93/NUP98/NUTF2/NXF1/NXF3/NXT1/NXT2/PABPN1/PARN/PEG10/PHAX/PIH1D1/POLDIP3/POM121/POM121C/POM121L2/PRPF6/QKI/RAE1/RAN/RBM15B/RBM33/RBM8A/RFTN1/RUVBL1/RUVBL2/SARNP/SEC13/SEH1L/SENP2/SETD2/SHQ1/SIDT2/SLBP/SMG5/SMG6/SMG7/SNUPN/SRSF3/SRSF7/STAU1/SUPT6H/TGFBR2/THOC1/THOC2/THOC6/THOC7/TOMM20/UPF1/XPO1/XPO5/YBX1/ZC3H11A/ZFP36/ZFP36L1/ZNF385A
+## GO:0042254                                    AATF/ABT1/BMS1/BRIX1/BYSL/C1QBP/CHD7/CUL4A/CUL4B/DDX18/DDX21/DDX27/DDX28/DDX47/DDX49/DDX51/DDX54/DDX56/DHX30/DHX37/DKC1/DNTTIP2/EBNA1BP2/EIF1AX/EIF2A/EIF4A3/EIF5/EIF5B/EIF6/EMG1/ERAL1/ERCC2/EXOSC10/EXOSC3/EXOSC5/EXOSC6/EXOSC9/FAU/FBL/FBLL1/FCF1/FRG1/FTSJ3/GEMIN4/GLUL/GNL3L/GRWD1/GTPBP10/HEATR1/IMP3/IMP4/ISG20L2/KRI1/LSG1/LSM6/LTV1/MAK16/MCAT/MDN1/MPHOSPH10/MRPS2/MRPS7/MRTO4/MYBBP1A/NAT10/NGDN/NGRN/NHP2/NLE1/NMD3/NOC2L/NOC4L/NOL10/NOL11/NOL6/NOL8/NOL9/NOLC1/NOP10/NOP14/NOP16/NOP2/NSUN5/NUDT16/NUP88/PA2G4/PDCD11/PELP1/PES1/PIH1D1/POP4/PPAN/PWP1/PWP2/RAN/RBM10/REXO1/REXO4/RIOK3/RPL24/RPL26/RPL26L1/RPL7L1/RPP30/RPP40/RPS15/RPS15A/RPS19BP1/RPS23/RPS27/RPS27A/RPS27L/RPS3A/RPSA/RPUSD1/RPUSD4/RRP1/RRP15/RRP1B/RRP36/RRP7A/RRP9/RRS1/RSL24D1/SBDS/SDAD1/SIRT7/SRFBP1/SURF6/SUV39H1/TFB1M/TRMT112/TRMT2B/TSR1/TSR2/URB1/URB2/UTP14A/UTP15/UTP18/UTP20/UTP3/WDR18/WDR43/WDR46/WDR55/WDR74/XPO1/XRCC5/XRN2/YTHDF2/ZNF622
+## GO:0051168                                                                                                                                                                                                                                                                                                                                                                                               ADAR/AHCYL1/ALKBH5/ALYREF/ANP32B/BAG3/CASC3/CDK5/CHTOP/CSE1L/DDX19A/DDX39A/DHX9/EIF4A3/EIF6/EMD/ENY2/FMR1/FYTTD1/GAS6/GLE1/KHDRBS1/LSG1/LTV1/MCM3AP/MDM2/MDN1/NCBP1/NEAT1/NEMF/NMD3/NOL6/NSUN2/NUP107/NUP133/NUP188/NUP214/NUP85/NUP88/NUP93/NUP98/NUTF2/NXF1/NXF3/NXT1/NXT2/PABPN1/PARK7/PHAX/PKD1/POLDIP3/POM121/POM121C/POM121L2/PPM1A/PRKACA/PTPN11/RAE1/RAN/RANBP3/RANBP3L/RANGAP1/RAPGEF3/RBM10/RBM15B/RBM22/RBM33/RBM8A/RPS15/SARNP/SDAD1/SETD2/SFN/SIRT6/SIRT7/SMG5/SMG6/SMG7/SRSF3/SUPT6H/TGFB1/THOC1/THOC2/THOC6/THOC7/UBE2I/UPF1/XPO1/XPO4/XPO5/XPO6/XPO7/YWHAE/ZC3H11A
+## GO:0043484                                                                                                                                                                                                                                                                                                                        ACIN1/AHNAK/AHNAK2/ARGLU1/ATXN7L3/C1QBP/CCNL1/CCNL2/CELF1/CELF2/CELF3/CELF4/CIRBP/CLK1/CLNS1A/DAZAP1/DDX5/ENY2/ERN1/ESRP1/EXOSC10/FAM50A/FASTK/FMR1/FUS/GRSF1/HNRNPF/HNRNPH2/HNRNPK/HNRNPL/HNRNPU/HOXB-AS3/HSPA1A/KAT2A/KHDRBS1/KHDRBS3/LARP7/MBNL1/MBNL2/MBNL3/NCBP1/NCL/NOVA1/NUP98/PIK3R1/POLR2A/PQBP1/PRDX6/PRMT5/PRPF19/PTBP1/PTBP2/PUF60/QKI/RBFOX2/RBM10/RBM11/RBM12B/RBM15/RBM15B/RBM22/RBM23/RBM24/RBM3/RBM38/RBM39/RBM4/RBM42/RBM8A/RBMX/RBPMS/RBPMS2/RNPS1/RPS26/RRP1B/SF1/SF3B3/SFSWAP/SLC38A2/SMU1/SNRNP70/SRPK1/SRPK2/SRSF3/SRSF6/SRSF7/SRSF9/SUPT3H/TADA2B/TADA3/TAF5L/TAF6L/TIA1/TMBIM6/TRRAP/U2AF2/UPF1/USP22/WDR77/ZBTB7A/ZNF326/ZNF638
+## GO:0000375 ACIN1/ARGLU1/C1QBP/C9orf78/CASC3/CD2BP2/CELF1/CELF2/CELF3/CELF4/CIRBP/CLNS1A/COIL/CTNNBL1/CWC15/CWF19L1/DAZAP1/DBR1/DDX1/DDX23/DDX39A/DDX42/DDX5/DHX15/DHX16/DHX38/DHX40/DHX9/EFTUD2/EIF4A3/EXOSC10/FMR1/FRG1/GCFC2/GEMIN4/GEMIN5/GEMIN7/GPKOW/HNRNPA3/HNRNPF/HNRNPK/HNRNPL/HNRNPM/HNRNPR/HNRNPU/HNRNPUL1/HSPA8/HTATSF1/IK/ILF3/KHDRBS1/KHDRBS3/KHSRP/LARP7/LSM2/LSM3/LSM4/LSM5/LSM6/LSM7/LUC7L2/LUC7L3/METTL3/MPHOSPH10/NCBP1/NCL/NOVA1/NUP98/PABPC1/PLRG1/PNN/PPIL1/PQBP1/PRDX6/PRMT5/PRMT7/PRPF19/PRPF3/PRPF38A/PRPF39/PRPF4/PRPF40B/PRPF6/PRPF8/PTBP1/PTBP2/PUF60/QKI/RALY/RBFOX2/RBM10/RBM11/RBM15/RBM15B/RBM17/RBM22/RBM23/RBM24/RBM3/RBM39/RBM4/RBM42/RBM8A/RBMX/RBPMS/RBPMS2/RNF113A/RNPC3/RNPS1/SART3/SF1/SF3A1/SF3A3/SF3B1/SF3B2/SF3B3/SF3B4/SFPQ/SFSWAP/SMU1/SNRNP200/SNRNP25/SNRNP27/SNRNP40/SNRNP70/SNRPB/SNRPC/SNRPD1/SNRPD2/SNRPD3/SRPK1/SRPK2/SRSF3/SRSF6/SRSF7/SRSF9/STRAP/SYNCRIP/TFIP11/TIA1/TSSC4/TXNL4B/U2AF1/U2AF2/UBL5/UPF1/USP39/USP4/WDR77/ZBTB7A/ZMAT2
+## GO:0000377                 ACIN1/ARGLU1/C1QBP/C9orf78/CASC3/CD2BP2/CELF1/CELF2/CELF3/CELF4/CIRBP/CLNS1A/COIL/CTNNBL1/CWC15/CWF19L1/DAZAP1/DBR1/DDX1/DDX23/DDX39A/DDX42/DDX5/DHX15/DHX16/DHX38/DHX40/DHX9/EFTUD2/EIF4A3/EXOSC10/FMR1/FRG1/GCFC2/GEMIN4/GEMIN5/GEMIN7/GPKOW/HNRNPA3/HNRNPF/HNRNPK/HNRNPL/HNRNPM/HNRNPR/HNRNPU/HNRNPUL1/HSPA8/HTATSF1/IK/ILF3/KHDRBS1/KHDRBS3/LARP7/LSM2/LSM3/LSM4/LSM5/LSM6/LSM7/LUC7L2/LUC7L3/METTL3/NCBP1/NCL/NOVA1/NUP98/PABPC1/PLRG1/PNN/PPIL1/PQBP1/PRDX6/PRMT5/PRMT7/PRPF19/PRPF3/PRPF38A/PRPF39/PRPF4/PRPF40B/PRPF6/PRPF8/PTBP1/PTBP2/PUF60/QKI/RALY/RBFOX2/RBM10/RBM11/RBM15/RBM15B/RBM17/RBM22/RBM23/RBM24/RBM3/RBM39/RBM4/RBM42/RBM8A/RBMX/RBPMS/RBPMS2/RNF113A/RNPC3/RNPS1/SART3/SF1/SF3A1/SF3A3/SF3B1/SF3B2/SF3B3/SF3B4/SFPQ/SFSWAP/SMU1/SNRNP200/SNRNP25/SNRNP27/SNRNP40/SNRNP70/SNRPB/SNRPC/SNRPD1/SNRPD2/SNRPD3/SRPK1/SRPK2/SRSF3/SRSF6/SRSF7/SRSF9/STRAP/SYNCRIP/TFIP11/TIA1/TSSC4/TXNL4B/U2AF1/U2AF2/UBL5/UPF1/USP39/USP4/WDR77/ZBTB7A/ZMAT2
+##            Count
+## GO:0006403   111
+## GO:0042254   152
+## GO:0051168    94
+## GO:0043484   102
+## GO:0000375   151
+## GO:0000377   149</code></pre>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="functional-analysis-of-rnaseq-data.html#cb145-1" tabindex="-1"></a><span class="co"># GO term IDs </span></span>
+<span id="cb145-2"><a href="functional-analysis-of-rnaseq-data.html#cb145-2" tabindex="-1"></a>term_ids <span class="ot">&lt;-</span> enrich_df<span class="sc">$</span>ID  </span>
+<span id="cb145-3"><a href="functional-analysis-of-rnaseq-data.html#cb145-3" tabindex="-1"></a></span>
+<span id="cb145-4"><a href="functional-analysis-of-rnaseq-data.html#cb145-4" tabindex="-1"></a><span class="co"># Split gene lists by &quot;/&quot; and assign term IDs as names</span></span>
+<span id="cb145-5"><a href="functional-analysis-of-rnaseq-data.html#cb145-5" tabindex="-1"></a>gene_lists <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(enrich_df<span class="sc">$</span>geneID, <span class="st">&quot;/&quot;</span>) </span>
+<span id="cb145-6"><a href="functional-analysis-of-rnaseq-data.html#cb145-6" tabindex="-1"></a></span>
+<span id="cb145-7"><a href="functional-analysis-of-rnaseq-data.html#cb145-7" tabindex="-1"></a><span class="co"># Assign term IDs as names</span></span>
+<span id="cb145-8"><a href="functional-analysis-of-rnaseq-data.html#cb145-8" tabindex="-1"></a><span class="fu">names</span>(gene_lists) <span class="ot">&lt;-</span> term_ids  </span></code></pre></div>
+<p>Using the gene lists associated with each GO term, we can create edges between terms based on the shared genes.</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="functional-analysis-of-rnaseq-data.html#cb146-1" tabindex="-1"></a><span class="co"># Load GO data for semantic similarity calculation</span></span>
+<span id="cb146-2"><a href="functional-analysis-of-rnaseq-data.html#cb146-2" tabindex="-1"></a>go_data <span class="ot">&lt;-</span> GOSemSim<span class="sc">::</span><span class="fu">godata</span>(<span class="at">OrgDb =</span> <span class="st">&quot;org.Hs.eg.db&quot;</span>, </span>
+<span id="cb146-3"><a href="functional-analysis-of-rnaseq-data.html#cb146-3" tabindex="-1"></a>                            <span class="at">ont =</span> <span class="st">&quot;BP&quot;</span>, </span>
+<span id="cb146-4"><a href="functional-analysis-of-rnaseq-data.html#cb146-4" tabindex="-1"></a>                            <span class="at">keytype =</span> <span class="st">&quot;SYMBOL&quot;</span>,</span>
+<span id="cb146-5"><a href="functional-analysis-of-rnaseq-data.html#cb146-5" tabindex="-1"></a>                            <span class="at">computeIC =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## preparing gene to GO mapping data...</code></pre>
+<pre><code>## preparing IC data...</code></pre>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="functional-analysis-of-rnaseq-data.html#cb149-1" tabindex="-1"></a><span class="co"># Compute semantic similarity</span></span>
+<span id="cb149-2"><a href="functional-analysis-of-rnaseq-data.html#cb149-2" tabindex="-1"></a>similarity_matrix <span class="ot">&lt;-</span> GOSemSim<span class="sc">::</span><span class="fu">mgoSim</span>(term_ids, term_ids, </span>
+<span id="cb149-3"><a href="functional-analysis-of-rnaseq-data.html#cb149-3" tabindex="-1"></a>                     <span class="at">semData =</span> go_data, </span>
+<span id="cb149-4"><a href="functional-analysis-of-rnaseq-data.html#cb149-4" tabindex="-1"></a>                     <span class="at">measure =</span> <span class="st">&quot;Wang&quot;</span>, <span class="at">combine =</span> <span class="cn">NULL</span>)</span>
+<span id="cb149-5"><a href="functional-analysis-of-rnaseq-data.html#cb149-5" tabindex="-1"></a></span>
+<span id="cb149-6"><a href="functional-analysis-of-rnaseq-data.html#cb149-6" tabindex="-1"></a><span class="co"># Convert similarity matrix to edges</span></span>
+<span id="cb149-7"><a href="functional-analysis-of-rnaseq-data.html#cb149-7" tabindex="-1"></a>edges <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">from =</span> <span class="fu">rep</span>(term_ids, </span>
+<span id="cb149-8"><a href="functional-analysis-of-rnaseq-data.html#cb149-8" tabindex="-1"></a>                    <span class="at">each =</span> <span class="fu">length</span>(term_ids)),</span>
+<span id="cb149-9"><a href="functional-analysis-of-rnaseq-data.html#cb149-9" tabindex="-1"></a>                    <span class="at">to =</span> <span class="fu">rep</span>(term_ids, </span>
+<span id="cb149-10"><a href="functional-analysis-of-rnaseq-data.html#cb149-10" tabindex="-1"></a>                    <span class="at">times =</span> <span class="fu">length</span>(term_ids)),</span>
+<span id="cb149-11"><a href="functional-analysis-of-rnaseq-data.html#cb149-11" tabindex="-1"></a>                    <span class="at">similarity =</span> <span class="fu">as.vector</span>(similarity_matrix))</span>
+<span id="cb149-12"><a href="functional-analysis-of-rnaseq-data.html#cb149-12" tabindex="-1"></a></span>
+<span id="cb149-13"><a href="functional-analysis-of-rnaseq-data.html#cb149-13" tabindex="-1"></a><span class="co"># Filter out edges with zero similarity or self-loops</span></span>
+<span id="cb149-14"><a href="functional-analysis-of-rnaseq-data.html#cb149-14" tabindex="-1"></a>edges <span class="ot">&lt;-</span> <span class="fu">subset</span>(edges, similarity <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> from <span class="sc">!=</span> to)</span>
+<span id="cb149-15"><a href="functional-analysis-of-rnaseq-data.html#cb149-15" tabindex="-1"></a></span>
+<span id="cb149-16"><a href="functional-analysis-of-rnaseq-data.html#cb149-16" tabindex="-1"></a>edges <span class="ot">&lt;-</span> edges <span class="sc">%&gt;%</span> </span>
+<span id="cb149-17"><a href="functional-analysis-of-rnaseq-data.html#cb149-17" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(similarity <span class="sc">&gt;=</span> <span class="fl">0.5</span>)</span>
+<span id="cb149-18"><a href="functional-analysis-of-rnaseq-data.html#cb149-18" tabindex="-1"></a></span>
+<span id="cb149-19"><a href="functional-analysis-of-rnaseq-data.html#cb149-19" tabindex="-1"></a></span>
+<span id="cb149-20"><a href="functional-analysis-of-rnaseq-data.html#cb149-20" tabindex="-1"></a><span class="co"># Convert term IDs to names</span></span>
+<span id="cb149-21"><a href="functional-analysis-of-rnaseq-data.html#cb149-21" tabindex="-1"></a>edges<span class="sc">$</span>to <span class="ot">&lt;-</span> <span class="fu">Term</span>(edges<span class="sc">$</span>to)</span>
+<span id="cb149-22"><a href="functional-analysis-of-rnaseq-data.html#cb149-22" tabindex="-1"></a>edges<span class="sc">$</span>from <span class="ot">&lt;-</span> <span class="fu">Term</span>(edges<span class="sc">$</span>from)</span>
+<span id="cb149-23"><a href="functional-analysis-of-rnaseq-data.html#cb149-23" tabindex="-1"></a></span>
+<span id="cb149-24"><a href="functional-analysis-of-rnaseq-data.html#cb149-24" tabindex="-1"></a><span class="fu">head</span>(edges)</span></code></pre></div>
+<pre><code>##                  from                                 to similarity
+## 1    RNA localization  establishment of RNA localization      0.728
+## 2 ribosome biogenesis ribosomal small subunit biogenesis      0.848
+## 3 ribosome biogenesis                  ribosome assembly      0.623
+## 4      nuclear export            RNA export from nucleus      0.616
+## 5      nuclear export                cytosolic transport      0.616
+## 6      nuclear export        protein export from nucleus      0.599</code></pre>
+<p>Now we can create a network plot to visualize the relationships between the enriched GO terms based on their semantic similarity.</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="functional-analysis-of-rnaseq-data.html#cb151-1" tabindex="-1"></a><span class="co"># Create an igraph object from the edges data frame</span></span>
+<span id="cb151-2"><a href="functional-analysis-of-rnaseq-data.html#cb151-2" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb151-3"><a href="functional-analysis-of-rnaseq-data.html#cb151-3" tabindex="-1"></a></span>
+<span id="cb151-4"><a href="functional-analysis-of-rnaseq-data.html#cb151-4" tabindex="-1"></a><span class="co"># Visualize the graph using ggraph</span></span>
+<span id="cb151-5"><a href="functional-analysis-of-rnaseq-data.html#cb151-5" tabindex="-1"></a><span class="fu">ggraph</span>(g, <span class="at">layout =</span> <span class="st">&#39;fr&#39;</span>) <span class="sc">+</span>  <span class="co"># Fruchterman-Reingold layout</span></span>
+<span id="cb151-6"><a href="functional-analysis-of-rnaseq-data.html#cb151-6" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">edge_alpha =</span> <span class="fl">0.5</span>)) <span class="sc">+</span>  <span class="co"># Edges with some transparency</span></span>
+<span id="cb151-7"><a href="functional-analysis-of-rnaseq-data.html#cb151-7" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span>  <span class="co"># Nodes sized uniformly</span></span>
+<span id="cb151-8"><a href="functional-analysis-of-rnaseq-data.html#cb151-8" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">repel =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Node labels</span></span>
+<span id="cb151-9"><a href="functional-analysis-of-rnaseq-data.html#cb151-9" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span>  <span class="co"># Clean theme without axes</span></span>
+<span id="cb151-10"><a href="functional-analysis-of-rnaseq-data.html#cb151-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;GO Terms Semantic Similarity Network&quot;</span>)  <span class="co"># Title for the plot</span></span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-91-1.png" width="672" /></p>
+<p>Edges based can also be defined by Jaccard similarity; defined as the size of the intersection each pair of GO terms divided by the size of their union</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="functional-analysis-of-rnaseq-data.html#cb152-1" tabindex="-1"></a><span class="co"># Define a function to compute Jaccard similarity</span></span>
+<span id="cb152-2"><a href="functional-analysis-of-rnaseq-data.html#cb152-2" tabindex="-1"></a>jaccard_index <span class="ot">&lt;-</span> <span class="cf">function</span>(genes1, genes2) {</span>
+<span id="cb152-3"><a href="functional-analysis-of-rnaseq-data.html#cb152-3" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">intersect</span>(genes1, genes2)) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">union</span>(genes1, genes2))</span>
+<span id="cb152-4"><a href="functional-analysis-of-rnaseq-data.html#cb152-4" tabindex="-1"></a>}</span>
+<span id="cb152-5"><a href="functional-analysis-of-rnaseq-data.html#cb152-5" tabindex="-1"></a></span>
+<span id="cb152-6"><a href="functional-analysis-of-rnaseq-data.html#cb152-6" tabindex="-1"></a><span class="co"># Create an empty data frame to store edges</span></span>
+<span id="cb152-7"><a href="functional-analysis-of-rnaseq-data.html#cb152-7" tabindex="-1"></a>edges <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">from =</span> <span class="fu">character</span>(), <span class="at">to =</span> <span class="fu">character</span>(), </span>
+<span id="cb152-8"><a href="functional-analysis-of-rnaseq-data.html#cb152-8" tabindex="-1"></a>                    <span class="at">similarity =</span> <span class="fu">numeric</span>())</span>
+<span id="cb152-9"><a href="functional-analysis-of-rnaseq-data.html#cb152-9" tabindex="-1"></a>  <span class="co"># Compute Jaccard similarity for each pair of terms</span></span>
+<span id="cb152-10"><a href="functional-analysis-of-rnaseq-data.html#cb152-10" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(term_ids) <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb152-11"><a href="functional-analysis-of-rnaseq-data.html#cb152-11" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> (i <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">length</span>(term_ids)) {</span>
+<span id="cb152-12"><a href="functional-analysis-of-rnaseq-data.html#cb152-12" tabindex="-1"></a>  similarity <span class="ot">&lt;-</span> <span class="fu">jaccard_index</span>(gene_lists[[i]], gene_lists[[j]])</span>
+<span id="cb152-13"><a href="functional-analysis-of-rnaseq-data.html#cb152-13" tabindex="-1"></a>  <span class="cf">if</span> (similarity <span class="sc">&gt;</span> <span class="dv">0</span>) {  <span class="co"># Only keep edges with some overlap</span></span>
+<span id="cb152-14"><a href="functional-analysis-of-rnaseq-data.html#cb152-14" tabindex="-1"></a>  edges <span class="ot">&lt;-</span> <span class="fu">rbind</span>(edges, <span class="fu">data.frame</span>(<span class="at">from =</span> term_ids[i], </span>
+<span id="cb152-15"><a href="functional-analysis-of-rnaseq-data.html#cb152-15" tabindex="-1"></a>                                   <span class="at">to =</span> term_ids[j], </span>
+<span id="cb152-16"><a href="functional-analysis-of-rnaseq-data.html#cb152-16" tabindex="-1"></a>                                   <span class="at">similarity =</span> similarity))</span>
+<span id="cb152-17"><a href="functional-analysis-of-rnaseq-data.html#cb152-17" tabindex="-1"></a>  }}}</span>
+<span id="cb152-18"><a href="functional-analysis-of-rnaseq-data.html#cb152-18" tabindex="-1"></a></span>
+<span id="cb152-19"><a href="functional-analysis-of-rnaseq-data.html#cb152-19" tabindex="-1"></a>edges <span class="ot">&lt;-</span> edges <span class="sc">%&gt;%</span> </span>
+<span id="cb152-20"><a href="functional-analysis-of-rnaseq-data.html#cb152-20" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(similarity <span class="sc">&gt;=</span> <span class="fl">0.5</span>)</span>
+<span id="cb152-21"><a href="functional-analysis-of-rnaseq-data.html#cb152-21" tabindex="-1"></a></span>
+<span id="cb152-22"><a href="functional-analysis-of-rnaseq-data.html#cb152-22" tabindex="-1"></a><span class="co"># Convert term IDs to names</span></span>
+<span id="cb152-23"><a href="functional-analysis-of-rnaseq-data.html#cb152-23" tabindex="-1"></a>edges<span class="sc">$</span>to <span class="ot">&lt;-</span> <span class="fu">Term</span>(edges<span class="sc">$</span>to)</span>
+<span id="cb152-24"><a href="functional-analysis-of-rnaseq-data.html#cb152-24" tabindex="-1"></a>edges<span class="sc">$</span>from <span class="ot">&lt;-</span> <span class="fu">Term</span>(edges<span class="sc">$</span>from)</span></code></pre></div>
+<p>Now we can create a network plot to visualize the relationships between the enriched GO terms based on the Jaccard similarity of their gene lists.</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="functional-analysis-of-rnaseq-data.html#cb153-1" tabindex="-1"></a><span class="co"># Create a graph from the edges</span></span>
+<span id="cb153-2"><a href="functional-analysis-of-rnaseq-data.html#cb153-2" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(edges, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb153-3"><a href="functional-analysis-of-rnaseq-data.html#cb153-3" tabindex="-1"></a></span>
+<span id="cb153-4"><a href="functional-analysis-of-rnaseq-data.html#cb153-4" tabindex="-1"></a><span class="co"># Visualize the graph using ggraph</span></span>
+<span id="cb153-5"><a href="functional-analysis-of-rnaseq-data.html#cb153-5" tabindex="-1"></a><span class="fu">ggraph</span>(g, <span class="at">layout =</span> <span class="st">&#39;fr&#39;</span>) <span class="sc">+</span>  <span class="co"># Fruchterman-Reingold layout</span></span>
+<span id="cb153-6"><a href="functional-analysis-of-rnaseq-data.html#cb153-6" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">edge_alpha =</span> <span class="fl">0.5</span>)) <span class="sc">+</span>  <span class="co"># Edges with some transparency</span></span>
+<span id="cb153-7"><a href="functional-analysis-of-rnaseq-data.html#cb153-7" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="at">size =</span> <span class="dv">5</span>, </span>
+<span id="cb153-8"><a href="functional-analysis-of-rnaseq-data.html#cb153-8" tabindex="-1"></a>                  <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb153-9"><a href="functional-analysis-of-rnaseq-data.html#cb153-9" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), </span>
+<span id="cb153-10"><a href="functional-analysis-of-rnaseq-data.html#cb153-10" tabindex="-1"></a>                 <span class="at">repel =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb153-11"><a href="functional-analysis-of-rnaseq-data.html#cb153-11" tabindex="-1"></a>                 <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>  <span class="co"># Node labels</span></span>
+<span id="cb153-12"><a href="functional-analysis-of-rnaseq-data.html#cb153-12" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span>  <span class="co"># Clean theme without axes</span></span>
+<span id="cb153-13"><a href="functional-analysis-of-rnaseq-data.html#cb153-13" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;GO Terms Jaccard Overlap Network&quot;</span>) </span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-93-1.png" width="672" /></p>
+<p>The resulting network plots shows the relationships between the enriched GO terms based on either Semantic or Jaccard similarity of their gene lists.</p>
+</div>
+</div>
+<div id="visualizing-enrichment-results" class="section level3 hasAnchor" number="8.0.6">
+<h3><span class="header-section-number">8.0.6</span> Visualizing Enrichment Results<a href="functional-analysis-of-rnaseq-data.html#visualizing-enrichment-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Network Plot</strong>:
+The <code>emapplot()</code> function generates a network plot where each node represents an enriched gene set, and edges between nodes indicate the similarity or overlap between those gene sets.</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="functional-analysis-of-rnaseq-data.html#cb154-1" tabindex="-1"></a><span class="co"># Filter to top significant results first</span></span>
+<span id="cb154-2"><a href="functional-analysis-of-rnaseq-data.html#cb154-2" tabindex="-1"></a>ego_filtered <span class="ot">&lt;-</span> ego</span>
+<span id="cb154-3"><a href="functional-analysis-of-rnaseq-data.html#cb154-3" tabindex="-1"></a>ego_filtered<span class="sc">@</span>result <span class="ot">&lt;-</span> ego<span class="sc">@</span>result[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ]  <span class="co"># Take only top 50 results</span></span>
+<span id="cb154-4"><a href="functional-analysis-of-rnaseq-data.html#cb154-4" tabindex="-1"></a></span>
+<span id="cb154-5"><a href="functional-analysis-of-rnaseq-data.html#cb154-5" tabindex="-1"></a><span class="co"># Then create pairwise similarity</span></span>
+<span id="cb154-6"><a href="functional-analysis-of-rnaseq-data.html#cb154-6" tabindex="-1"></a>pwt_filtered <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(ego_filtered, <span class="at">method =</span> <span class="st">&quot;JC&quot;</span>)</span>
+<span id="cb154-7"><a href="functional-analysis-of-rnaseq-data.html#cb154-7" tabindex="-1"></a></span>
+<span id="cb154-8"><a href="functional-analysis-of-rnaseq-data.html#cb154-8" tabindex="-1"></a><span class="co"># Now emapplot should work better</span></span>
+<span id="cb154-9"><a href="functional-analysis-of-rnaseq-data.html#cb154-9" tabindex="-1"></a><span class="fu">emapplot</span>(</span>
+<span id="cb154-10"><a href="functional-analysis-of-rnaseq-data.html#cb154-10" tabindex="-1"></a>  pwt_filtered,</span>
+<span id="cb154-11"><a href="functional-analysis-of-rnaseq-data.html#cb154-11" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">20</span>,</span>
+<span id="cb154-12"><a href="functional-analysis-of-rnaseq-data.html#cb154-12" tabindex="-1"></a>  <span class="at">node_label =</span> <span class="st">&quot;category&quot;</span>,</span>
+<span id="cb154-13"><a href="functional-analysis-of-rnaseq-data.html#cb154-13" tabindex="-1"></a>  <span class="at">layout =</span> <span class="st">&quot;mds&quot;</span></span>
+<span id="cb154-14"><a href="functional-analysis-of-rnaseq-data.html#cb154-14" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb154-15"><a href="functional-analysis-of-rnaseq-data.html#cb154-15" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-94-1.png" width="672" /></p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="functional-analysis-of-rnaseq-data.html#cb155-1" tabindex="-1"></a><span class="fu">cnetplot</span>(pwt_filtered, <span class="at">showCategory =</span> <span class="dv">15</span>,</span>
+<span id="cb155-2"><a href="functional-analysis-of-rnaseq-data.html#cb155-2" tabindex="-1"></a>         <span class="at">categorySize =</span> <span class="st">&quot;pvalue&quot;</span>,</span>
+<span id="cb155-3"><a href="functional-analysis-of-rnaseq-data.html#cb155-3" tabindex="-1"></a>         <span class="at">colorEdge =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb155-4"><a href="functional-analysis-of-rnaseq-data.html#cb155-4" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-94-2.png" width="672" />
+To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.</p>
+<p><strong>cnetplot</strong>: Visualizes connections between genes and top GO terms, highlighting shared pathways.This plot is particularly useful for hypothesis generation in identifying genes that may be important to several of the most affected processes.</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="functional-analysis-of-rnaseq-data.html#cb156-1" tabindex="-1"></a><span class="do">## Extract the foldchanges</span></span>
+<span id="cb156-2"><a href="functional-analysis-of-rnaseq-data.html#cb156-2" tabindex="-1"></a>OE_foldchanges <span class="ot">&lt;-</span> sigOE<span class="sc">$</span>log2FoldChange</span>
+<span id="cb156-3"><a href="functional-analysis-of-rnaseq-data.html#cb156-3" tabindex="-1"></a></span>
+<span id="cb156-4"><a href="functional-analysis-of-rnaseq-data.html#cb156-4" tabindex="-1"></a><span class="fu">names</span>(OE_foldchanges) <span class="ot">&lt;-</span> sigOE<span class="sc">$</span>gene</span>
+<span id="cb156-5"><a href="functional-analysis-of-rnaseq-data.html#cb156-5" tabindex="-1"></a></span>
+<span id="cb156-6"><a href="functional-analysis-of-rnaseq-data.html#cb156-6" tabindex="-1"></a><span class="do">## cnetplot for the top 5 categories</span></span>
+<span id="cb156-7"><a href="functional-analysis-of-rnaseq-data.html#cb156-7" tabindex="-1"></a><span class="fu">cnetplot</span>(ego,</span>
+<span id="cb156-8"><a href="functional-analysis-of-rnaseq-data.html#cb156-8" tabindex="-1"></a>  <span class="at">categorySize=</span><span class="st">&quot;padj&quot;</span>,</span>
+<span id="cb156-9"><a href="functional-analysis-of-rnaseq-data.html#cb156-9" tabindex="-1"></a>  <span class="at">node_label =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb156-10"><a href="functional-analysis-of-rnaseq-data.html#cb156-10" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">5</span>,</span>
+<span id="cb156-11"><a href="functional-analysis-of-rnaseq-data.html#cb156-11" tabindex="-1"></a>  <span class="at">foldChange =</span> OE_foldchanges,</span>
+<span id="cb156-12"><a href="functional-analysis-of-rnaseq-data.html#cb156-12" tabindex="-1"></a>  <span class="at">vertex.label.font =</span> <span class="dv">6</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-95-1.png" width="672" /></p>
+</div>
+<div id="gsea-using-clusterprofiler-and-fgsea" class="section level3 hasAnchor" number="8.0.7">
+<h3><span class="header-section-number">8.0.7</span> GSEA Using clusterProfiler and fgsea<a href="functional-analysis-of-rnaseq-data.html#gsea-using-clusterprofiler-and-fgsea" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Prepare fold changes, sort by expression, and run GSEA with <code>gseGO()</code> for clusterProfiler or <code>fgseaSimple()</code> for <code>fgsea</code>.</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="functional-analysis-of-rnaseq-data.html#cb157-1" tabindex="-1"></a><span class="do">## Extract the foldchanges</span></span>
+<span id="cb157-2"><a href="functional-analysis-of-rnaseq-data.html#cb157-2" tabindex="-1"></a>foldchanges <span class="ot">&lt;-</span> res_tableOE_tb<span class="sc">$</span>log2FoldChange</span>
+<span id="cb157-3"><a href="functional-analysis-of-rnaseq-data.html#cb157-3" tabindex="-1"></a></span>
+<span id="cb157-4"><a href="functional-analysis-of-rnaseq-data.html#cb157-4" tabindex="-1"></a><span class="do">## Name each fold change with the gene name</span></span>
+<span id="cb157-5"><a href="functional-analysis-of-rnaseq-data.html#cb157-5" tabindex="-1"></a><span class="fu">names</span>(foldchanges) <span class="ot">&lt;-</span> res_tableOE_tb<span class="sc">$</span>gene</span>
+<span id="cb157-6"><a href="functional-analysis-of-rnaseq-data.html#cb157-6" tabindex="-1"></a></span>
+<span id="cb157-7"><a href="functional-analysis-of-rnaseq-data.html#cb157-7" tabindex="-1"></a><span class="do">## Sort fold changes in decreasing order</span></span>
+<span id="cb157-8"><a href="functional-analysis-of-rnaseq-data.html#cb157-8" tabindex="-1"></a>foldchanges <span class="ot">&lt;-</span> <span class="fu">sort</span>(foldchanges, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>We can explore the enrichment of BP Gene Ontology terms using gene set enrichment analysis (GSEA) using gene sets associated with BP Gene Ontology terms</p>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="functional-analysis-of-rnaseq-data.html#cb158-1" tabindex="-1"></a>gseaGO <span class="ot">&lt;-</span> clusterProfiler<span class="sc">::</span><span class="fu">gseGO</span>(</span>
+<span id="cb158-2"><a href="functional-analysis-of-rnaseq-data.html#cb158-2" tabindex="-1"></a>  <span class="at">geneList =</span> foldchanges,</span>
+<span id="cb158-3"><a href="functional-analysis-of-rnaseq-data.html#cb158-3" tabindex="-1"></a>  <span class="at">ont =</span> <span class="st">&quot;BP&quot;</span>,</span>
+<span id="cb158-4"><a href="functional-analysis-of-rnaseq-data.html#cb158-4" tabindex="-1"></a>  <span class="at">keyType =</span> <span class="st">&quot;SYMBOL&quot;</span>,</span>
+<span id="cb158-5"><a href="functional-analysis-of-rnaseq-data.html#cb158-5" tabindex="-1"></a>  <span class="at">eps =</span> <span class="dv">0</span>,</span>
+<span id="cb158-6"><a href="functional-analysis-of-rnaseq-data.html#cb158-6" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">20</span>,</span>
+<span id="cb158-7"><a href="functional-analysis-of-rnaseq-data.html#cb158-7" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">300</span>,</span>
+<span id="cb158-8"><a href="functional-analysis-of-rnaseq-data.html#cb158-8" tabindex="-1"></a>  <span class="at">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb158-9"><a href="functional-analysis-of-rnaseq-data.html#cb158-9" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb158-10"><a href="functional-analysis-of-rnaseq-data.html#cb158-10" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb158-11"><a href="functional-analysis-of-rnaseq-data.html#cb158-11" tabindex="-1"></a>  <span class="at">OrgDb =</span> <span class="st">&quot;org.Hs.eg.db&quot;</span>,</span>
+<span id="cb158-12"><a href="functional-analysis-of-rnaseq-data.html#cb158-12" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">&quot;fgsea&quot;</span></span>
+<span id="cb158-13"><a href="functional-analysis-of-rnaseq-data.html#cb158-13" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## using &#39;fgsea&#39; for GSEA analysis, please cite Korotkevich et al (2019).</code></pre>
+<pre><code>## preparing geneSet collections...</code></pre>
+<pre><code>## GSEA analysis...</code></pre>
+<pre><code>## leading edge analysis...</code></pre>
+<pre><code>## done...</code></pre>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="functional-analysis-of-rnaseq-data.html#cb164-1" tabindex="-1"></a>gseaGO_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(gseaGO)</span></code></pre></div>
+</div>
+<div id="visualizing-gsea-results" class="section level3 hasAnchor" number="8.0.8">
+<h3><span class="header-section-number">8.0.8</span> Visualizing GSEA Results<a href="functional-analysis-of-rnaseq-data.html#visualizing-gsea-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Visualize GSEA results with <code>dotplot()</code> for significant categories and <code>gseaplot2()</code> for gene set ranks.</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="functional-analysis-of-rnaseq-data.html#cb165-1" tabindex="-1"></a><span class="fu">dotplot</span>(gseaGO, <span class="at">showCategory =</span> <span class="dv">30</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-98-1.png" width="672" /></p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="functional-analysis-of-rnaseq-data.html#cb166-1" tabindex="-1"></a><span class="fu">gseaplot2</span>(gseaGO, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-98-2.png" width="672" /></p>
+<p>The emapplot clusters the 50 most significant (by padj) GO terms to visualize relationships between terms.</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="functional-analysis-of-rnaseq-data.html#cb167-1" tabindex="-1"></a>gseaGO_filtered <span class="ot">&lt;-</span> gseaGO</span>
+<span id="cb167-2"><a href="functional-analysis-of-rnaseq-data.html#cb167-2" tabindex="-1"></a>gseaGO_filtered<span class="sc">@</span>result <span class="ot">&lt;-</span> gseaGO<span class="sc">@</span>result[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ]  <span class="co"># Top 50 by p.adjust</span></span>
+<span id="cb167-3"><a href="functional-analysis-of-rnaseq-data.html#cb167-3" tabindex="-1"></a></span>
+<span id="cb167-4"><a href="functional-analysis-of-rnaseq-data.html#cb167-4" tabindex="-1"></a><span class="co"># Create pairwise similarity </span></span>
+<span id="cb167-5"><a href="functional-analysis-of-rnaseq-data.html#cb167-5" tabindex="-1"></a>pwt <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(</span>
+<span id="cb167-6"><a href="functional-analysis-of-rnaseq-data.html#cb167-6" tabindex="-1"></a>  gseaGO_filtered,</span>
+<span id="cb167-7"><a href="functional-analysis-of-rnaseq-data.html#cb167-7" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;JC&quot;</span>,</span>
+<span id="cb167-8"><a href="functional-analysis-of-rnaseq-data.html#cb167-8" tabindex="-1"></a>  <span class="at">semData =</span> <span class="cn">NULL</span></span>
+<span id="cb167-9"><a href="functional-analysis-of-rnaseq-data.html#cb167-9" tabindex="-1"></a>)</span>
+<span id="cb167-10"><a href="functional-analysis-of-rnaseq-data.html#cb167-10" tabindex="-1"></a></span>
+<span id="cb167-11"><a href="functional-analysis-of-rnaseq-data.html#cb167-11" tabindex="-1"></a><span class="co"># Use safer emapplot parameters</span></span>
+<span id="cb167-12"><a href="functional-analysis-of-rnaseq-data.html#cb167-12" tabindex="-1"></a><span class="fu">emapplot</span>(pwt, <span class="at">showCategory =</span> <span class="dv">20</span>,     <span class="co"># Reduced from 30</span></span>
+<span id="cb167-13"><a href="functional-analysis-of-rnaseq-data.html#cb167-13" tabindex="-1"></a>         <span class="at">node_label =</span> <span class="st">&quot;category&quot;</span>,    <span class="co"># Changed from &quot;all&quot; </span></span>
+<span id="cb167-14"><a href="functional-analysis-of-rnaseq-data.html#cb167-14" tabindex="-1"></a>         <span class="at">layout =</span> <span class="st">&quot;mds&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb167-15"><a href="functional-analysis-of-rnaseq-data.html#cb167-15" tabindex="-1"></a>         <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-99-1.png" width="672" /></p>
+</div>
+<div id="gsea-using-fgsea" class="section level3 hasAnchor" number="8.0.9">
+<h3><span class="header-section-number">8.0.9</span> GSEA using fgsea<a href="functional-analysis-of-rnaseq-data.html#gsea-using-fgsea" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>GO annotations are updated regularly, and the GO terms associated with genes can change over time. This can lead to inconsistencies in the results of GO enrichment analyses when using different versions of the GO annotations. To address this issue, the <code>GOenrichment</code> package provides <code>hGOBP.gmt</code> a recently downloaded version of <code>BP</code> GO annotations. This file is a list of GO terms and their associated genes, which is used as input for the enrichment analysis.</p>
+<p>To run GSEA using the <code>fgsea</code> package, we need to load the gene sets from the <code>hGOBP.gmt</code> file and the gene-level statistics from the <code>foldchanges</code> vector. We can then run the GSEA analysis using the <code>fgseaSimple</code> function.</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="functional-analysis-of-rnaseq-data.html#cb168-1" tabindex="-1"></a><span class="co"># Let&#39;s look at the hGOBP.gmt file</span></span>
+<span id="cb168-2"><a href="functional-analysis-of-rnaseq-data.html#cb168-2" tabindex="-1"></a>hGOBP.gmt[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## $`MITOCHONDRIAL GENOME MAINTENANCE`
+##  [1] &quot;AKT3&quot;     &quot;CHCHD4&quot;   &quot;DNA2&quot;     &quot;DNAJA3&quot;   &quot;ENDOG&quot;    &quot;FLCN&quot;     &quot;LIG3&quot;     &quot;LONP1&quot;   
+##  [9] &quot;MEF2A&quot;    &quot;METTL4&quot;   &quot;MGME1&quot;    &quot;MPV17&quot;    &quot;OPA1&quot;     &quot;PARP1&quot;    &quot;PIF1&quot;     &quot;POLG&quot;    
+## [17] &quot;POLG2&quot;    &quot;PPARGC1A&quot; &quot;PRIMPOL&quot;  &quot;RRM1&quot;     &quot;RRM2B&quot;    &quot;SESN2&quot;    &quot;SLC25A33&quot; &quot;SLC25A36&quot;
+## [25] &quot;SLC25A4&quot;  &quot;SSBP1&quot;    &quot;STOX1&quot;    &quot;TOP3A&quot;    &quot;TP53&quot;     &quot;TWNK&quot;     &quot;TYMP&quot;</code></pre>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="functional-analysis-of-rnaseq-data.html#cb170-1" tabindex="-1"></a>fgseaRes <span class="ot">&lt;-</span>  fgsea<span class="sc">::</span><span class="fu">fgseaSimple</span>(<span class="at">pathways =</span> hGOBP.gmt, </span>
+<span id="cb170-2"><a href="functional-analysis-of-rnaseq-data.html#cb170-2" tabindex="-1"></a>                                <span class="at">stats =</span> foldchanges, </span>
+<span id="cb170-3"><a href="functional-analysis-of-rnaseq-data.html#cb170-3" tabindex="-1"></a>                                <span class="at">nperm =</span> <span class="dv">1000</span>, <span class="at">maxSize =</span> <span class="dv">300</span>, </span>
+<span id="cb170-4"><a href="functional-analysis-of-rnaseq-data.html#cb170-4" tabindex="-1"></a>                                <span class="at">minSize =</span> <span class="dv">20</span>)</span>
+<span id="cb170-5"><a href="functional-analysis-of-rnaseq-data.html#cb170-5" tabindex="-1"></a></span>
+<span id="cb170-6"><a href="functional-analysis-of-rnaseq-data.html#cb170-6" tabindex="-1"></a>fgsea <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(fgseaRes,<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb170-7"><a href="functional-analysis-of-rnaseq-data.html#cb170-7" tabindex="-1"></a></span>
+<span id="cb170-8"><a href="functional-analysis-of-rnaseq-data.html#cb170-8" tabindex="-1"></a>w <span class="ot">=</span> <span class="fu">which</span>(fgsea<span class="sc">$</span>ES <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb170-9"><a href="functional-analysis-of-rnaseq-data.html#cb170-9" tabindex="-1"></a></span>
+<span id="cb170-10"><a href="functional-analysis-of-rnaseq-data.html#cb170-10" tabindex="-1"></a>fposgsea <span class="ot">&lt;-</span> fgsea[w,]</span>
+<span id="cb170-11"><a href="functional-analysis-of-rnaseq-data.html#cb170-11" tabindex="-1"></a></span>
+<span id="cb170-12"><a href="functional-analysis-of-rnaseq-data.html#cb170-12" tabindex="-1"></a>fposgsea <span class="ot">&lt;-</span> fposgsea <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(padj)</span>
+<span id="cb170-13"><a href="functional-analysis-of-rnaseq-data.html#cb170-13" tabindex="-1"></a></span>
+<span id="cb170-14"><a href="functional-analysis-of-rnaseq-data.html#cb170-14" tabindex="-1"></a><span class="fu">plotEnrichment</span>(hGOBP.gmt[[<span class="st">&quot;EXTRACELLULAR MATRIX ORGANIZATION&quot;</span>]], foldchanges)</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-100-1.png" width="672" />
+The <code>fgseaSimple</code> function returns a list of enriched gene sets and the enrichment score (ES).</p>
+<p>We are going to compare these results to running the GO enrichment function <code>runGORESP</code>.</p>
+<p>Let’s first load the <code>GOenrichment</code> package and check the available functions:</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="functional-analysis-of-rnaseq-data.html#cb171-1" tabindex="-1"></a><span class="co"># Uncomment the following if you haven&#39;t yet installed GOenrichment.</span></span>
+<span id="cb171-2"><a href="functional-analysis-of-rnaseq-data.html#cb171-2" tabindex="-1"></a></span>
+<span id="cb171-3"><a href="functional-analysis-of-rnaseq-data.html#cb171-3" tabindex="-1"></a><span class="co"># devtools::install_github(&quot;gurinina/GOenrichment&quot;)</span></span>
+<span id="cb171-4"><a href="functional-analysis-of-rnaseq-data.html#cb171-4" tabindex="-1"></a></span>
+<span id="cb171-5"><a href="functional-analysis-of-rnaseq-data.html#cb171-5" tabindex="-1"></a><span class="fu">library</span>(GOenrichment)</span>
+<span id="cb171-6"><a href="functional-analysis-of-rnaseq-data.html#cb171-6" tabindex="-1"></a></span>
+<span id="cb171-7"><a href="functional-analysis-of-rnaseq-data.html#cb171-7" tabindex="-1"></a><span class="fu">ls</span>(<span class="st">&quot;package:GOenrichment&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;compSCORE&quot;  &quot;hGOBP.gmt&quot;  &quot;hyperG&quot;     &quot;runGORESP&quot;  &quot;runNetwork&quot; &quot;visSetup&quot;</code></pre>
+</div>
+<div id="goenrichment-package-analysis" class="section level3 hasAnchor" number="8.0.10">
+<h3><span class="header-section-number">8.0.10</span> <code>GOenrichment</code> Package Analysis<a href="functional-analysis-of-rnaseq-data.html#goenrichment-package-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>runGORESP</code> uses over-representation analysis to identify enriched GO terms and returns two <code>data.frames</code>; of enriched GO terms (nodes) and GO term relationships (edges).</p>
+<p><code>compSCORE</code>evaluates a matrix of fitness scores to identify the <code>querySet</code> with scores above a specified significance threshold.</p>
+<p>We’ll use a significance cutoff of 0.58, corresponding to a 1.5x change in expression.</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="functional-analysis-of-rnaseq-data.html#cb173-1" tabindex="-1"></a><span class="fu">args</span>(runGORESP)</span></code></pre></div>
+<pre><code>## function (scoreMat, curr_exp = &quot;test&quot;, fdrThresh = 0.2, bp_path = NULL, 
+##     bp_input = NULL, go_path = NULL, go_input = NULL, minSetSize = 5, 
+##     maxSetSize = 300) 
+## NULL</code></pre>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="functional-analysis-of-rnaseq-data.html#cb175-1" tabindex="-1"></a><span class="co"># ?runGORESP</span></span>
+<span id="cb175-2"><a href="functional-analysis-of-rnaseq-data.html#cb175-2" tabindex="-1"></a></span>
+<span id="cb175-3"><a href="functional-analysis-of-rnaseq-data.html#cb175-3" tabindex="-1"></a><span class="co"># Define the query set</span></span>
+<span id="cb175-4"><a href="functional-analysis-of-rnaseq-data.html#cb175-4" tabindex="-1"></a>matx <span class="ot">&lt;-</span> <span class="fu">cbind</span>(foldchanges,foldchanges)</span>
+<span id="cb175-5"><a href="functional-analysis-of-rnaseq-data.html#cb175-5" tabindex="-1"></a></span>
+<span id="cb175-6"><a href="functional-analysis-of-rnaseq-data.html#cb175-6" tabindex="-1"></a>scoreMat <span class="ot">=</span> <span class="fu">compSCORE</span>(matx, <span class="at">coln =</span> <span class="dv">1</span>, <span class="at">sig =</span>  <span class="fl">0.58</span>)</span>
+<span id="cb175-7"><a href="functional-analysis-of-rnaseq-data.html#cb175-7" tabindex="-1"></a></span>
+<span id="cb175-8"><a href="functional-analysis-of-rnaseq-data.html#cb175-8" tabindex="-1"></a><span class="fu">head</span>(scoreMat)</span></code></pre></div>
+<pre><code>##          index    score     gene
+## HSPA6        1 6.246267    HSPA6
+## MOV10        1 5.079630    MOV10
+## ASCL1        1 4.441203    ASCL1
+## HSPA7        1 3.637040    HSPA7
+## SCRT1        1 2.925440    SCRT1
+## SIGLEC14     1 2.615129 SIGLEC14</code></pre>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="functional-analysis-of-rnaseq-data.html#cb177-1" tabindex="-1"></a>hresp <span class="ot">=</span> <span class="fu">runGORESP</span>(<span class="at">fdrThresh =</span> <span class="fl">0.2</span>, <span class="at">scoreMat =</span> scoreMat,</span>
+<span id="cb177-2"><a href="functional-analysis-of-rnaseq-data.html#cb177-2" tabindex="-1"></a>  <span class="at">bp_input =</span> hGOBP.gmt, <span class="at">go_input =</span> <span class="cn">NULL</span>, <span class="at">minSetSize =</span> <span class="dv">20</span>,</span>
+<span id="cb177-3"><a href="functional-analysis-of-rnaseq-data.html#cb177-3" tabindex="-1"></a>  <span class="at">maxSetSize =</span> <span class="dv">300</span>)</span>
+<span id="cb177-4"><a href="functional-analysis-of-rnaseq-data.html#cb177-4" tabindex="-1"></a></span>
+<span id="cb177-5"><a href="functional-analysis-of-rnaseq-data.html#cb177-5" tabindex="-1"></a><span class="fu">names</span>(hresp<span class="sc">$</span>edgeMat)</span></code></pre></div>
+<pre><code>## [1] &quot;source&quot;       &quot;target&quot;       &quot;overlapCoeff&quot; &quot;width&quot;        &quot;label&quot;</code></pre>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="functional-analysis-of-rnaseq-data.html#cb179-1" tabindex="-1"></a><span class="fu">names</span>(hresp<span class="sc">$</span>enrichInfo)</span></code></pre></div>
+<pre><code>##  [1] &quot;filename&quot;            &quot;term&quot;                &quot;nGenes&quot;              &quot;nQuery&quot;             
+##  [5] &quot;nOverlap&quot;            &quot;querySetFraction&quot;    &quot;geneSetFraction&quot;     &quot;foldEnrichment&quot;     
+##  [9] &quot;P&quot;                   &quot;FDR&quot;                 &quot;overlapGenes&quot;        &quot;maxOverlapGeneScore&quot;
+## [13] &quot;cluster&quot;             &quot;id&quot;                  &quot;size&quot;                &quot;formattedLabel&quot;</code></pre>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="functional-analysis-of-rnaseq-data.html#cb181-1" tabindex="-1"></a><span class="fu">head</span>(hresp<span class="sc">$</span>enrichInfo[,<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">10</span>)])</span></code></pre></div>
+<pre><code>##                                            term nGenes nQuery nOverlap      FDR
+## 1             EXTRACELLULAR MATRIX ORGANIZATION    293    722       39 5.35e-09
+## 2          EXTRACELLULAR STRUCTURE ORGANIZATION    294    724       39 5.35e-09
+## 3 EXTERNAL ENCAPSULATING STRUCTURE ORGANIZATION    294    724       39 5.35e-09
+## 4                             PROTEIN REFOLDING     27    727        8 3.75e-03
+## 5         REGULATION OF VASCULATURE DEVELOPMENT    273    739       25 2.23e-02
+## 6            CELL ADHESION MEDIATED BY INTEGRIN     82    748       12 2.45e-02</code></pre>
+<p>Let’s check the overlap between the enriched terms found using <code>runGORESP</code> and those found using <code>fgseaSimple</code> as they used the same GO term libraries:</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="functional-analysis-of-rnaseq-data.html#cb183-1" tabindex="-1"></a>w <span class="ot">=</span> <span class="fu">which</span>(fposgsea<span class="sc">$</span>padj <span class="sc">&lt;=</span> <span class="fl">0.2</span>)</span>
+<span id="cb183-2"><a href="functional-analysis-of-rnaseq-data.html#cb183-2" tabindex="-1"></a></span>
+<span id="cb183-3"><a href="functional-analysis-of-rnaseq-data.html#cb183-3" tabindex="-1"></a>lens <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">intersect</span>(fposgsea<span class="sc">$</span>pathway[w],hresp<span class="sc">$</span>enrichInfo<span class="sc">$</span>term))</span>
+<span id="cb183-4"><a href="functional-analysis-of-rnaseq-data.html#cb183-4" tabindex="-1"></a></span>
+<span id="cb183-5"><a href="functional-analysis-of-rnaseq-data.html#cb183-5" tabindex="-1"></a><span class="fu">length</span>(w)</span></code></pre></div>
+<pre><code>## [1] 484</code></pre>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="functional-analysis-of-rnaseq-data.html#cb185-1" tabindex="-1"></a><span class="fu">dim</span>(hresp<span class="sc">$</span>enrichInfo)</span></code></pre></div>
+<pre><code>## [1] 57 16</code></pre>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="functional-analysis-of-rnaseq-data.html#cb187-1" tabindex="-1"></a>percent_overlap <span class="ot">&lt;-</span> lens<span class="sc">/</span><span class="fu">nrow</span>(hresp<span class="sc">$</span>enrichInfo)<span class="sc">*</span><span class="dv">100</span></span>
+<span id="cb187-2"><a href="functional-analysis-of-rnaseq-data.html#cb187-2" tabindex="-1"></a></span>
+<span id="cb187-3"><a href="functional-analysis-of-rnaseq-data.html#cb187-3" tabindex="-1"></a>percent_overlap</span></code></pre></div>
+<pre><code>## [1] 75.4386</code></pre>
+<p>80%, that’s very good because we are using two different GO enrichment methods, over-representation analysis and GSEA.</p>
+<p>We can visualize the results of the GO enrichment analysis using the <code>visNetwork</code> package. This package allows us to create interactive network visualizations.</p>
+<p>The equivalent function in the <code>GOenrichment</code> package is <code>runNetwork</code>:</p>
+<p>We use the<code>visSetup</code> function to prepare the data for network visualization. We then run the <code>runNetwork</code> function to generate the interactive network plot.</p>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="functional-analysis-of-rnaseq-data.html#cb189-1" tabindex="-1"></a>vis <span class="ot">=</span> <span class="fu">visSetup</span>(hresp<span class="sc">$</span>enrichInfo,hresp<span class="sc">$</span>edgeMat)</span>
+<span id="cb189-2"><a href="functional-analysis-of-rnaseq-data.html#cb189-2" tabindex="-1"></a>GOenrichment<span class="sc">::</span><span class="fu">runNetwork</span>(vis<span class="sc">$</span>nodes, vis<span class="sc">$</span>edges, <span class="at">main =</span> <span class="st">&quot;MOV10 Overexpression GO Enrichment&quot;</span>)</span></code></pre></div>
+<div id="htmlwidget-856b494b604d8f0ad866" style="width:100%;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-856b494b604d8f0ad866">{"x":{"nodes":{"id":["2","3","1","4","5","7","6","8","9","10","12","11","13","14","15","16","17","18","20","19","21","22","23","24","27","26","25","28","29","31","30","32","36","39","35","41","37","45","38","34","43","44","40","33","46","42","48","54","47","49","52","51","50","53","57","56","55"],"filename":["test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test","test"],"term":["EXTRACELLULAR STRUCTURE ORGANIZATION","EXTERNAL ENCAPSULATING STRUCTURE ORGANIZATION","EXTRACELLULAR MATRIX ORGANIZATION","PROTEIN REFOLDING","REGULATION OF VASCULATURE DEVELOPMENT","RESPONSE TO GLUCOCORTICOID","CELL ADHESION MEDIATED BY INTEGRIN","REGULATION OF ANGIOGENESIS","RESPONSE TO CORTICOSTEROID","RESPONSE TO TOPOLOGICALLY INCORRECT PROTEIN","REGULATION OF ENDOPLASMIC RETICULUM STRESS-INDUCED INTRINSIC APOPTOTIC SIGNALING PATHWAY","RESPONSE TO UNFOLDED PROTEIN","INTRINSIC APOPTOTIC SIGNALING PATHWAY","REGULATION OF DOPAMINE SECRETION","CELLULAR RESPONSE TO CORTICOSTEROID STIMULUS","REGULATION OF CATECHOLAMINE SECRETION","CELLULAR RESPONSE TO GLUCOCORTICOID STIMULUS","BASEMENT MEMBRANE ORGANIZATION","DOPAMINE SECRETION","'DE NOVO' PROTEIN FOLDING","RESPONSE TO DEXAMETHASONE","INTRINSIC APOPTOTIC SIGNALING PATHWAY BY P53 CLASS MEDIATOR","CATECHOLAMINE SECRETION","REGULATION OF EXTRINSIC APOPTOTIC SIGNALING PATHWAY IN ABSENCE OF LIGAND","POSITIVE REGULATION OF VASCULATURE DEVELOPMENT","CHAPERONE COFACTOR-DEPENDENT PROTEIN REFOLDING","OVULATION CYCLE","VASCULAR ENDOTHELIAL GROWTH FACTOR SIGNALING PATHWAY","POSITIVE REGULATION OF DENDRITE EXTENSION","POSTSYNAPTIC SPECIALIZATION ORGANIZATION","INTEGRIN-MEDIATED SIGNALING PATHWAY","REGULATION OF INTRINSIC APOPTOTIC SIGNALING PATHWAY","ANIMAL ORGAN REGENERATION","NEUROMUSCULAR PROCESS CONTROLLING BALANCE","CALCIUM-ION REGULATED EXOCYTOSIS","INTRINSIC APOPTOTIC SIGNALING PATHWAY IN RESPONSE TO ENDOPLASMIC RETICULUM STRESS","CELLULAR RESPONSE TO VASCULAR ENDOTHELIAL GROWTH FACTOR STIMULUS","EXTRINSIC APOPTOTIC SIGNALING PATHWAY IN ABSENCE OF LIGAND","POSITIVE REGULATION OF ANGIOGENESIS","CELL-MATRIX ADHESION","CELLULAR RESPONSE TO DEXAMETHASONE STIMULUS","NEPHRON DEVELOPMENT","'DE NOVO' POST-TRANSLATIONAL PROTEIN FOLDING","POLYSACCHARIDE METABOLIC PROCESS","REGULATION OF DENDRITE EXTENSION","CELLULAR RESPONSE TO CAMP","POSITIVE REGULATION OF EPITHELIAL CELL PROLIFERATION","REGULATION OF RESPONSE TO ENDOPLASMIC RETICULUM STRESS","SIGNAL TRANSDUCTION IN ABSENCE OF LIGAND","AMINO SUGAR METABOLIC PROCESS","REGULATION OF BLOOD CIRCULATION","CELLULAR RESPONSE TO TOPOLOGICALLY INCORRECT PROTEIN","RESPONSE TO TEMPERATURE STIMULUS","REGULATION OF SPROUTING ANGIOGENESIS","POSTSYNAPTIC DENSITY ORGANIZATION","REGULATION OF HEART RATE BY CARDIAC CONDUCTION","DOPAMINE TRANSPORT"],"nGenes":[294,294,293,27,273,121,82,267,142,142,30,129,287,34,57,47,48,37,39,39,40,78,53,41,159,31,68,43,22,45,101,165,61,47,60,60,62,61,156,227,25,151,35,90,25,48,193,78,63,38,232,94,160,38,39,39,52],"nQuery":[724,724,722,727,739,714,748,728,729,729,699,713,731,700,750,726,729,699,698,698,700,713,728,701,712,752,748,701,713,702,734,715,726,700,725,725,727,726,739,717,714,739,748,714,714,701,728,748,727,750,724,712,741,750,751,751,702],"nOverlap":[39,39,39,8,25,15,12,24,16,16,7,15,24,7,9,8,8,7,7,7,7,10,8,7,15,6,9,7,5,7,11,15,8,7,8,8,8,8,14,18,5,14,6,10,5,7,16,9,8,6,18,10,14,6,6,6,7],"querySetFraction":[5.4,5.4,5.4,1.1,3.4,2.1,1.6,3.3,2.2,2.2,1,2.1,3.3,1,1.2,1.1,1.1,1,1,1,1,1.4,1.1,1,2.1,0.8,1.2,1,0.7,1,1.5,2.1,1.1,1,1.1,1.1,1.1,1.1,1.9,2.5,0.7,1.9,0.8,1.4,0.7,1,2.2,1.2,1.1,0.8,2.5,1.4,1.9,0.8,0.8,0.8,1],"geneSetFraction":[13.3,13.3,13.3,29.6,9.199999999999999,12.4,14.6,9,11.3,11.3,23.3,11.6,8.4,20.6,15.8,17,16.7,18.9,17.9,17.9,17.5,12.8,15.1,17.1,9.4,19.4,13.2,16.3,22.7,15.6,10.9,9.1,13.1,14.9,13.3,13.3,12.9,13.1,9,7.9,20,9.300000000000001,17.1,11.1,20,14.6,8.300000000000001,11.5,12.7,15.8,7.8,10.6,8.800000000000001,15.8,15.4,15.4,13.5],"foldEnrichment":[3.6,3.6,3.61,8.039999999999999,2.48,3.36,3.97,2.44,3.06,3.06,6.33,3.15,2.27,5.58,4.28,4.62,4.52,5.13,4.87,4.87,4.75,3.48,4.09,4.63,2.56,5.25,3.59,4.42,6.17,4.22,2.95,2.47,3.56,4.04,3.62,3.62,3.5,3.56,2.43,2.15,5.43,2.52,4.65,3.01,5.43,3.96,2.25,3.13,3.44,4.28,2.1,2.89,2.37,4.28,4.17,4.17,3.65],"P":[4.19e-12,4.19e-12,3.76e-12,3.91e-06,2.91e-05,3.92e-05,4.47e-05,5.63e-05,7.109999999999999e-05,7.109999999999999e-05,8.720000000000001e-05,8.279999999999999e-05,0.000172,0.000203,0.00022,0.000289,0.000335,0.000352,0.000494,0.000494,0.00058,0.00057,0.00067,0.000677,0.0008140000000000001,0.000822,0.000843,0.00091,0.00105,0.0012,0.00124,0.00119,0.00172,0.00156,0.00154,0.00154,0.00191,0.00172,0.00193,0.00195,0.00193,0.00142,0.0016,0.00175,0.00193,0.00177,0.00217,0.00225,0.00212,0.00248,0.00247,0.00242,0.00244,0.00248,0.00284,0.00284,0.00284],"overlapGenes":["COL23A1(1.73)|OLFML2A(1.43)|ADAMTS7(1.28)|MMP28(1.25)|COL5A1(1.16)|ADAMTS2(1.13)|DPP4(1.07)|COL13A1(1.05)|ADAMTS1(1.03)|CREB3L1(1.01)|ADAMTSL3(1)|RECK(1)|ADAMTS10(0.98)|COL3A1(0.94)|LAMC1(0.93)|EGFLAM(0.91)|HAPLN2(0.89)|CSGALNACT1(0.87)|SMOC2(0.86)|MATN3(0.84)|COL2A1(0.83)|SULF1(0.82)|MMP2(0.82)|ITGA8(0.81)|THSD4(0.81)|PAPLN(0.77)|NTN4(0.77)|LAMA1(0.76)|ABI3BP(0.75)|NID2(0.73)|LAMB1(0.71)|RAMP2(0.7)|LUM(0.7)|ADAMTSL4(0.68)|NPNT(0.67)|KAZALD1(0.63)|SLC2A10(0.62)|ADAMTS4(0.62)|PDGFRA(0.58)","COL23A1(1.73)|OLFML2A(1.43)|ADAMTS7(1.28)|MMP28(1.25)|COL5A1(1.16)|ADAMTS2(1.13)|DPP4(1.07)|COL13A1(1.05)|ADAMTS1(1.03)|CREB3L1(1.01)|ADAMTSL3(1)|RECK(1)|ADAMTS10(0.98)|COL3A1(0.94)|LAMC1(0.93)|EGFLAM(0.91)|HAPLN2(0.89)|CSGALNACT1(0.87)|SMOC2(0.86)|MATN3(0.84)|COL2A1(0.83)|SULF1(0.82)|MMP2(0.82)|ITGA8(0.81)|THSD4(0.81)|PAPLN(0.77)|NTN4(0.77)|LAMA1(0.76)|ABI3BP(0.75)|NID2(0.73)|LAMB1(0.71)|RAMP2(0.7)|LUM(0.7)|ADAMTSL4(0.68)|NPNT(0.67)|KAZALD1(0.63)|SLC2A10(0.62)|ADAMTS4(0.62)|PDGFRA(0.58)","COL23A1(1.73)|OLFML2A(1.43)|ADAMTS7(1.28)|MMP28(1.25)|COL5A1(1.16)|ADAMTS2(1.13)|DPP4(1.07)|COL13A1(1.05)|ADAMTS1(1.03)|CREB3L1(1.01)|ADAMTSL3(1)|RECK(1)|ADAMTS10(0.98)|COL3A1(0.94)|LAMC1(0.93)|EGFLAM(0.91)|HAPLN2(0.89)|CSGALNACT1(0.87)|SMOC2(0.86)|MATN3(0.84)|COL2A1(0.83)|SULF1(0.82)|MMP2(0.82)|ITGA8(0.81)|THSD4(0.81)|PAPLN(0.77)|NTN4(0.77)|LAMA1(0.76)|ABI3BP(0.75)|NID2(0.73)|LAMB1(0.71)|RAMP2(0.7)|LUM(0.7)|ADAMTSL4(0.68)|NPNT(0.67)|KAZALD1(0.63)|SLC2A10(0.62)|ADAMTS4(0.62)|PDGFRA(0.58)","HSPA6(6.25)|HSPA7(3.64)|CRYAB(1.65)|HSPA1A(0.89)|HSPB1(0.85)|HSPA1B(0.82)|HSPA1L(0.72)|FKBP1B(0.59)","ALOX5(1.42)|MDK(1.32)|PLK2(1.04)|ADAMTS1(1.03)|HSPG2(1.02)|CREB3L1(1.01)|RECK(1)|PLXND1(0.91)|RAPGEF3(0.9)|CXCL12(0.88)|FUT1(0.86)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|ADM2(0.82)|SULF1(0.82)|ITGA5(0.78)|TSPAN18(0.78)|RRAS(0.77)|DLL1(0.74)|ZC3H12A(0.72)|EFNA1(0.71)|RAMP2(0.7)|AQP1(0.68)|XBP1(0.61)","IGFBP7(1.45)|SLIT3(1.41)|PCK1(1.32)|PAPPA(1.22)|EGFR(1.09)|ZFP36L1(0.93)|ACE(0.93)|CDKN1A(0.81)|FOSL1(0.79)|DDIT4(0.72)|SSTR2(0.68)|AQP1(0.68)|PDX1(0.68)|ZFP36(0.68)|ASS1(0.62)","ITGA11(1.35)|PLAU(1.1)|DPP4(1.07)|SNAI2(0.84)|LPXN(0.82)|ITGA8(0.81)|ITGA5(0.78)|EFNA1(0.71)|EPHA8(0.68)|NPNT(0.67)|ITGA9(0.64)|ITGA4(0.64)","ALOX5(1.42)|MDK(1.32)|PLK2(1.04)|ADAMTS1(1.03)|HSPG2(1.02)|CREB3L1(1.01)|RECK(1)|PLXND1(0.91)|RAPGEF3(0.9)|FUT1(0.86)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|ADM2(0.82)|SULF1(0.82)|ITGA5(0.78)|TSPAN18(0.78)|RRAS(0.77)|DLL1(0.74)|ZC3H12A(0.72)|EFNA1(0.71)|RAMP2(0.7)|AQP1(0.68)|XBP1(0.61)","IGFBP7(1.45)|SLIT3(1.41)|PCK1(1.32)|PAPPA(1.22)|EGFR(1.09)|ZFP36L1(0.93)|ACE(0.93)|CDKN1A(0.81)|FOSL1(0.79)|DDIT4(0.72)|SSTR2(0.68)|AQP1(0.68)|PDX1(0.68)|ZFP36(0.68)|ASS1(0.62)|INHBA(0.59)","HSPA6(6.25)|CREB3L1(1.01)|CHAC1(0.92)|CTH(0.9)|HSPA1A(0.89)|HSPB1(0.85)|HSPB8(0.84)|DNAJB1(0.8)|HERPUD1(0.73)|HSPA1L(0.72)|ATF3(0.71)|CREB3L2(0.7)|EIF2AK3(0.66)|KLHL15(0.64)|CCND1(0.61)|XBP1(0.61)","CREB3L1(1.01)|HSPA1A(0.89)|HERPUD1(0.73)|PDX1(0.68)|EIF2AK3(0.66)|XBP1(0.61)|PMAIP1(0.59)","HSPA6(6.25)|CREB3L1(1.01)|CHAC1(0.92)|CTH(0.9)|HSPA1A(0.89)|HSPB1(0.85)|HSPB8(0.84)|DNAJB1(0.8)|HERPUD1(0.73)|HSPA1L(0.72)|ATF3(0.71)|CREB3L2(0.7)|EIF2AK3(0.66)|CCND1(0.61)|XBP1(0.61)","POU4F2(1.83)|BDKRB2(1.02)|CREB3L1(1.01)|CD44(0.94)|NUPR1(0.92)|CHAC1(0.92)|HSPA1A(0.89)|CXCL12(0.88)|HSPB1(0.85)|SNAI2(0.84)|MMP2(0.82)|CDKN1A(0.81)|CD24(0.81)|HERPUD1(0.73)|FHIT(0.72)|DDIT4(0.72)|RPS27L(0.69)|PDX1(0.68)|IER3(0.67)|ADCY10(0.66)|DYRK2(0.66)|EIF2AK3(0.66)|XBP1(0.61)|PMAIP1(0.59)","GDNF(1.33)|SYT2(0.94)|SYT17(0.94)|CXCL12(0.88)|SYT4(0.83)|SNCG(0.8)|SYT6(0.74)","PCK1(1.32)|EGFR(1.09)|ZFP36L1(0.93)|ACE(0.93)|DDIT4(0.72)|SSTR2(0.68)|AQP1(0.68)|ZFP36(0.68)|ASS1(0.62)","HRH3(2.52)|GDNF(1.33)|SYT2(0.94)|SYT17(0.94)|CXCL12(0.88)|SYT4(0.83)|SNCG(0.8)|SYT6(0.74)","PCK1(1.32)|EGFR(1.09)|ZFP36L1(0.93)|DDIT4(0.72)|SSTR2(0.68)|AQP1(0.68)|ZFP36(0.68)|ASS1(0.62)","COL3A1(0.94)|LAMC1(0.93)|NTN4(0.77)|LAMA1(0.76)|NID2(0.73)|LAMB1(0.71)|RAMP2(0.7)","GDNF(1.33)|SYT2(0.94)|SYT17(0.94)|CXCL12(0.88)|SYT4(0.83)|SNCG(0.8)|SYT6(0.74)","HSPA6(6.25)|HSPA7(3.64)|HSPA1A(0.89)|HSPA1B(0.82)|DNAJB1(0.8)|HSPA1L(0.72)|FKBP1B(0.59)","PCK1(1.32)|PAPPA(1.22)|EGFR(1.09)|ACE(0.93)|DDIT4(0.72)|AQP1(0.68)|ASS1(0.62)","POU4F2(1.83)|BDKRB2(1.02)|CD44(0.94)|NUPR1(0.92)|CDKN1A(0.81)|FHIT(0.72)|DDIT4(0.72)|RPS27L(0.69)|DYRK2(0.66)|PMAIP1(0.59)","HRH3(2.52)|GDNF(1.33)|SYT2(0.94)|SYT17(0.94)|CXCL12(0.88)|SYT4(0.83)|SNCG(0.8)|SYT6(0.74)","GDNF(1.33)|SRPX(0.96)|HSPA1A(0.89)|SNAI2(0.84)|COL2A1(0.83)|HSPA1B(0.82)|INHBA(0.59)","MDK(1.32)|RAPGEF3(0.9)|CXCL12(0.88)|FUT1(0.86)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|ADM2(0.82)|ITGA5(0.78)|RRAS(0.77)|DLL1(0.74)|ZC3H12A(0.72)|RAMP2(0.7)|AQP1(0.68)|XBP1(0.61)","HSPA6(6.25)|HSPA7(3.64)|HSPA1A(0.89)|HSPA1B(0.82)|DNAJB1(0.8)|HSPA1L(0.72)","SLIT3(1.41)|MDK(1.32)|EGFR(1.09)|ADAMTS1(1.03)|CA12(0.87)|MMP2(0.82)|NHLH2(0.78)|INHBA(0.59)|PDGFRA(0.58)","PTP4A3(0.89)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|DLL1(0.74)|IL12A(0.58)|PDGFRA(0.58)","SYT2(0.94)|SYT17(0.94)|RIMS2(0.93)|RASAL1(0.91)|SYT4(0.83)","SHANK1(1.46)|LRRTM2(1.25)|NTNG2(0.93)|LRRC4B(0.86)|SHANK2(0.75)|NPTX1(0.67)|CNTNAP1(0.64)","ITGA11(1.35)|ADAMTS1(1.03)|COL3A1(0.94)|LAMC1(0.93)|ITGA8(0.81)|ITGA5(0.78)|LAMA1(0.76)|LAMB1(0.71)|ITGA9(0.64)|ITGA4(0.64)|SLC2A10(0.62)","BDKRB2(1.02)|CREB3L1(1.01)|CD44(0.94)|NUPR1(0.92)|HSPA1A(0.89)|CXCL12(0.88)|HSPB1(0.85)|SNAI2(0.84)|MMP2(0.82)|HERPUD1(0.73)|PDX1(0.68)|ADCY10(0.66)|EIF2AK3(0.66)|XBP1(0.61)|PMAIP1(0.59)","EGFR(1.09)|HSPG2(1.02)|ACE(0.93)|CXCL12(0.88)|CDKN1A(0.81)|PDX1(0.68)|CCND1(0.61)|GLI1(0.61)","POU4F2(1.83)|USH1C(1.56)|SHANK1(1.46)|CDH23(1.39)|PDE8B(0.77)|ALDH1A3(0.64)|CNTNAP1(0.64)","SNAP25(1.99)|SYT2(0.94)|SYT17(0.94)|RIMS2(0.93)|SYT4(0.83)|TSPAN18(0.78)|SYT6(0.74)|SCIN(0.61)","CREB3L1(1.01)|CHAC1(0.92)|HSPA1A(0.89)|HERPUD1(0.73)|PDX1(0.68)|EIF2AK3(0.66)|XBP1(0.61)|PMAIP1(0.59)","PTP4A3(0.89)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|DLL1(0.74)|RAMP2(0.7)|IL12A(0.58)|PDGFRA(0.58)","GDNF(1.33)|SRPX(0.96)|HSPA1A(0.89)|SNAI2(0.84)|COL2A1(0.83)|HSPA1B(0.82)|ERBB3(0.66)|INHBA(0.59)","MDK(1.32)|RAPGEF3(0.9)|FUT1(0.86)|SMOC2(0.86)|HSPB1(0.85)|PGF(0.84)|ADM2(0.82)|ITGA5(0.78)|RRAS(0.77)|DLL1(0.74)|ZC3H12A(0.72)|RAMP2(0.7)|AQP1(0.68)|XBP1(0.61)","ITGA11(1.35)|PLAU(1.1)|COL13A1(1.05)|COL3A1(0.94)|CD44(0.94)|STON1(0.93)|FUT1(0.86)|SNED1(0.86)|ITGA8(0.81)|BCAM(0.78)|ITGA5(0.78)|RRAS(0.77)|NID2(0.73)|NPNT(0.67)|THBS3(0.65)|ITGA9(0.64)|ITGA4(0.64)|CORO2B(0.63)","PCK1(1.32)|EGFR(1.09)|DDIT4(0.72)|AQP1(0.68)|ASS1(0.62)","FOXJ1(2.31)|DCHS1(1.37)|GDNF(1.33)|TMEM59L(0.82)|SULF1(0.82)|CD24(0.81)|NOTCH3(0.78)|DLL1(0.74)|HES5(0.7)|AQP1(0.68)|NPNT(0.67)|MAGI2(0.65)|PLCE1(0.64)|PDGFRA(0.58)","HSPA6(6.25)|HSPA7(3.64)|HSPA1A(0.89)|HSPA1B(0.82)|DNAJB1(0.8)|HSPA1L(0.72)","NR1D1(1.59)|PPP1R3C(1.25)|CSGALNACT1(0.87)|PHLDA2(0.85)|STBD1(0.73)|CHST1(0.71)|ADCY10(0.66)|DYRK2(0.66)|CHST7(0.63)|PYGL(0.59)","SYT2(0.94)|SYT17(0.94)|RIMS2(0.93)|RASAL1(0.91)|SYT4(0.83)","PCK1(1.32)|KCNQ1(1.28)|ZFP36L1(0.93)|RAPGEF3(0.9)|IGFBP5(0.7)|AQP1(0.68)|ASS1(0.62)","NOD2(1.4)|SCG2(1.38)|MDK(1.32)|EGFR(1.09)|HSPG2(1.02)|LAMC1(0.93)|NEAT1(0.92)|CXCL12(0.88)|PGF(0.84)|CDH3(0.72)|LAMB1(0.71)|PDX1(0.68)|ITGA4(0.64)|CCND1(0.61)|EGFL7(0.61)|XBP1(0.61)","ALOX5(1.42)|CREB3L1(1.01)|NUPR1(0.92)|HSPA1A(0.89)|HERPUD1(0.73)|PDX1(0.68)|EIF2AK3(0.66)|XBP1(0.61)|PMAIP1(0.59)","GDNF(1.33)|SRPX(0.96)|HSPA1A(0.89)|SNAI2(0.84)|COL2A1(0.83)|HSPA1B(0.82)|ERBB3(0.66)|INHBA(0.59)","CSGALNACT1(0.87)|MGAT3(0.81)|CHST1(0.71)|CHST7(0.63)|ST3GAL1(0.62)|CHST6(0.61)","KCNQ1(1.28)|EGFR(1.09)|BDKRB2(1.02)|ACE(0.93)|CACNA1G(0.9)|ADM2(0.82)|MMP2(0.82)|ATP1B2(0.79)|ZC3H12A(0.72)|SCN1B(0.67)|ADCY10(0.66)|ITGA9(0.64)|ITGA4(0.64)|CACNA1H(0.61)|CACNA1C(0.6)|FKBP1B(0.59)|KCNJ2(0.59)|KCNIP2(0.58)","CREB3L1(1.01)|CTH(0.9)|HSPA1A(0.89)|HSPB8(0.84)|HERPUD1(0.73)|ATF3(0.71)|EIF2AK3(0.66)|KLHL15(0.64)|CCND1(0.61)|XBP1(0.61)","HSPA6(6.25)|CRYAB(1.65)|SCARA5(1.2)|HSPA1A(0.89)|CXCL12(0.88)|HSPB1(0.85)|HSPA1B(0.82)|CDKN1A(0.81)|DNAJB1(0.8)|HSBP1L1(0.71)|ACADVL(0.68)|METRNL(0.67)|EIF2AK3(0.66)|SLC25A27(0.63)","ALOX5(1.42)|CREB3L1(1.01)|FUT1(0.86)|ITGA5(0.78)|TSPAN18(0.78)|DLL1(0.74)","SHANK1(1.46)|LRRTM2(1.25)|LRRC4B(0.86)|SHANK2(0.75)|NPTX1(0.67)|CNTNAP1(0.64)","KCNQ1(1.28)|ACE(0.93)|CACNA1G(0.9)|SCN1B(0.67)|CACNA1C(0.6)|KCNJ2(0.59)","GDNF(1.33)|SYT2(0.94)|SYT17(0.94)|CXCL12(0.88)|SYT4(0.83)|SNCG(0.8)|SYT6(0.74)"],"maxOverlapGeneScore":[1.73,1.73,1.73,6.25,1.42,1.45,1.35,1.42,1.45,6.25,1.01,6.25,1.83,1.33,1.32,2.52,1.32,0.9399999999999999,1.33,6.25,1.32,1.83,2.52,1.33,1.32,6.25,1.41,0.89,0.9399999999999999,1.46,1.35,1.02,1.09,1.83,1.99,1.01,0.89,1.33,1.32,1.35,1.32,2.31,6.25,1.59,0.9399999999999999,1.32,1.4,1.42,1.33,0.87,1.28,1.01,6.25,1.42,1.46,1.28,1.33],"size":[40,40,40,16.78,13.7,13.54,13.54,13.38,13.36,13.36,13.32,13.32,12.28,12.13,12.11,11.75,11.61,11.61,11.21,11.21,11.1,11.1,10.98,10.98,10.81,10.81,10.81,10.74,10.55,10.44,10.44,10.44,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.28,10.17,10.14,10.17,10.14,10.14,10.14,10.14,10.14,10,10,10],"formattedLabel":["EXTRACELLULAR\nSTRUCTURE\nORGANIZATION","EXTERNAL\nENCAPSULATING\nSTRUCTURE\nORGANIZATION","EXTRACELLULAR\nMATRIX ORGANIZATION","PROTEIN REFOLDING","REGULATION OF\nVASCULATURE\nDEVELOPMENT","RESPONSE TO\nGLUCOCORTICOID","CELL ADHESION\nMEDIATED BY\nINTEGRIN","REGULATION OF\nANGIOGENESIS","RESPONSE TO\nCORTICOSTEROID","RESPONSE TO\nTOPOLOGICALLY\nINCORRECT PROTEIN","REGULATION OF\nENDOPLASMIC\nRETICULUM\nSTRESS-INDUCED\nINTRINSIC APOPTOTIC\nSIGNALING PATHWAY","RESPONSE TO\nUNFOLDED PROTEIN","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY","REGULATION OF\nDOPAMINE SECRETION","CELLULAR RESPONSE\nTO CORTICOSTEROID\nSTIMULUS","REGULATION OF\nCATECHOLAMINE\nSECRETION","CELLULAR RESPONSE\nTO GLUCOCORTICOID\nSTIMULUS","BASEMENT MEMBRANE\nORGANIZATION","DOPAMINE SECRETION","'DE NOVO' PROTEIN\nFOLDING","RESPONSE TO\nDEXAMETHASONE","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nBY P53 CLASS\nMEDIATOR","CATECHOLAMINE\nSECRETION","REGULATION OF\nEXTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN ABSENCE OF\nLIGAND","POSITIVE REGULATION\nOF VASCULATURE\nDEVELOPMENT","CHAPERONE\nCOFACTOR-DEPENDENT\nPROTEIN REFOLDING","OVULATION CYCLE","VASCULAR\nENDOTHELIAL GROWTH\nFACTOR SIGNALING\nPATHWAY","POSITIVE REGULATION\nOF DENDRITE\nEXTENSION","POSTSYNAPTIC\nSPECIALIZATION\nORGANIZATION","INTEGRIN-MEDIATED\nSIGNALING PATHWAY","REGULATION OF\nINTRINSIC APOPTOTIC\nSIGNALING PATHWAY","ANIMAL ORGAN\nREGENERATION","NEUROMUSCULAR\nPROCESS CONTROLLING\nBALANCE","CALCIUM-ION\nREGULATED\nEXOCYTOSIS","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN RESPONSE TO\nENDOPLASMIC\nRETICULUM STRESS","CELLULAR RESPONSE\nTO VASCULAR\nENDOTHELIAL GROWTH\nFACTOR STIMULUS","EXTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN ABSENCE OF\nLIGAND","POSITIVE REGULATION\nOF ANGIOGENESIS","CELL-MATRIX\nADHESION","CELLULAR RESPONSE\nTO DEXAMETHASONE\nSTIMULUS","NEPHRON DEVELOPMENT","'DE NOVO'\nPOST-TRANSLATIONAL\nPROTEIN FOLDING","POLYSACCHARIDE\nMETABOLIC PROCESS","REGULATION OF\nDENDRITE EXTENSION","CELLULAR RESPONSE\nTO CAMP","POSITIVE REGULATION\nOF EPITHELIAL CELL\nPROLIFERATION","REGULATION OF\nRESPONSE TO\nENDOPLASMIC\nRETICULUM STRESS","SIGNAL TRANSDUCTION\nIN ABSENCE OF\nLIGAND","AMINO SUGAR\nMETABOLIC PROCESS","REGULATION OF BLOOD\nCIRCULATION","CELLULAR RESPONSE\nTO TOPOLOGICALLY\nINCORRECT PROTEIN","RESPONSE TO\nTEMPERATURE\nSTIMULUS","REGULATION OF\nSPROUTING\nANGIOGENESIS","POSTSYNAPTIC\nDENSITY\nORGANIZATION","REGULATION OF HEART\nRATE BY CARDIAC\nCONDUCTION","DOPAMINE TRANSPORT"],"label":["EXTRACELLULAR\nSTRUCTURE\nORGANIZATION","EXTERNAL\nENCAPSULATING\nSTRUCTURE\nORGANIZATION","EXTRACELLULAR\nMATRIX ORGANIZATION","PROTEIN REFOLDING","REGULATION OF\nVASCULATURE\nDEVELOPMENT","RESPONSE TO\nGLUCOCORTICOID","CELL ADHESION\nMEDIATED BY\nINTEGRIN","REGULATION OF\nANGIOGENESIS","RESPONSE TO\nCORTICOSTEROID","RESPONSE TO\nTOPOLOGICALLY\nINCORRECT PROTEIN","REGULATION OF\nENDOPLASMIC\nRETICULUM\nSTRESS-INDUCED\nINTRINSIC APOPTOTIC\nSIGNALING PATHWAY","RESPONSE TO\nUNFOLDED PROTEIN","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY","REGULATION OF\nDOPAMINE SECRETION","CELLULAR RESPONSE\nTO CORTICOSTEROID\nSTIMULUS","REGULATION OF\nCATECHOLAMINE\nSECRETION","CELLULAR RESPONSE\nTO GLUCOCORTICOID\nSTIMULUS","BASEMENT MEMBRANE\nORGANIZATION","DOPAMINE SECRETION","'DE NOVO' PROTEIN\nFOLDING","RESPONSE TO\nDEXAMETHASONE","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nBY P53 CLASS\nMEDIATOR","CATECHOLAMINE\nSECRETION","REGULATION OF\nEXTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN ABSENCE OF\nLIGAND","POSITIVE REGULATION\nOF VASCULATURE\nDEVELOPMENT","CHAPERONE\nCOFACTOR-DEPENDENT\nPROTEIN REFOLDING","OVULATION CYCLE","VASCULAR\nENDOTHELIAL GROWTH\nFACTOR SIGNALING\nPATHWAY","POSITIVE REGULATION\nOF DENDRITE\nEXTENSION","POSTSYNAPTIC\nSPECIALIZATION\nORGANIZATION","INTEGRIN-MEDIATED\nSIGNALING PATHWAY","REGULATION OF\nINTRINSIC APOPTOTIC\nSIGNALING PATHWAY","ANIMAL ORGAN\nREGENERATION","NEUROMUSCULAR\nPROCESS CONTROLLING\nBALANCE","CALCIUM-ION\nREGULATED\nEXOCYTOSIS","INTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN RESPONSE TO\nENDOPLASMIC\nRETICULUM STRESS","CELLULAR RESPONSE\nTO VASCULAR\nENDOTHELIAL GROWTH\nFACTOR STIMULUS","EXTRINSIC APOPTOTIC\nSIGNALING PATHWAY\nIN ABSENCE OF\nLIGAND","POSITIVE REGULATION\nOF ANGIOGENESIS","CELL-MATRIX\nADHESION","CELLULAR RESPONSE\nTO DEXAMETHASONE\nSTIMULUS","NEPHRON DEVELOPMENT","'DE NOVO'\nPOST-TRANSLATIONAL\nPROTEIN FOLDING","POLYSACCHARIDE\nMETABOLIC PROCESS","REGULATION OF\nDENDRITE EXTENSION","CELLULAR RESPONSE\nTO CAMP","POSITIVE REGULATION\nOF EPITHELIAL CELL\nPROLIFERATION","REGULATION OF\nRESPONSE TO\nENDOPLASMIC\nRETICULUM STRESS","SIGNAL TRANSDUCTION\nIN ABSENCE OF\nLIGAND","AMINO SUGAR\nMETABOLIC PROCESS","REGULATION OF BLOOD\nCIRCULATION","CELLULAR RESPONSE\nTO TOPOLOGICALLY\nINCORRECT PROTEIN","RESPONSE TO\nTEMPERATURE\nSTIMULUS","REGULATION OF\nSPROUTING\nANGIOGENESIS","POSTSYNAPTIC\nDENSITY\nORGANIZATION","REGULATION OF HEART\nRATE BY CARDIAC\nCONDUCTION","DOPAMINE TRANSPORT"],"color.background":["#FF00CC","#FF00CC","#FF00CC","#33CCFF","#33CC00","#FF9900","#9900FF","#33CC00","#FF9900","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFCCFF","#FF9900","#FFCCFF","#FF9900","#FF00CC","#FFCCFF","#33CCFF","#FF9900","#FFFF00","#FFCCFF","#FF0000","#33CC00","#33CCFF","#006600","#33CC00","#009999","#CCCC00","#9900FF","#FFFF00","#6699CC","#CCCCFF","#CC99CC","#FFFF00","#33CC00","#FF0000","#33CC00","#9900FF","#FF9900","#9966FF","#33CCFF","#993300","#009999","#FFCC99","#CC6600","#FFFF00","#FF0000","#CCFFFF","#99CC00","#FFFF00","#33CCFF","#33CC00","#CCCC00","#99CC00","#FFCCFF"],"FDR":[5.28832e-09,5.32926e-09,5.39922e-09,0.00375,0.0223,0.0242541,0.024974,0.027,0.0271135,0.0271323,0.027514,0.0277051,0.0508,0.0555,0.0564,0.0692,0.0742294,0.07467699999999999,0.0934276,0.0938606,0.100266,0.100868,0.107163,0.1094,0.118593,0.119608,0.122302,0.125,0.139,0.145641,0.148522,0.150864,0.159844,0.159906,0.160157,0.160436,0.160775,0.161453,0.163615,0.16377,0.163844,0.164802,0.164816,0.165217,0.16594,0.166036,0.17084,0.174608,0.17518,0.175871,0.176005,0.177037,0.177069,0.178056,0.18764,0.190678,0.19335],"color.border":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"],"borderWidthSelected":[4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],"color.highlight.border":["#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066"],"color.highlight.background":["#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff"],"color.hover.background":["#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066","#000066"],"color.hover.border":["#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff","#c0b3ff"],"font.face":["Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial","Arial"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"font.size":[26,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22],"font.bold":[true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"borderWidth":[4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"labelHighlightBold":[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],"x":[-0.3873901217830397,-0.2537618711648516,-0.2563758544268279,-0.4888869612438147,0.6810775005424312,-0.4858300379020097,0.01080879340492702,0.6876764558131554,-0.5549982459314616,0.7858704833986632,0.9086388431205996,0.7867229976830017,0.8068615567093551,-0.9435572547523284,-0.6148867256786572,-1,-0.6558121684596796,-0.3940473553259458,-0.8217930412119775,-0.6756306338929428,-0.6886106857670689,0.6209169818013638,-0.9318616951515726,-0.1548742313510761,0.8748964807368311,-0.8501178781838277,-0.727746377731011,0.5000843521499851,0.4010956042526472,0.03714125684267477,-0.2701870975529392,0.9762525442711694,0.01090528915085476,0.5648333310212084,0.3402427518640267,1,0.3204941041386551,-0.08246702371672388,0.8118598722344859,-0.1183224719960171,-0.5160138679431485,0.3589819558748377,-0.8133234512074089,-0.4238859474958125,0.5085730975455081,0.2894256880722073,0.007261094248988798,0.857289330272589,0.004537103003477316,0.2292056267343863,0.09240685067572296,0.6533618314184781,-0.3187586513456016,0.803388126331912,0.1920616153272636,0.1126376943199976,-0.8289676038277524],"y":[0.7616378132790045,0.7666937032457772,0.8949421337350405,0.3668644829454513,0.5210267003134601,-0.6241886686630396,-0.8588555540296319,0.4153774934638725,-0.6961221610533338,-0.4781873020060511,-0.1464084819029614,-0.6384911073565216,-0.1087686928358217,0.01028536415756576,-0.5106870058855926,-0.08296836373172356,-0.6701035122588934,0.8878413475306348,-0.1268248628538005,0.3858232596972371,-0.5792316403622425,-0.04098534851403257,-0.1699317357262766,-0.2223689219435222,0.4672091117566597,0.3502017968574132,0.7305365083344708,0.4692542504166122,-0.7796896543574208,-0.568011005423504,-0.9540747662838982,-0.01870478120624963,0.2500902179571696,0.8842350873743181,0.8332451974452151,-0.1822238388602986,0.476835622132465,-0.08888448284869821,0.3768375011124494,-0.926722322067856,-0.5304644164568102,-0.2931669821031948,0.4777072356505323,0.004742456648879179,-0.8708528837865557,0.08041112099128034,0.5381106893990193,-0.2928510091835073,-0.2109905508474812,-1,0.8602596381034193,-0.5782290352422919,0.3452161363572066,0.5534267444391254,-0.5569837580609558,1,-0.01948070116795664]},"edges":{"from":["1","1","1","2","2","3","4","4","5","5","5","5","5","6","7","7","7","7","7","8","8","8","8","9","9","9","9","10","10","10","11","12","12","12","12","13","13","13","13","14","14","14","14","15","15","15","16","16","16","17","17","19","19","20","20","21","23","24","24","26","27","27","28","29","30","31","32","38","41","45","52"],"to":["2","3","18","3","18","18","19","50","8","27","28","38","53","34","9","15","17","21","43","27","28","38","53","15","17","21","43","11","51","54","51","13","32","41","54","22","32","41","54","16","20","23","55","17","21","43","20","23","55","21","43","26","40","23","55","43","55","45","47","40","38","53","37","46","34","57","41","53","54","47","56"],"overlapCoeff":[1,1,1,1,1,1,0.52,0.52,1,1,0.6,1,1,0.54,1,0.86,1,1,1,0.98,0.6,1,1,1,1,1,1,1,1,0.51,0.88,1,1,1,1,1,1,1,0.55,1,1,1,1,1,0.72,1,0.87,1,0.72,0.7,1,1,1,1,1,1,0.75,1,1,1,1,0.53,1,1,0.53,1,0.6,0.53,0.6,1,1],"width":[5,5,5,4.97,5,5,1.15,1.15,5,5,1.84,5,5,1.29,5,3.88,5,5,5,4.85,1.84,5,5,5,5,5,5,5,5,1.1,4.06,5,5,5,5,5,5,5,1.41,5,5,5,5,5,2.8,5,3.97,5,2.79,2.6,5,5,5,5,5,5,3,5,5,5,5,1.21,5,5,1.28,5,1.8,1.21,1.8,5,5],"color":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","shadow":{"enabled":true,"size":25},"physics":true},"manipulation":{"enabled":false},"interaction":{"hover":true,"zoomSpeed":1},"edges":{"smooth":false},"physics":{"stabilization":false}},"groups":null,"width":"100%","height":null,"idselection":{"enabled":true,"style":"width: 400px; height = 31px;\n        font-size: 18px;\n        color: #000066;border: 3px solid #4d88ff;","useLabels":true,"main":"Select by id","values":["40","19","49","36","18","35","23","6","34","42","15","43","17","51","37","26","20","55","3","1","2","45","30","13","22","41","44","39","25","33","38","29","48","27","57","31","4","8","52","16","46","14","12","24","56","32","54","53","5","9","21","7","50","10","11","47","28"]},"byselection":{"enabled":true,"style":"width: 400px; height = 31px;\n        font-size: 18px;\n        color: #000066;border: 3px solid #4d88ff;","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false,"variable":"FDR","main":"Select by FDR","values":[5.28832e-09,5.32926e-09,5.39922e-09,0.00375,0.0223,0.0242541,0.024974,0.027,0.0271135,0.0271323,0.027514,0.0277051,0.0508,0.0555,0.0564,0.0692,0.0742294,0.07467699999999999,0.0934276,0.0938606,0.100266,0.100868,0.107163,0.1094,0.118593,0.119608,0.122302,0.125,0.139,0.145641,0.148522,0.150864,0.159844,0.159906,0.160157,0.160436,0.160775,0.161453,0.163615,0.16377,0.163844,0.164802,0.164816,0.165217,0.16594,0.166036,0.17084,0.174608,0.17518,0.175871,0.176005,0.177037,0.177069,0.178056,0.18764,0.190678,0.19335]},"main":{"text":"MOV10 Overexpression GO Enrichment","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":true,"degree":5,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"igraphlayout":{"type":"full"}},"evals":[],"jsHooks":[]}</script>
+<p>This network analysis is based on <a href="https://cytoscape.org/">Cytoscape</a>, an open source bioinformatics software platform for visualizing molecular interaction networks. out of all the GO packages.</p>
+<p><strong>Exercise</strong> points = +4</p>
+<ol style="list-style-type: decimal">
+<li><p>Perform a GO enrichment analysis using the <code>runGORESP</code> function from the <code>GOenrichment</code> package using the res_tableKD_tb$log2FoldChange and cbind to build an input matrix. Use a significance threshold of 0.58 and an FDR threshold of 0.2. Save the results in a variable called <code>kresp</code>.</p></li>
+<li><p>Visualize the enriched GO terms using the <code>runNetwork</code> function from the <code>GOenrichment</code> package. Save the results in a variable called <code>kvis</code>.</p></li>
+</ol>
+</div>
+<div id="other-tools-and-resources" class="section level3 hasAnchor" number="8.0.11">
+<h3><span class="header-section-number">8.0.11</span> Other tools and resources<a href="functional-analysis-of-rnaseq-data.html#other-tools-and-resources" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p><a href="http://genemania.org/">GeneMANIA</a>. GeneMANIA finds other genes that are related to a set of input genes, using a very large set of functional association data curated from the literature.</p></li>
+<li><p><a href="http://revigo.irb.hr/">ReviGO</a>. Revigo is an online GO enrichment tool that allows you to copy-paste your significant gene list and your background gene list. The output is a visualization of enriched GO terms in a hierarchical tree.</p></li>
+<li><p><a href="http://amigo.geneontology.org/amigo">AmiGO</a>. AmiGO is the current official web-based set of tools for searching and browsing the Gene Ontology database.</p></li>
+<li><p>etc.</p></li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="summary-of-dge-workflow.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": false,
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": ["2025_RNA-Seq-Analysis.pdf", "2025_RNA-Seq-Analysis.epub"],
+  "search": false,
+  "toc": {
+    "collapse": "section"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

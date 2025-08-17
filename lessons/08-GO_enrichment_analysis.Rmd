@@ -96,21 +96,12 @@ The GSEA enrichment plot provides a graphical view of the enrichment score for a
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-
-# Uncomment the following if you haven't yet installed the required packages
-# BiocManager::install(c("ggraph", "igraph", "visNetwork", 
-# "GO.db", "GOSemSim"), force = TRUE)
-
-# IMPORTANT!!! Uncomment the following to update the GOenrichment package
-# remove.package("GOenrichment")
-# devtools::install_github("gurinina/GOenrichment", force = TRUE)
-
 ## Load required libraries
-library(org.Hs.eg.db)#
-library(clusterProfiler)#
+library(org.Hs.eg.db)
+library(clusterProfiler)
 library(tidyverse)
-library(enrichplot)#
-library(fgsea) #
+library(enrichplot)
+library(fgsea) 
 library(igraph)
 library(ggraph)
 library(visNetwork)
@@ -289,23 +280,26 @@ The resulting network plots shows the relationships between the enriched GO term
 The `emapplot()` function generates a network plot where each node represents an enriched gene set, and edges between nodes indicate the similarity or overlap between those gene sets. 
 ```{r}
 
-pwt <- pairwise_termsim(
-  ego,
-  method = "JC",
-  semData = NULL
-)
+# Filter to top significant results first
+ego_filtered <- ego
+ego_filtered@result <- ego@result[1:50, ]  # Take only top 50 results
 
-# category labels
-emapplot(pwt, showCategory = 30, 
-         node_label = "category", 
-         cex_label_group = 3, 
-         layout.params = list("mds")) +
-         theme(legend.position = "none")
+# Then create pairwise similarity
+pwt_filtered <- pairwise_termsim(ego_filtered, method = "JC")
 
-# group labels 
-emapplot(pwt, showCategory = 150, 
-         node_label = "group") +
-         theme(legend.position = "none")
+# Now emapplot should work better
+emapplot(
+  pwt_filtered,
+  showCategory = 20,
+  node_label = "category",
+  layout = "mds"
+) +
+  theme(legend.position = "none")
+
+cnetplot(pwt_filtered, showCategory = 15,
+         categorySize = "pvalue",
+         colorEdge = TRUE) +
+  theme(legend.position = "none")
 
 ```
 To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.
@@ -376,18 +370,21 @@ gseaplot2(gseaGO, geneSetID = 1:4)
 The emapplot clusters the 50 most significant (by padj) GO terms to visualize relationships between terms.
 ```{r}
 
-# find the overlap between the top 50 terms
+gseaGO_filtered <- gseaGO
+gseaGO_filtered@result <- gseaGO@result[1:50, ]  # Top 50 by p.adjust
+
+# Create pairwise similarity 
 pwt <- pairwise_termsim(
-  gseaGO,
+  gseaGO_filtered,
   method = "JC",
   semData = NULL
-  )
+)
 
-emapplot(pwt, showCategory = 30, node_label = "all", 
-         cex_label_group = 3, 
-         layout.params = list("mds")) + 
+# Use safer emapplot parameters
+emapplot(pwt, showCategory = 20,     # Reduced from 30
+         node_label = "category",    # Changed from "all" 
+         layout = "mds") + 
          theme(legend.position = "none")
-
 
 
 ```

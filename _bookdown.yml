@@ -4,7 +4,7 @@ output:
       before_body: source/toggle.js
     config:
       code_folding: show
-book_filename: "2024_RNA-seq-analysis-instructor"
+book_filename: "2025_RNA-Seq-Analysis-instructor"
 new_session: no
 rmd_files:
   - index.Rmd

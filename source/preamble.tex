@@ -9,6 +9,9 @@
 \usepackage{caption}     % To control figure captions
 \usepackage{float}       % For figure placement control
 
+% Remove extra pages between chapters
+\let\cleardoublepage\clearpage
+
 % Suppress List of Figures (LoF) and List of Tables (LoT)
 \renewcommand{\listoffigures}{}
 \renewcommand{\listoftables}{}
@@ -36,7 +39,7 @@
 \setlength{\parindent}{0pt}             % Remove paragraph indentation
 \setlength{\parskip}{1em}               % Add space between paragraphs
 
-% Page geometry (if necessary; otherwise, use output.yml)
+% Page geometry - load only once with options
 \usepackage[top=1in, left=0.5in, right=0.5in, bottom=1in]{geometry}
 
 % Custom commands

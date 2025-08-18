@@ -12,10 +12,9 @@ link-citations: true
 
 ```{r, include=FALSE}
 
-knitr::opts_chunk$set(
-  echo = TRUE,
-  warning = FALSE    # Suppress all warnings
-)
+## setup.R set up page width and code formatting
+source("setup.R")
+
 ```
 
 # RNA-seq analysis workshop {-}

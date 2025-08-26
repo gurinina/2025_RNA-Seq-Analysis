@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Negative Binomial model fitting | PHAR520: Applied Omics Science for Drug Discovery and Development</title>
   <meta name="description" content="Chapter 5 Negative Binomial model fitting | PHAR520: Applied Omics Science for Drug Discovery and Development" />
-  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Negative Binomial model fitting | PHAR520: Applied Omics Science for Drug Discovery and Development" />
   <meta property="og:type" content="book" />
@@ -330,11 +330,11 @@ Y_{ij} \sim \text{NB}\left(\mu_{ij}, \alpha_i\right)
 <li><strong>Define the Design Matrix <span class="math inline">\(X_j\)</span>:</strong>
 The design matrix <span class="math inline">\(X\)</span> includes the covariates (experimental conditions) for each sample. Each row of the matrix corresponds to a sample, and each column corresponds to a covariate (e.g., intercept, control, treatment). This matrix is generated using the <strong><code>model.matrix()</code></strong> function in R.</li>
 </ol>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="negative-binomial-model-fitting.html#cb64-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> sampletype, <span class="at">data =</span> meta)</span>
-<span id="cb64-2"><a href="negative-binomial-model-fitting.html#cb64-2" tabindex="-1"></a></span>
-<span id="cb64-3"><a href="negative-binomial-model-fitting.html#cb64-3" tabindex="-1"></a><span class="co"># OR</span></span>
-<span id="cb64-4"><a href="negative-binomial-model-fitting.html#cb64-4" tabindex="-1"></a></span>
-<span id="cb64-5"><a href="negative-binomial-model-fitting.html#cb64-5" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">design</span>(dds), <span class="at">data =</span> <span class="fu">colData</span>(dds))</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="negative-binomial-model-fitting.html#cb57-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>sampletype, <span class="at">data =</span> meta)</span>
+<span id="cb57-2"><a href="negative-binomial-model-fitting.html#cb57-2" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="negative-binomial-model-fitting.html#cb57-3" tabindex="-1"></a><span class="co"># OR</span></span>
+<span id="cb57-4"><a href="negative-binomial-model-fitting.html#cb57-4" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="negative-binomial-model-fitting.html#cb57-5" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">design</span>(dds), <span class="at">data =</span> <span class="fu">colData</span>(dds))</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>Link Mean Expression to the Design Matrix:</strong>
 The expected mean expression for <strong>gene <span class="math inline">\(i\)</span></strong> in <strong>sample <span class="math inline">\(j\)</span></strong> is modeled as:</li>
@@ -356,19 +356,12 @@ The expected mean expression for <strong>gene <span class="math inline">\(i\)</s
 “DESeq2 estimates the <strong>beta coefficients</strong> by fitting a <strong>negative binomial GLM</strong> to the data using <strong>Maximum Likelihood Estimation (MLE)</strong>. DESeq2 substitutes the mean (<span class="math inline">\(\mu_{ij}\)</span>) with <span class="math inline">\(2^{\beta_i X_j}\)</span> in the negative binomial model, using MLE to predict expected counts based on experimental covariates and estimate gene expression changes while controlling for design factors.</li>
 </ol>
 <p>The model is fit using the <strong><code>DESeq()</code></strong> function in R, which carries out the entire estimation process:</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="negative-binomial-model-fitting.html#cb65-1" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span></code></pre></div>
-<pre><code>## using pre-existing size factors</code></pre>
-<pre><code>## estimating dispersions</code></pre>
-<pre><code>## found already estimated dispersions, replacing these</code></pre>
-<pre><code>## gene-wise dispersion estimates</code></pre>
-<pre><code>## mean-dispersion relationship</code></pre>
-<pre><code>## final dispersion estimates</code></pre>
-<pre><code>## fitting model and testing</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="negative-binomial-model-fitting.html#cb58-1" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li><strong>Extract the Beta Coefficients:</strong>
 Once the model is fitted, the estimated beta coefficients (log2 fold changes) for each gene can be extracted using the <strong><code>coef()</code></strong> function:</li>
 </ol>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="negative-binomial-model-fitting.html#cb73-1" tabindex="-1"></a>beta_coefficients <span class="ot">&lt;-</span> <span class="fu">coef</span>(dds)</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="negative-binomial-model-fitting.html#cb59-1" tabindex="-1"></a>beta_coefficients <span class="ot">&lt;-</span> <span class="fu">coef</span>(dds)</span></code></pre></div>
 <p>This gives a matrix of estimated beta coefficients, where each row corresponds to a gene and each column corresponds to a covariate in the design matrix.</p>
 </div>
 <div id="example" class="section level3 hasAnchor" number="5.1.4">
@@ -408,7 +401,7 @@ Once the model is fitted, the estimated beta coefficients (log2 fold changes) fo
 \]</span></p>
 <p>This computes the expected log2 counts for all genes across all samples.</p>
 <p>In R, you can calculate the fitted log2 counts for all genes and samples using:</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="negative-binomial-model-fitting.html#cb74-1" tabindex="-1"></a>log2_fitted <span class="ot">&lt;-</span> beta_coefficients <span class="sc">%*%</span> <span class="fu">t</span>(X)</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="negative-binomial-model-fitting.html#cb60-1" tabindex="-1"></a>log2_fitted <span class="ot">&lt;-</span> beta_coefficients <span class="sc">%*%</span> <span class="fu">t</span>(X)</span></code></pre></div>
 <p>This step multiplies the beta coefficients matrix by the transpose of the design matrix to compute the fitted log2 counts.</p>
 </div>
 <div id="log2-fold-change-and-adjustments" class="section level3 hasAnchor" number="5.1.7">
@@ -462,54 +455,47 @@ To generate the shrunken log2 fold change estimates, you have to run an addition
 </ol>
 <p><strong>Building the Results Table</strong></p>
 <p>To build the results table, we use the <code>results()</code> function. You can specify the <code>contrast</code> to be tested using the contrast argument. In this example, we’ll save the unshrunken and shrunken results of <strong>Control vs. Mov10 overexpression</strong> to different variables. We’ll also set the <code>alpha</code> to 0.05, which is more stringent than the default value of 0.1.</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="negative-binomial-model-fitting.html#cb75-1" tabindex="-1"></a><span class="co"># define contrasts</span></span>
-<span id="cb75-2"><a href="negative-binomial-model-fitting.html#cb75-2" tabindex="-1"></a>contrast_oe <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sampletype&quot;</span>, </span>
-<span id="cb75-3"><a href="negative-binomial-model-fitting.html#cb75-3" tabindex="-1"></a>                 <span class="st">&quot;MOV10_overexpression&quot;</span>, </span>
-<span id="cb75-4"><a href="negative-binomial-model-fitting.html#cb75-4" tabindex="-1"></a>                 <span class="st">&quot;control&quot;</span>)</span>
-<span id="cb75-5"><a href="negative-binomial-model-fitting.html#cb75-5" tabindex="-1"></a></span>
-<span id="cb75-6"><a href="negative-binomial-model-fitting.html#cb75-6" tabindex="-1"></a><span class="co"># extract results table</span></span>
-<span id="cb75-7"><a href="negative-binomial-model-fitting.html#cb75-7" tabindex="-1"></a>res_tableOE_unshrunken <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, </span>
-<span id="cb75-8"><a href="negative-binomial-model-fitting.html#cb75-8" tabindex="-1"></a>                                  <span class="at">contrast =</span> contrast_oe, </span>
-<span id="cb75-9"><a href="negative-binomial-model-fitting.html#cb75-9" tabindex="-1"></a>                                  <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
-<span id="cb75-10"><a href="negative-binomial-model-fitting.html#cb75-10" tabindex="-1"></a></span>
-<span id="cb75-11"><a href="negative-binomial-model-fitting.html#cb75-11" tabindex="-1"></a><span class="fu">resultsNames</span>(dds)</span></code></pre></div>
-<pre><code>## [1] &quot;Intercept&quot;                                  &quot;sampletype_MOV10_knockdown_vs_control&quot;     
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="negative-binomial-model-fitting.html#cb61-1" tabindex="-1"></a><span class="co"># define contrasts</span></span>
+<span id="cb61-2"><a href="negative-binomial-model-fitting.html#cb61-2" tabindex="-1"></a>contrast_oe <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sampletype&quot;</span>, <span class="st">&quot;MOV10_overexpression&quot;</span>, <span class="st">&quot;control&quot;</span>)</span>
+<span id="cb61-3"><a href="negative-binomial-model-fitting.html#cb61-3" tabindex="-1"></a></span>
+<span id="cb61-4"><a href="negative-binomial-model-fitting.html#cb61-4" tabindex="-1"></a><span class="co"># extract results table</span></span>
+<span id="cb61-5"><a href="negative-binomial-model-fitting.html#cb61-5" tabindex="-1"></a>res_tableOE_unshrunken <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> contrast_oe, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
+<span id="cb61-6"><a href="negative-binomial-model-fitting.html#cb61-6" tabindex="-1"></a></span>
+<span id="cb61-7"><a href="negative-binomial-model-fitting.html#cb61-7" tabindex="-1"></a><span class="fu">resultsNames</span>(dds)</span></code></pre></div>
+<pre><code>## [1] &quot;Intercept&quot;                                 
+## [2] &quot;sampletype_MOV10_knockdown_vs_control&quot;     
 ## [3] &quot;sampletype_MOV10_overexpression_vs_control&quot;</code></pre>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="negative-binomial-model-fitting.html#cb77-1" tabindex="-1"></a><span class="co"># shrink log2 fold changes</span></span>
-<span id="cb77-2"><a href="negative-binomial-model-fitting.html#cb77-2" tabindex="-1"></a>res_tableOE <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(<span class="at">dds =</span> dds, </span>
-<span id="cb77-3"><a href="negative-binomial-model-fitting.html#cb77-3" tabindex="-1"></a>               <span class="at">coef =</span> <span class="st">&quot;sampletype_MOV10_overexpression_vs_control&quot;</span>, </span>
-<span id="cb77-4"><a href="negative-binomial-model-fitting.html#cb77-4" tabindex="-1"></a>               <span class="at">res =</span> res_tableOE_unshrunken)</span></code></pre></div>
-<pre><code>## using &#39;apeglm&#39; for LFC shrinkage. If used in published research, please cite:
-##     Zhu, A., Ibrahim, J.G., Love, M.I. (2018) Heavy-tailed prior distributions for
-##     sequence count data: removing the noise and preserving large differences.
-##     Bioinformatics. https://doi.org/10.1093/bioinformatics/bty895</code></pre>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="negative-binomial-model-fitting.html#cb79-1" tabindex="-1"></a><span class="co"># save the results for future use</span></span>
-<span id="cb79-2"><a href="negative-binomial-model-fitting.html#cb79-2" tabindex="-1"></a><span class="fu">saveRDS</span>(res_tableOE, <span class="at">file =</span> <span class="st">&quot;data/res_tableOE.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="negative-binomial-model-fitting.html#cb63-1" tabindex="-1"></a><span class="co"># shrink log2 fold changes</span></span>
+<span id="cb63-2"><a href="negative-binomial-model-fitting.html#cb63-2" tabindex="-1"></a>res_tableOE <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(<span class="at">dds =</span> dds, <span class="at">coef =</span> <span class="st">&quot;sampletype_MOV10_overexpression_vs_control&quot;</span>,</span>
+<span id="cb63-3"><a href="negative-binomial-model-fitting.html#cb63-3" tabindex="-1"></a>    <span class="at">res =</span> res_tableOE_unshrunken)</span>
+<span id="cb63-4"><a href="negative-binomial-model-fitting.html#cb63-4" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="negative-binomial-model-fitting.html#cb63-5" tabindex="-1"></a><span class="co"># save the results for future use</span></span>
+<span id="cb63-6"><a href="negative-binomial-model-fitting.html#cb63-6" tabindex="-1"></a><span class="fu">saveRDS</span>(res_tableOE, <span class="at">file =</span> <span class="st">&quot;data/res_tableOE.RDS&quot;</span>)</span></code></pre></div>
 <p><strong>The order of the names determines the direction of fold change that is reported.</strong> The name provided in the second element is the level that is used as baseline. So for example, if we observe a log2 fold change of -2 this would mean the gene expression is lower in Mov10_oe relative to the control.</p>
 </div>
 <div id="ma-plot" class="section level3 hasAnchor" number="5.4.2">
 <h3><span class="header-section-number">5.4.2</span> MA Plot<a href="negative-binomial-model-fitting.html#ma-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>A plot that can be useful to exploring our results is the MA plot. The MA plot shows the mean of the normalized counts versus the log2 foldchanges for all genes tested. The genes that are significantly DE are colored to be easily identified. This is also a great way to illustrate the effect of LFC shrinkage. The DESeq2 package offers a simple function to generate an MA plot.</p>
 <p><strong>Shrunken &amp; Unshrunken Results:</strong></p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="negative-binomial-model-fitting.html#cb80-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb80-2"><a href="negative-binomial-model-fitting.html#cb80-2" tabindex="-1"></a></span>
-<span id="cb80-3"><a href="negative-binomial-model-fitting.html#cb80-3" tabindex="-1"></a><span class="fu">plotMA</span>(res_tableOE_unshrunken, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb80-4"><a href="negative-binomial-model-fitting.html#cb80-4" tabindex="-1"></a></span>
-<span id="cb80-5"><a href="negative-binomial-model-fitting.html#cb80-5" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">10</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb80-6"><a href="negative-binomial-model-fitting.html#cb80-6" tabindex="-1"></a></span>
-<span id="cb80-7"><a href="negative-binomial-model-fitting.html#cb80-7" tabindex="-1"></a><span class="co"># Shrunken results:</span></span>
-<span id="cb80-8"><a href="negative-binomial-model-fitting.html#cb80-8" tabindex="-1"></a><span class="fu">plotMA</span>(res_tableOE, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb80-9"><a href="negative-binomial-model-fitting.html#cb80-9" tabindex="-1"></a></span>
-<span id="cb80-10"><a href="negative-binomial-model-fitting.html#cb80-10" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">10</span>,<span class="at">col=</span><span class="st">&quot;red&quot;</span>,<span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="negative-binomial-model-fitting.html#cb64-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb64-2"><a href="negative-binomial-model-fitting.html#cb64-2" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="negative-binomial-model-fitting.html#cb64-3" tabindex="-1"></a><span class="fu">plotMA</span>(res_tableOE_unshrunken, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb64-4"><a href="negative-binomial-model-fitting.html#cb64-4" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="negative-binomial-model-fitting.html#cb64-5" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">10</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb64-6"><a href="negative-binomial-model-fitting.html#cb64-6" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="negative-binomial-model-fitting.html#cb64-7" tabindex="-1"></a><span class="co"># Shrunken results:</span></span>
+<span id="cb64-8"><a href="negative-binomial-model-fitting.html#cb64-8" tabindex="-1"></a><span class="fu">plotMA</span>(res_tableOE, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb64-9"><a href="negative-binomial-model-fitting.html#cb64-9" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="negative-binomial-model-fitting.html#cb64-10" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">10</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
 <p><strong>MOV10 DE Analysis: Exploring the Results</strong></p>
 <p>The results table in <code>DESeq2</code> looks similar to a data.frame and can be treated like one for accessing or subsetting data. However, it is stored as a <code>DESeqResults</code> object, which is important to keep in mind when working with visualization tools.</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="negative-binomial-model-fitting.html#cb81-1" tabindex="-1"></a><span class="fu">class</span>(res_tableOE)</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="negative-binomial-model-fitting.html#cb65-1" tabindex="-1"></a><span class="fu">class</span>(res_tableOE)</span></code></pre></div>
 <pre><code>## [1] &quot;DESeqResults&quot;
 ## attr(,&quot;package&quot;)
 ## [1] &quot;DESeq2&quot;</code></pre>
 <p>Let’s go through some of the columns in the results table to get a better idea of what we are looking at. To extract information regarding the meaning of each column we can use <code>mcols()</code>:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="negative-binomial-model-fitting.html#cb83-1" tabindex="-1"></a><span class="fu">mcols</span>(res_tableOE, <span class="at">use.names =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="negative-binomial-model-fitting.html#cb67-1" tabindex="-1"></a><span class="fu">mcols</span>(res_tableOE, <span class="at">use.names =</span> T)</span></code></pre></div>
 <pre><code>## DataFrame with 5 rows and 2 columns
 ##                        type            description
 ##                 &lt;character&gt;            &lt;character&gt;
@@ -519,7 +505,7 @@ To generate the shrunken log2 fold change estimates, you have to run an addition
 ## pvalue              results Wald test p-value: s..
 ## padj                results   BH adjusted p-values</code></pre>
 <p>Now let’s take a look at what information is stored in the results:</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="negative-binomial-model-fitting.html#cb85-1" tabindex="-1"></a><span class="fu">head</span>(res_tableOE)</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="negative-binomial-model-fitting.html#cb69-1" tabindex="-1"></a><span class="fu">head</span>(res_tableOE)</span></code></pre></div>
 <pre><code>## log2 fold change (MAP): sampletype MOV10_overexpression vs control 
 ## Wald test p-value: sampletype MOV10 overexpression vs control 
 ## DataFrame with 6 rows and 5 columns
@@ -531,8 +517,9 @@ To generate the shrunken log2 fold change estimates, you have to run an addition
 ## A1CF          0.237692     0.00626747  0.210057 0.7945932        NA
 ## A2LD1        89.617985     0.29017719  0.195395 0.0333343 0.0741149
 ## A2M           5.860084    -0.09619722  0.233561 0.1057823 0.1900466</code></pre>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="negative-binomial-model-fitting.html#cb87-1" tabindex="-1"></a><span class="fu">names</span>(res_tableOE)</span></code></pre></div>
-<pre><code>## [1] &quot;baseMean&quot;       &quot;log2FoldChange&quot; &quot;lfcSE&quot;          &quot;pvalue&quot;         &quot;padj&quot;</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="negative-binomial-model-fitting.html#cb71-1" tabindex="-1"></a><span class="fu">names</span>(res_tableOE)</span></code></pre></div>
+<pre><code>## [1] &quot;baseMean&quot;       &quot;log2FoldChange&quot; &quot;lfcSE&quot;          &quot;pvalue&quot;        
+## [5] &quot;padj&quot;</code></pre>
 <p><strong>Interpreting p-values Set to NA</strong></p>
 <p>In some cases, p-values or adjusted p-values may be set to NA for a gene. This happens in three scenarios:</p>
 <ol style="list-style-type: decimal">
@@ -567,36 +554,29 @@ To generate the shrunken log2 fold change estimates, you have to run an addition
 <div id="mov10-de-analysis-control-vs.-knockdown" class="section level3 hasAnchor" number="5.4.5">
 <h3><span class="header-section-number">5.4.5</span> MOV10 DE Analysis: <strong>Control vs. Knockdown</strong><a href="negative-binomial-model-fitting.html#mov10-de-analysis-control-vs.-knockdown" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>After examining the overexpression results, let’s move on to the comparison between <strong>Control vs. Knockdown</strong>. We’ll use contrasts in the <code>results()</code> function to extract the results table and store it in the <code>res_tableKD</code> variable. You can also use <code>coef</code> to specify the contrast directly in the <code>lfcShrink()</code> function.</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="negative-binomial-model-fitting.html#cb89-1" tabindex="-1"></a><span class="co"># define contrast</span></span>
-<span id="cb89-2"><a href="negative-binomial-model-fitting.html#cb89-2" tabindex="-1"></a>contrast_kd <span class="ot">&lt;-</span>  <span class="fu">c</span>(<span class="st">&quot;sampletype&quot;</span>, </span>
-<span id="cb89-3"><a href="negative-binomial-model-fitting.html#cb89-3" tabindex="-1"></a>                  <span class="st">&quot;MOV10_knockdown&quot;</span>,</span>
-<span id="cb89-4"><a href="negative-binomial-model-fitting.html#cb89-4" tabindex="-1"></a>                  <span class="st">&quot;control&quot;</span>)</span>
-<span id="cb89-5"><a href="negative-binomial-model-fitting.html#cb89-5" tabindex="-1"></a></span>
-<span id="cb89-6"><a href="negative-binomial-model-fitting.html#cb89-6" tabindex="-1"></a><span class="co"># extract results table</span></span>
-<span id="cb89-7"><a href="negative-binomial-model-fitting.html#cb89-7" tabindex="-1"></a>res_tableKD_unshrunken <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, </span>
-<span id="cb89-8"><a href="negative-binomial-model-fitting.html#cb89-8" tabindex="-1"></a>                                  <span class="at">contrast =</span> contrast_kd, </span>
-<span id="cb89-9"><a href="negative-binomial-model-fitting.html#cb89-9" tabindex="-1"></a>                                  <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
-<span id="cb89-10"><a href="negative-binomial-model-fitting.html#cb89-10" tabindex="-1"></a></span>
-<span id="cb89-11"><a href="negative-binomial-model-fitting.html#cb89-11" tabindex="-1"></a><span class="fu">resultsNames</span>(dds)</span></code></pre></div>
-<pre><code>## [1] &quot;Intercept&quot;                                  &quot;sampletype_MOV10_knockdown_vs_control&quot;     
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="negative-binomial-model-fitting.html#cb73-1" tabindex="-1"></a><span class="co"># define contrast</span></span>
+<span id="cb73-2"><a href="negative-binomial-model-fitting.html#cb73-2" tabindex="-1"></a>contrast_kd <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sampletype&quot;</span>, <span class="st">&quot;MOV10_knockdown&quot;</span>, <span class="st">&quot;control&quot;</span>)</span>
+<span id="cb73-3"><a href="negative-binomial-model-fitting.html#cb73-3" tabindex="-1"></a></span>
+<span id="cb73-4"><a href="negative-binomial-model-fitting.html#cb73-4" tabindex="-1"></a><span class="co"># extract results table</span></span>
+<span id="cb73-5"><a href="negative-binomial-model-fitting.html#cb73-5" tabindex="-1"></a>res_tableKD_unshrunken <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> contrast_kd, <span class="at">alpha =</span> <span class="fl">0.05</span>)</span>
+<span id="cb73-6"><a href="negative-binomial-model-fitting.html#cb73-6" tabindex="-1"></a></span>
+<span id="cb73-7"><a href="negative-binomial-model-fitting.html#cb73-7" tabindex="-1"></a><span class="fu">resultsNames</span>(dds)</span></code></pre></div>
+<pre><code>## [1] &quot;Intercept&quot;                                 
+## [2] &quot;sampletype_MOV10_knockdown_vs_control&quot;     
 ## [3] &quot;sampletype_MOV10_overexpression_vs_control&quot;</code></pre>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="negative-binomial-model-fitting.html#cb91-1" tabindex="-1"></a><span class="co"># use the `coef` argument to specify the contrast directly</span></span>
-<span id="cb91-2"><a href="negative-binomial-model-fitting.html#cb91-2" tabindex="-1"></a>res_tableKD <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(dds, <span class="at">coef =</span> <span class="dv">2</span>, </span>
-<span id="cb91-3"><a href="negative-binomial-model-fitting.html#cb91-3" tabindex="-1"></a>                         <span class="at">res =</span> res_tableKD_unshrunken)</span></code></pre></div>
-<pre><code>## using &#39;apeglm&#39; for LFC shrinkage. If used in published research, please cite:
-##     Zhu, A., Ibrahim, J.G., Love, M.I. (2018) Heavy-tailed prior distributions for
-##     sequence count data: removing the noise and preserving large differences.
-##     Bioinformatics. https://doi.org/10.1093/bioinformatics/bty895</code></pre>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="negative-binomial-model-fitting.html#cb93-1" tabindex="-1"></a><span class="do">## Save results for future use</span></span>
-<span id="cb93-2"><a href="negative-binomial-model-fitting.html#cb93-2" tabindex="-1"></a><span class="fu">saveRDS</span>(res_tableKD, <span class="at">file =</span> <span class="st">&quot;data/res_tableKD.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="negative-binomial-model-fitting.html#cb75-1" tabindex="-1"></a><span class="co"># use the `coef` argument to specify the contrast directly</span></span>
+<span id="cb75-2"><a href="negative-binomial-model-fitting.html#cb75-2" tabindex="-1"></a>res_tableKD <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(dds, <span class="at">coef =</span> <span class="dv">2</span>, <span class="at">res =</span> res_tableKD_unshrunken)</span>
+<span id="cb75-3"><a href="negative-binomial-model-fitting.html#cb75-3" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="negative-binomial-model-fitting.html#cb75-4" tabindex="-1"></a><span class="do">## Save results for future use</span></span>
+<span id="cb75-5"><a href="negative-binomial-model-fitting.html#cb75-5" tabindex="-1"></a><span class="fu">saveRDS</span>(res_tableKD, <span class="at">file =</span> <span class="st">&quot;data/res_tableKD.RDS&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="summarizing-results" class="section level2 hasAnchor" number="5.5">
 <h2><span class="header-section-number">5.5</span> Summarizing Results<a href="negative-binomial-model-fitting.html#summarizing-results" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To summarize the results, DESeq2 offers the <code>summary()</code> function, which conveniently reports the number of genes that are significantly differentially expressed at a specified threshold (<code>default FDR &lt; 0.05</code>). Note that, even though the output refers to p-values, it actually summarizes the results using <strong>adjusted p-values (padj/FDR)</strong>.</p>
 <p>Let’s start by summarizing the results for the OE vs. control comparison:</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="negative-binomial-model-fitting.html#cb94-1" tabindex="-1"></a><span class="do">## Summarize results</span></span>
-<span id="cb94-2"><a href="negative-binomial-model-fitting.html#cb94-2" tabindex="-1"></a><span class="fu">summary</span>(res_tableOE)</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="negative-binomial-model-fitting.html#cb76-1" tabindex="-1"></a><span class="do">## Summarize results</span></span>
+<span id="cb76-2"><a href="negative-binomial-model-fitting.html#cb76-2" tabindex="-1"></a><span class="fu">summary</span>(res_tableOE)</span></code></pre></div>
 <pre><code>## 
 ## out of 19748 with nonzero total read count
 ## adjusted p-value &lt; 0.05
@@ -617,46 +597,44 @@ To generate the shrunken log2 fold change estimates, you have to run an addition
 <p>In some cases, using only the FDR threshold doesn’t sufficiently reduce the number of significant genes, making it difficult to extract biologically meaningful results. To increase stringency, we can apply an additional fold change threshold.</p>
 <p>Although the summary() function doesn’t include an argument for fold change thresholds, we can define our own criteria.</p>
 <p>Let’s start by setting the thresholds for both adjusted p-value (FDR &lt; 0.05) and log2 fold change (|log2FC| &gt; 0.58, corresponding to a 1.5-fold change):</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="negative-binomial-model-fitting.html#cb96-1" tabindex="-1"></a><span class="do">### Set thresholds</span></span>
-<span id="cb96-2"><a href="negative-binomial-model-fitting.html#cb96-2" tabindex="-1"></a>padj.cutoff <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb96-3"><a href="negative-binomial-model-fitting.html#cb96-3" tabindex="-1"></a>lfc.cutoff <span class="ot">&lt;-</span> <span class="fl">0.58</span></span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="negative-binomial-model-fitting.html#cb78-1" tabindex="-1"></a><span class="do">### Set thresholds</span></span>
+<span id="cb78-2"><a href="negative-binomial-model-fitting.html#cb78-2" tabindex="-1"></a>padj.cutoff <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb78-3"><a href="negative-binomial-model-fitting.html#cb78-3" tabindex="-1"></a>lfc.cutoff <span class="ot">&lt;-</span> <span class="fl">0.58</span></span></code></pre></div>
 <p>Next, we’ll convert the results table to a tibble for easier subsetting:</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="negative-binomial-model-fitting.html#cb97-1" tabindex="-1"></a>res_tableOE_tb <span class="ot">&lt;-</span> res_tableOE <span class="sc">%&gt;%</span></span>
-<span id="cb97-2"><a href="negative-binomial-model-fitting.html#cb97-2" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb97-3"><a href="negative-binomial-model-fitting.html#cb97-3" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb97-4"><a href="negative-binomial-model-fitting.html#cb97-4" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="negative-binomial-model-fitting.html#cb79-1" tabindex="-1"></a>res_tableOE_tb <span class="ot">&lt;-</span> res_tableOE <span class="sc">%&gt;%</span></span>
+<span id="cb79-2"><a href="negative-binomial-model-fitting.html#cb79-2" tabindex="-1"></a>    <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb79-3"><a href="negative-binomial-model-fitting.html#cb79-3" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-4"><a href="negative-binomial-model-fitting.html#cb79-4" tabindex="-1"></a>    <span class="fu">as_tibble</span>()</span></code></pre></div>
 <p>Now, we can filter the table to retain only the genes that meet the significance and fold change criteria:</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="negative-binomial-model-fitting.html#cb98-1" tabindex="-1"></a>sigOE <span class="ot">&lt;-</span> res_tableOE_tb <span class="sc">%&gt;%</span></span>
-<span id="cb98-2"><a href="negative-binomial-model-fitting.html#cb98-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span> </span>
-<span id="cb98-3"><a href="negative-binomial-model-fitting.html#cb98-3" tabindex="-1"></a>                <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span>
-<span id="cb98-4"><a href="negative-binomial-model-fitting.html#cb98-4" tabindex="-1"></a></span>
-<span id="cb98-5"><a href="negative-binomial-model-fitting.html#cb98-5" tabindex="-1"></a><span class="co"># Save the results for future use</span></span>
-<span id="cb98-6"><a href="negative-binomial-model-fitting.html#cb98-6" tabindex="-1"></a><span class="fu">saveRDS</span>(sigOE,<span class="st">&quot;data/sigOE.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="negative-binomial-model-fitting.html#cb80-1" tabindex="-1"></a>sigOE <span class="ot">&lt;-</span> res_tableOE_tb <span class="sc">%&gt;%</span></span>
+<span id="cb80-2"><a href="negative-binomial-model-fitting.html#cb80-2" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span>
+<span id="cb80-3"><a href="negative-binomial-model-fitting.html#cb80-3" tabindex="-1"></a></span>
+<span id="cb80-4"><a href="negative-binomial-model-fitting.html#cb80-4" tabindex="-1"></a><span class="co"># Save the results for future use</span></span>
+<span id="cb80-5"><a href="negative-binomial-model-fitting.html#cb80-5" tabindex="-1"></a><span class="fu">saveRDS</span>(sigOE, <span class="st">&quot;data/sigOE.RDS&quot;</span>)</span></code></pre></div>
 <p><strong>Exercise</strong> points = +3</p>
 <p>How many genes are differentially expressed in the <strong>Overexpression vs. Control</strong> comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="negative-binomial-model-fitting.html#cb99-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="negative-binomial-model-fitting.html#cb81-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
 <p><strong>Does this reduce our results?</strong></p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="negative-binomial-model-fitting.html#cb100-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="negative-binomial-model-fitting.html#cb82-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
 </div>
 <div id="mov10-knockdown-analysis-control-vs.-knockdown" class="section level3 hasAnchor" number="5.5.2">
 <h3><span class="header-section-number">5.5.2</span> MOV10 Knockdown Analysis: Control vs. Knockdown<a href="negative-binomial-model-fitting.html#mov10-knockdown-analysis-control-vs.-knockdown" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Next, let’s perform the same analysis for the <strong>Control vs. Mov10 knockdown</strong> comparison. We’ll use the same thresholds for adjusted p-value (FDR &lt; 0.05) and log2 fold change (|log2FC| &gt; 0.58).</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="negative-binomial-model-fitting.html#cb101-1" tabindex="-1"></a>res_tableKD_tb <span class="ot">&lt;-</span> res_tableKD <span class="sc">%&gt;%</span></span>
-<span id="cb101-2"><a href="negative-binomial-model-fitting.html#cb101-2" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb101-3"><a href="negative-binomial-model-fitting.html#cb101-3" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb101-4"><a href="negative-binomial-model-fitting.html#cb101-4" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
-<span id="cb101-5"><a href="negative-binomial-model-fitting.html#cb101-5" tabindex="-1"></a></span>
-<span id="cb101-6"><a href="negative-binomial-model-fitting.html#cb101-6" tabindex="-1"></a>sigKD <span class="ot">&lt;-</span> res_tableKD_tb <span class="sc">%&gt;%</span></span>
-<span id="cb101-7"><a href="negative-binomial-model-fitting.html#cb101-7" tabindex="-1"></a>         dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span> </span>
-<span id="cb101-8"><a href="negative-binomial-model-fitting.html#cb101-8" tabindex="-1"></a>         <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span>
-<span id="cb101-9"><a href="negative-binomial-model-fitting.html#cb101-9" tabindex="-1"></a></span>
-<span id="cb101-10"><a href="negative-binomial-model-fitting.html#cb101-10" tabindex="-1"></a><span class="co"># We&#39;ll save this object for use in the homework</span></span>
-<span id="cb101-11"><a href="negative-binomial-model-fitting.html#cb101-11" tabindex="-1"></a><span class="fu">saveRDS</span>(sigKD,<span class="st">&quot;data/sigKD.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="negative-binomial-model-fitting.html#cb83-1" tabindex="-1"></a>res_tableKD_tb <span class="ot">&lt;-</span> res_tableKD <span class="sc">%&gt;%</span></span>
+<span id="cb83-2"><a href="negative-binomial-model-fitting.html#cb83-2" tabindex="-1"></a>    <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb83-3"><a href="negative-binomial-model-fitting.html#cb83-3" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb83-4"><a href="negative-binomial-model-fitting.html#cb83-4" tabindex="-1"></a>    <span class="fu">as_tibble</span>()</span>
+<span id="cb83-5"><a href="negative-binomial-model-fitting.html#cb83-5" tabindex="-1"></a></span>
+<span id="cb83-6"><a href="negative-binomial-model-fitting.html#cb83-6" tabindex="-1"></a>sigKD <span class="ot">&lt;-</span> res_tableKD_tb <span class="sc">%&gt;%</span></span>
+<span id="cb83-7"><a href="negative-binomial-model-fitting.html#cb83-7" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span>
+<span id="cb83-8"><a href="negative-binomial-model-fitting.html#cb83-8" tabindex="-1"></a></span>
+<span id="cb83-9"><a href="negative-binomial-model-fitting.html#cb83-9" tabindex="-1"></a><span class="co"># We&#39;ll save this object for use in the homework</span></span>
+<span id="cb83-10"><a href="negative-binomial-model-fitting.html#cb83-10" tabindex="-1"></a><span class="fu">saveRDS</span>(sigKD, <span class="st">&quot;data/sigKD.RDS&quot;</span>)</span></code></pre></div>
 <p><strong>How many genes are differentially expressed in the Knockdown compared to Control?</strong></p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="negative-binomial-model-fitting.html#cb102-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="negative-binomial-model-fitting.html#cb84-1" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
 <p>With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="negative-binomial-model-fitting.html#cb103-1" tabindex="-1"></a><span class="do">## Save all objects for later</span></span>
-<span id="cb103-2"><a href="negative-binomial-model-fitting.html#cb103-2" tabindex="-1"></a><span class="fu">save.image</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="negative-binomial-model-fitting.html#cb85-1" tabindex="-1"></a><span class="do">## Save all objects for later</span></span>
+<span id="cb85-2"><a href="negative-binomial-model-fitting.html#cb85-2" tabindex="-1"></a><span class="fu">save.image</span>()</span></code></pre></div>
 
 </div>
 </div>

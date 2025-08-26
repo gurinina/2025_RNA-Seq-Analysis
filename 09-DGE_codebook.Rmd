@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Setting up
 
-#### Loading libraries; technically we don't need to load all of these libraries because they are in the file setup.R which is sourced in the first .Rmd of the module. However, it's good practice to load them all at the beginning of your script.
+#### Loading libraries; technically we don't need to load all of these libraries because they are in the file scripts/setup.R which is sourced in the first .Rmd of the module. However, it's good practice to load them all at the beginning of your script.
 ```{r, message = FALSE}
 
 library(tidyverse)

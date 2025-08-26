@@ -22,7 +22,7 @@ bookdown::pdf_book:
   fig_caption: false
   pandoc_args: --listings
   includes:
-    in_header: preamble.tex
+    in_header: scripts/preamble.tex
   latex_engine: xelatex
   toc: true
   number_sections: true

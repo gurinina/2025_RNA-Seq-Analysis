@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 3 Quality Control | PHAR520: Applied Omics Science for Drug Discovery and Development</title>
   <meta name="description" content="Chapter 3 Quality Control | PHAR520: Applied Omics Science for Drug Discovery and Development" />
-  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 3 Quality Control | PHAR520: Applied Omics Science for Drug Discovery and Development" />
   <meta property="og:type" content="book" />
@@ -438,7 +438,7 @@ With stabilization (e.g., rlog or vst): Variance across genes is more evenly dis
 <p>The rlog transformation of the normalized counts is only necessary for these visualization methods during this quality assessment.</p>
 </blockquote>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="quality-control.html#cb36-1" tabindex="-1"></a><span class="do">### Transform counts for data visualization</span></span>
-<span id="cb36-2"><a href="quality-control.html#cb36-2" tabindex="-1"></a>rld <span class="ot">&lt;-</span> <span class="fu">rlog</span>(dds, <span class="at">blind=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<span id="cb36-2"><a href="quality-control.html#cb36-2" tabindex="-1"></a>rld <span class="ot">&lt;-</span> <span class="fu">rlog</span>(dds, <span class="at">blind =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>The <code>blind=TRUE</code> argument results in a transformation unbiased to sample condition information. When performing quality assessment, it is important to include this option. The <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#blind-dispersion-estimation">DESeq2 vignette</a> has more details.</p>
 <p>The <code>rlog</code> function returns a <code>DESeqTransform</code> object, another type of DESeq-specific object. The reason you don’t just get a matrix of transformed values is because all of the parameters (i.e. size factors) that went into computing the rlog transform are stored in that object. We use this object to plot the PCA and heirarchical clustering figures for quality assessment.</p>
 </div>
@@ -446,9 +446,8 @@ With stabilization (e.g., rlog or vst): Variance across genes is more evenly dis
 <h3><span class="header-section-number">3.3.2</span> Principal components analysis (PCA)<a href="quality-control.html#principal-components-analysis-pca" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>DESeq2 has a built-in function for plotting PCA plots, that uses <code>ggplot2</code> under the hood. This is great because it saves us having to type out lines of code and having to fiddle with the different ggplot2 layers. In addition, it takes the <code>rlog</code> object as an input directly, hence saving us the trouble of extracting the relevant information from it.</p>
 <p>The function <code>plotPCA()</code> requires two arguments as input: an <code>rlog</code> object and the <code>intgroup</code> (the column in our metadata that we are interested in).</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="quality-control.html#cb37-1" tabindex="-1"></a><span class="do">### Plot PCA </span></span>
-<span id="cb37-2"><a href="quality-control.html#cb37-2" tabindex="-1"></a><span class="fu">plotPCA</span>(rld, <span class="at">intgroup=</span><span class="st">&quot;sampletype&quot;</span>)</span></code></pre></div>
-<pre><code>## using ntop=500 top features by variance</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="quality-control.html#cb37-1" tabindex="-1"></a><span class="do">### Plot PCA</span></span>
+<span id="cb37-2"><a href="quality-control.html#cb37-2" tabindex="-1"></a><span class="fu">plotPCA</span>(rld, <span class="at">intgroup =</span> <span class="st">&quot;sampletype&quot;</span>)</span></code></pre></div>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-25-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p><strong>What does this plot tell you about the similarity of samples? Does it fit the expectation from the experimental design?</strong> By default the function uses the <em>top 500 most variable genes</em>. You can change this by adding the <code>ntop</code> argument and specifying how many genes you want to use to draw the plot.</p>
 <blockquote>
@@ -458,47 +457,54 @@ With stabilization (e.g., rlog or vst): Variance across genes is more evenly dis
 <div id="hierarchical-clustering" class="section level3 hasAnchor" number="3.3.3">
 <h3><span class="header-section-number">3.3.3</span> Hierarchical Clustering<a href="quality-control.html#hierarchical-clustering" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Since there is no built-in function for heatmaps in DESeq2 we will be using the <code>pheatmap()</code> function from the <code>pheatmap</code> package. This function requires a matrix/dataframe of numeric values as input, and so the first thing we need to is retrieve that information from the <code>rld</code> object:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="quality-control.html#cb39-1" tabindex="-1"></a><span class="do">### Extract the rlog matrix from the object</span></span>
-<span id="cb39-2"><a href="quality-control.html#cb39-2" tabindex="-1"></a>rld_mat <span class="ot">&lt;-</span> <span class="fu">assay</span>(rld) <span class="do">## assay() is function from the &quot;SummarizedExperiment&quot; package that was loaded when you loaded DESeq2</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="quality-control.html#cb38-1" tabindex="-1"></a><span class="do">### Extract the rlog matrix from the object</span></span>
+<span id="cb38-2"><a href="quality-control.html#cb38-2" tabindex="-1"></a>rld_mat <span class="ot">&lt;-</span> <span class="fu">assay</span>(rld)  <span class="do">## assay() is function from the &#39;SummarizedExperiment&#39; package that was loaded when you loaded DESeq2</span></span></code></pre></div>
 <p>Then we need to compute the pairwise correlation values for samples. We can do this using the <code>cor()</code> function:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="quality-control.html#cb40-1" tabindex="-1"></a><span class="do">### Compute pairwise correlation values</span></span>
-<span id="cb40-2"><a href="quality-control.html#cb40-2" tabindex="-1"></a>rld_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(rld_mat) <span class="do">## cor() is a base R function</span></span>
-<span id="cb40-3"><a href="quality-control.html#cb40-3" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="quality-control.html#cb40-4" tabindex="-1"></a><span class="fu">head</span>(rld_cor)   <span class="do">## check the output of cor(), make note of the rownames and colnames</span></span></code></pre></div>
-<pre><code>##            Irrel_kd_1 Irrel_kd_2 Irrel_kd_3 Mov10_kd_2 Mov10_kd_3 Mov10_oe_1 Mov10_oe_2 Mov10_oe_3
-## Irrel_kd_1  1.0000000  0.9999614  0.9999532  0.9997202  0.9997748  0.9996700  0.9996599  0.9995804
-## Irrel_kd_2  0.9999614  1.0000000  0.9999544  0.9996918  0.9997568  0.9996984  0.9996825  0.9996227
-## Irrel_kd_3  0.9999532  0.9999544  1.0000000  0.9996816  0.9997574  0.9997067  0.9997090  0.9996026
-## Mov10_kd_2  0.9997202  0.9996918  0.9996816  1.0000000  0.9999492  0.9994868  0.9994565  0.9993869
-## Mov10_kd_3  0.9997748  0.9997568  0.9997574  0.9999492  1.0000000  0.9996154  0.9995905  0.9995235
-## Mov10_oe_1  0.9996700  0.9996984  0.9997067  0.9994868  0.9996154  1.0000000  0.9999505  0.9999196</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="quality-control.html#cb39-1" tabindex="-1"></a><span class="do">### Compute pairwise correlation values</span></span>
+<span id="cb39-2"><a href="quality-control.html#cb39-2" tabindex="-1"></a>rld_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(rld_mat)  <span class="do">## cor() is a base R function</span></span>
+<span id="cb39-3"><a href="quality-control.html#cb39-3" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="quality-control.html#cb39-4" tabindex="-1"></a><span class="fu">head</span>(rld_cor)  <span class="do">## check the output of cor(), make note of the rownames and colnames</span></span></code></pre></div>
+<pre><code>##            Irrel_kd_1 Irrel_kd_2 Irrel_kd_3 Mov10_kd_2 Mov10_kd_3 Mov10_oe_1
+## Irrel_kd_1  1.0000000  0.9999614  0.9999532  0.9997202  0.9997748  0.9996700
+## Irrel_kd_2  0.9999614  1.0000000  0.9999544  0.9996918  0.9997568  0.9996984
+## Irrel_kd_3  0.9999532  0.9999544  1.0000000  0.9996816  0.9997574  0.9997067
+## Mov10_kd_2  0.9997202  0.9996918  0.9996816  1.0000000  0.9999492  0.9994868
+## Mov10_kd_3  0.9997748  0.9997568  0.9997574  0.9999492  1.0000000  0.9996154
+## Mov10_oe_1  0.9996700  0.9996984  0.9997067  0.9994868  0.9996154  1.0000000
+##            Mov10_oe_2 Mov10_oe_3
+## Irrel_kd_1  0.9996599  0.9995804
+## Irrel_kd_2  0.9996825  0.9996227
+## Irrel_kd_3  0.9997090  0.9996026
+## Mov10_kd_2  0.9994565  0.9993869
+## Mov10_kd_3  0.9995905  0.9995235
+## Mov10_oe_1  0.9999505  0.9999196</code></pre>
 <p>And now to plot the correlation values as a heatmap:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="quality-control.html#cb42-1" tabindex="-1"></a><span class="do">### Plot heatmap</span></span>
-<span id="cb42-2"><a href="quality-control.html#cb42-2" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="quality-control.html#cb41-1" tabindex="-1"></a><span class="do">### Plot heatmap</span></span>
+<span id="cb41-2"><a href="quality-control.html#cb41-2" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-28-1.png" width="576" style="display: block; margin: auto;" /></p>
 <p>Overall, we observe pretty high correlations across the board ( &gt; 0.999) suggesting no outlying sample(s). Also, similar to the PCA plot you see the samples clustering together by sample group. Together, these plots suggest to us that the data are of good quality and we have the green light to proceed to differential expression analysis.</p>
 <p><strong>Exercise</strong> points = +3</p>
 <p>The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments <code>color</code>, <code>border_color</code>, <code>fontsize_row</code>, <code>fontsize_col</code>, <code>show_rownames</code> and <code>show_colnames</code> to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.</p>
 <p>Pheatmap for exercise:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="quality-control.html#cb42-1" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
+<span id="cb42-2"><a href="quality-control.html#cb42-2" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
+<span id="cb42-3"><a href="quality-control.html#cb42-3" tabindex="-1"></a>heat.colors <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>))(<span class="dv">100</span>)</span>
+<span id="cb42-4"><a href="quality-control.html#cb42-4" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="quality-control.html#cb42-5" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor, <span class="at">color =</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>))(<span class="dv">100</span>))</span></code></pre></div>
+<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-29-1.png" width="576" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="quality-control.html#cb43-1" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
 <span id="cb43-2"><a href="quality-control.html#cb43-2" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
-<span id="cb43-3"><a href="quality-control.html#cb43-3" tabindex="-1"></a>heat.colors <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>))(<span class="dv">100</span>)</span>
-<span id="cb43-4"><a href="quality-control.html#cb43-4" tabindex="-1"></a></span>
-<span id="cb43-5"><a href="quality-control.html#cb43-5" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor, <span class="at">color =</span> <span class="fu">colorRampPalette</span>(<span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>))(<span class="dv">100</span>))</span></code></pre></div>
-<p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-29-1.png" width="576" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="quality-control.html#cb44-1" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
-<span id="cb44-2"><a href="quality-control.html#cb44-2" tabindex="-1"></a><span class="fu">library</span>(RColorBrewer)</span>
-<span id="cb44-3"><a href="quality-control.html#cb44-3" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="quality-control.html#cb44-4" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
+<span id="cb43-3"><a href="quality-control.html#cb43-3" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="quality-control.html#cb43-4" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-30-1.png" width="576" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="quality-control.html#cb45-1" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
-<span id="cb45-2"><a href="quality-control.html#cb45-2" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="quality-control.html#cb44-1" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
+<span id="cb44-2"><a href="quality-control.html#cb44-2" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p><img src="2025_RNA-Seq-Analysis_files/figure-html/unnamed-chunk-32-1.png" width="768" /></p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="quality-control.html#cb46-1" tabindex="-1"></a><span class="co"># The color palette &quot;Blues&quot; is a good choice for this heatmap</span></span>
-<span id="cb46-2"><a href="quality-control.html#cb46-2" tabindex="-1"></a>heat.colors <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>)</span>
-<span id="cb46-3"><a href="quality-control.html#cb46-3" tabindex="-1"></a></span>
-<span id="cb46-4"><a href="quality-control.html#cb46-4" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="quality-control.html#cb45-1" tabindex="-1"></a><span class="co"># The color palette &#39;Blues&#39; is a good choice for this heatmap</span></span>
+<span id="cb45-2"><a href="quality-control.html#cb45-2" tabindex="-1"></a>heat.colors <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="dv">9</span>, <span class="st">&quot;Blues&quot;</span>)</span>
+<span id="cb45-3"><a href="quality-control.html#cb45-3" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="quality-control.html#cb45-4" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div>
 <hr />
 
 </div>

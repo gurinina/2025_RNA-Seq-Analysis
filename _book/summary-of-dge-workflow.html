@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 Summary of DGE workflow | PHAR520: Applied Omics Science for Drug Discovery and Development</title>
   <meta name="description" content="Chapter 7 Summary of DGE workflow | PHAR520: Applied Omics Science for Drug Discovery and Development" />
-  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.44 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 Summary of DGE workflow | PHAR520: Applied Omics Science for Drug Discovery and Development" />
   <meta property="og:type" content="book" />
@@ -288,90 +288,87 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="summary-of-dge-workflow" class="section level1 hasAnchor" number="7">
 <h1><span class="header-section-number">Chapter 7</span> Summary of DGE workflow<a href="summary-of-dge-workflow.html#summary-of-dge-workflow" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p><strong>Homework: modify this file to analyze the MOV dataset, starting with Mov10_full_counts.txt in your data folder. Compare the “MOV10_knockdown” to the “control”. Include a heatmap and a volcano plot</strong> points = +10</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="summary-of-dge-workflow.html#cb126-1" tabindex="-1"></a><span class="do">## Setup</span></span>
-<span id="cb126-2"><a href="summary-of-dge-workflow.html#cb126-2" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="summary-of-dge-workflow.html#cb107-1" tabindex="-1"></a><span class="do">## Setup</span></span>
+<span id="cb107-2"><a href="summary-of-dge-workflow.html#cb107-2" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span></code></pre></div>
 <p>We have detailed the various steps in a differential expression analysis workflow, providing theory with example code. To provide a more succinct reference for the code needed to run a DGE analysis, we have summarized the steps in an analysis below:</p>
 <div id="import-data-into-dds-object" class="section level3 hasAnchor" number="7.0.1">
 <h3><span class="header-section-number">7.0.1</span> 1. Import data into dds object:<a href="summary-of-dge-workflow.html#import-data-into-dds-object" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="summary-of-dge-workflow.html#cb127-1" tabindex="-1"></a><span class="co"># Check that the row names of the metadata equal the column names</span></span>
-<span id="cb127-2"><a href="summary-of-dge-workflow.html#cb127-2" tabindex="-1"></a><span class="co">#  of the **raw counts** data</span></span>
-<span id="cb127-3"><a href="summary-of-dge-workflow.html#cb127-3" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(raw_counts) <span class="sc">==</span> <span class="fu">rownames</span>(metadata))</span>
-<span id="cb127-4"><a href="summary-of-dge-workflow.html#cb127-4" tabindex="-1"></a></span>
-<span id="cb127-5"><a href="summary-of-dge-workflow.html#cb127-5" tabindex="-1"></a><span class="co"># Create DESeq2Dataset object</span></span>
-<span id="cb127-6"><a href="summary-of-dge-workflow.html#cb127-6" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> raw_counts, <span class="at">colData =</span> metadata, </span>
-<span id="cb127-7"><a href="summary-of-dge-workflow.html#cb127-7" tabindex="-1"></a>                              <span class="at">design =</span> <span class="sc">~</span> condition)</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="summary-of-dge-workflow.html#cb108-1" tabindex="-1"></a><span class="co"># Check that the row names of the metadata equal the column names of the **raw</span></span>
+<span id="cb108-2"><a href="summary-of-dge-workflow.html#cb108-2" tabindex="-1"></a><span class="co"># counts** data</span></span>
+<span id="cb108-3"><a href="summary-of-dge-workflow.html#cb108-3" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">colnames</span>(raw_counts) <span class="sc">==</span> <span class="fu">rownames</span>(metadata))</span>
+<span id="cb108-4"><a href="summary-of-dge-workflow.html#cb108-4" tabindex="-1"></a></span>
+<span id="cb108-5"><a href="summary-of-dge-workflow.html#cb108-5" tabindex="-1"></a><span class="co"># Create DESeq2Dataset object</span></span>
+<span id="cb108-6"><a href="summary-of-dge-workflow.html#cb108-6" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> raw_counts, <span class="at">colData =</span> metadata, <span class="at">design =</span> <span class="sc">~</span>condition)</span></code></pre></div>
 </div>
 <div id="exploratory-data-analysis-pca-heirarchical-clustering---identifying-outliers-and-sources-of-variation-in-the-data" class="section level3 hasAnchor" number="7.0.2">
 <h3><span class="header-section-number">7.0.2</span> 2. Exploratory data analysis (PCA &amp; heirarchical clustering) - identifying outliers and sources of variation in the data:<a href="summary-of-dge-workflow.html#exploratory-data-analysis-pca-heirarchical-clustering---identifying-outliers-and-sources-of-variation-in-the-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="summary-of-dge-workflow.html#cb128-1" tabindex="-1"></a><span class="co"># Transform counts for data visualization</span></span>
-<span id="cb128-2"><a href="summary-of-dge-workflow.html#cb128-2" tabindex="-1"></a>rld <span class="ot">&lt;-</span> <span class="fu">rlog</span>(dds, <span class="at">blind =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb128-3"><a href="summary-of-dge-workflow.html#cb128-3" tabindex="-1"></a></span>
-<span id="cb128-4"><a href="summary-of-dge-workflow.html#cb128-4" tabindex="-1"></a><span class="co"># Plot PCA</span></span>
-<span id="cb128-5"><a href="summary-of-dge-workflow.html#cb128-5" tabindex="-1"></a><span class="fu">plotPCA</span>(rld, <span class="at">intgroup =</span> <span class="st">&quot;sampletype&quot;</span>)</span>
-<span id="cb128-6"><a href="summary-of-dge-workflow.html#cb128-6" tabindex="-1"></a></span>
-<span id="cb128-7"><a href="summary-of-dge-workflow.html#cb128-7" tabindex="-1"></a><span class="co"># Extract the rlog matrix from the object</span></span>
-<span id="cb128-8"><a href="summary-of-dge-workflow.html#cb128-8" tabindex="-1"></a>rld_mat <span class="ot">&lt;-</span> <span class="fu">assay</span>(rld)</span>
-<span id="cb128-9"><a href="summary-of-dge-workflow.html#cb128-9" tabindex="-1"></a></span>
-<span id="cb128-10"><a href="summary-of-dge-workflow.html#cb128-10" tabindex="-1"></a><span class="co"># Compute pairwise correlation values</span></span>
-<span id="cb128-11"><a href="summary-of-dge-workflow.html#cb128-11" tabindex="-1"></a>rld_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(rld_mat)</span>
-<span id="cb128-12"><a href="summary-of-dge-workflow.html#cb128-12" tabindex="-1"></a></span>
-<span id="cb128-13"><a href="summary-of-dge-workflow.html#cb128-13" tabindex="-1"></a><span class="co"># Plot heatmap</span></span>
-<span id="cb128-14"><a href="summary-of-dge-workflow.html#cb128-14" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="summary-of-dge-workflow.html#cb109-1" tabindex="-1"></a><span class="co"># Transform counts for data visualization</span></span>
+<span id="cb109-2"><a href="summary-of-dge-workflow.html#cb109-2" tabindex="-1"></a>rld <span class="ot">&lt;-</span> <span class="fu">rlog</span>(dds, <span class="at">blind =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb109-3"><a href="summary-of-dge-workflow.html#cb109-3" tabindex="-1"></a></span>
+<span id="cb109-4"><a href="summary-of-dge-workflow.html#cb109-4" tabindex="-1"></a><span class="co"># Plot PCA</span></span>
+<span id="cb109-5"><a href="summary-of-dge-workflow.html#cb109-5" tabindex="-1"></a><span class="fu">plotPCA</span>(rld, <span class="at">intgroup =</span> <span class="st">&quot;sampletype&quot;</span>)</span>
+<span id="cb109-6"><a href="summary-of-dge-workflow.html#cb109-6" tabindex="-1"></a></span>
+<span id="cb109-7"><a href="summary-of-dge-workflow.html#cb109-7" tabindex="-1"></a><span class="co"># Extract the rlog matrix from the object</span></span>
+<span id="cb109-8"><a href="summary-of-dge-workflow.html#cb109-8" tabindex="-1"></a>rld_mat <span class="ot">&lt;-</span> <span class="fu">assay</span>(rld)</span>
+<span id="cb109-9"><a href="summary-of-dge-workflow.html#cb109-9" tabindex="-1"></a></span>
+<span id="cb109-10"><a href="summary-of-dge-workflow.html#cb109-10" tabindex="-1"></a><span class="co"># Compute pairwise correlation values</span></span>
+<span id="cb109-11"><a href="summary-of-dge-workflow.html#cb109-11" tabindex="-1"></a>rld_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(rld_mat)</span>
+<span id="cb109-12"><a href="summary-of-dge-workflow.html#cb109-12" tabindex="-1"></a></span>
+<span id="cb109-13"><a href="summary-of-dge-workflow.html#cb109-13" tabindex="-1"></a><span class="co"># Plot heatmap</span></span>
+<span id="cb109-14"><a href="summary-of-dge-workflow.html#cb109-14" tabindex="-1"></a><span class="fu">pheatmap</span>(rld_cor)</span></code></pre></div>
 </div>
 <div id="run-deseq2" class="section level3 hasAnchor" number="7.0.3">
 <h3><span class="header-section-number">7.0.3</span> 3. Run DESeq2:<a href="summary-of-dge-workflow.html#run-deseq2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="summary-of-dge-workflow.html#cb129-1" tabindex="-1"></a><span class="co"># **Optional step** - Re-create DESeq2 dataset if the design formula has changed after QC analysis in include other sources of variation</span></span>
-<span id="cb129-2"><a href="summary-of-dge-workflow.html#cb129-2" tabindex="-1"></a></span>
-<span id="cb129-3"><a href="summary-of-dge-workflow.html#cb129-3" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> raw_counts, </span>
-<span id="cb129-4"><a href="summary-of-dge-workflow.html#cb129-4" tabindex="-1"></a>                              <span class="at">colData =</span> metadata, <span class="at">design =</span> <span class="sc">~</span> condition)</span>
-<span id="cb129-5"><a href="summary-of-dge-workflow.html#cb129-5" tabindex="-1"></a></span>
-<span id="cb129-6"><a href="summary-of-dge-workflow.html#cb129-6" tabindex="-1"></a><span class="co"># Run DESeq2 differential expression analysis</span></span>
-<span id="cb129-7"><a href="summary-of-dge-workflow.html#cb129-7" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span>
-<span id="cb129-8"><a href="summary-of-dge-workflow.html#cb129-8" tabindex="-1"></a></span>
-<span id="cb129-9"><a href="summary-of-dge-workflow.html#cb129-9" tabindex="-1"></a><span class="co">#  Output normalized counts to save as a file to access outside RStudio</span></span>
-<span id="cb129-10"><a href="summary-of-dge-workflow.html#cb129-10" tabindex="-1"></a>normalized_counts <span class="ot">&lt;-</span> <span class="fu">counts</span>(dds, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb129-11"><a href="summary-of-dge-workflow.html#cb129-11" tabindex="-1"></a>    </span>
-<span id="cb129-12"><a href="summary-of-dge-workflow.html#cb129-12" tabindex="-1"></a><span class="fu">write.table</span>(normalized_counts, <span class="at">file =</span> <span class="st">&quot;data/normalized_counts.txt&quot;</span>, </span>
-<span id="cb129-13"><a href="summary-of-dge-workflow.html#cb129-13" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">quote =</span> F, <span class="at">col.names =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="summary-of-dge-workflow.html#cb110-1" tabindex="-1"></a><span class="co"># **Optional step** - Re-create DESeq2 dataset if the design formula has</span></span>
+<span id="cb110-2"><a href="summary-of-dge-workflow.html#cb110-2" tabindex="-1"></a><span class="co"># changed after QC analysis in include other sources of variation</span></span>
+<span id="cb110-3"><a href="summary-of-dge-workflow.html#cb110-3" tabindex="-1"></a></span>
+<span id="cb110-4"><a href="summary-of-dge-workflow.html#cb110-4" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> raw_counts, <span class="at">colData =</span> metadata, <span class="at">design =</span> <span class="sc">~</span>condition)</span>
+<span id="cb110-5"><a href="summary-of-dge-workflow.html#cb110-5" tabindex="-1"></a></span>
+<span id="cb110-6"><a href="summary-of-dge-workflow.html#cb110-6" tabindex="-1"></a><span class="co"># Run DESeq2 differential expression analysis</span></span>
+<span id="cb110-7"><a href="summary-of-dge-workflow.html#cb110-7" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span>
+<span id="cb110-8"><a href="summary-of-dge-workflow.html#cb110-8" tabindex="-1"></a></span>
+<span id="cb110-9"><a href="summary-of-dge-workflow.html#cb110-9" tabindex="-1"></a><span class="co"># Output normalized counts to save as a file to access outside RStudio</span></span>
+<span id="cb110-10"><a href="summary-of-dge-workflow.html#cb110-10" tabindex="-1"></a>normalized_counts <span class="ot">&lt;-</span> <span class="fu">counts</span>(dds, <span class="at">normalized =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb110-11"><a href="summary-of-dge-workflow.html#cb110-11" tabindex="-1"></a></span>
+<span id="cb110-12"><a href="summary-of-dge-workflow.html#cb110-12" tabindex="-1"></a><span class="fu">write.table</span>(normalized_counts, <span class="at">file =</span> <span class="st">&quot;data/normalized_counts.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">quote =</span> F,</span>
+<span id="cb110-13"><a href="summary-of-dge-workflow.html#cb110-13" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="cn">NA</span>)</span></code></pre></div>
 </div>
 <div id="check-the-fit-of-the-dispersion-estimates" class="section level3 hasAnchor" number="7.0.4">
 <h3><span class="header-section-number">7.0.4</span> 4. Check the fit of the dispersion estimates:<a href="summary-of-dge-workflow.html#check-the-fit-of-the-dispersion-estimates" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="summary-of-dge-workflow.html#cb130-1" tabindex="-1"></a><span class="co"># Plot dispersion estimates</span></span>
-<span id="cb130-2"><a href="summary-of-dge-workflow.html#cb130-2" tabindex="-1"></a><span class="fu">plotDispEsts</span>(dds)</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="summary-of-dge-workflow.html#cb111-1" tabindex="-1"></a><span class="co"># Plot dispersion estimates</span></span>
+<span id="cb111-2"><a href="summary-of-dge-workflow.html#cb111-2" tabindex="-1"></a><span class="fu">plotDispEsts</span>(dds)</span></code></pre></div>
 </div>
 <div id="create-contrasts-to-perform-wald-testing-on-the-shrunken-log2-foldchanges-between-specific-conditions" class="section level3 hasAnchor" number="7.0.5">
 <h3><span class="header-section-number">7.0.5</span> 5. Create contrasts to perform Wald testing on the shrunken log2 foldchanges between specific conditions:<a href="summary-of-dge-workflow.html#create-contrasts-to-perform-wald-testing-on-the-shrunken-log2-foldchanges-between-specific-conditions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="summary-of-dge-workflow.html#cb131-1" tabindex="-1"></a><span class="co"># Output results of Wald test for contrast</span></span>
-<span id="cb131-2"><a href="summary-of-dge-workflow.html#cb131-2" tabindex="-1"></a>contrast <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;condition&quot;</span>, <span class="st">&quot;level_to_compare&quot;</span>, <span class="st">&quot;base_level&quot;</span>)</span>
-<span id="cb131-3"><a href="summary-of-dge-workflow.html#cb131-3" tabindex="-1"></a></span>
-<span id="cb131-4"><a href="summary-of-dge-workflow.html#cb131-4" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> contrast)</span>
-<span id="cb131-5"><a href="summary-of-dge-workflow.html#cb131-5" tabindex="-1"></a></span>
-<span id="cb131-6"><a href="summary-of-dge-workflow.html#cb131-6" tabindex="-1"></a>coef <span class="ot">=</span> <span class="fu">resultsNames</span>(dds)</span>
-<span id="cb131-7"><a href="summary-of-dge-workflow.html#cb131-7" tabindex="-1"></a></span>
-<span id="cb131-8"><a href="summary-of-dge-workflow.html#cb131-8" tabindex="-1"></a>res_table <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(dds, <span class="at">coef =</span> coef[<span class="dv">2</span>], <span class="at">res =</span> res, </span>
-<span id="cb131-9"><a href="summary-of-dge-workflow.html#cb131-9" tabindex="-1"></a>                         <span class="at">type =</span> <span class="st">&quot;apeglm&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="summary-of-dge-workflow.html#cb112-1" tabindex="-1"></a><span class="co"># Output results of Wald test for contrast</span></span>
+<span id="cb112-2"><a href="summary-of-dge-workflow.html#cb112-2" tabindex="-1"></a>contrast <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;condition&quot;</span>, <span class="st">&quot;level_to_compare&quot;</span>, <span class="st">&quot;base_level&quot;</span>)</span>
+<span id="cb112-3"><a href="summary-of-dge-workflow.html#cb112-3" tabindex="-1"></a></span>
+<span id="cb112-4"><a href="summary-of-dge-workflow.html#cb112-4" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> contrast)</span>
+<span id="cb112-5"><a href="summary-of-dge-workflow.html#cb112-5" tabindex="-1"></a></span>
+<span id="cb112-6"><a href="summary-of-dge-workflow.html#cb112-6" tabindex="-1"></a>coef <span class="ot">=</span> <span class="fu">resultsNames</span>(dds)</span>
+<span id="cb112-7"><a href="summary-of-dge-workflow.html#cb112-7" tabindex="-1"></a></span>
+<span id="cb112-8"><a href="summary-of-dge-workflow.html#cb112-8" tabindex="-1"></a>res_table <span class="ot">&lt;-</span> <span class="fu">lfcShrink</span>(dds, <span class="at">coef =</span> coef[<span class="dv">2</span>], <span class="at">res =</span> res, <span class="at">type =</span> <span class="st">&quot;apeglm&quot;</span>)</span></code></pre></div>
 </div>
 <div id="output-significant-results" class="section level3 hasAnchor" number="7.0.6">
 <h3><span class="header-section-number">7.0.6</span> 6. Output significant results:<a href="summary-of-dge-workflow.html#output-significant-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="summary-of-dge-workflow.html#cb132-1" tabindex="-1"></a><span class="do">### Set thresholds</span></span>
-<span id="cb132-2"><a href="summary-of-dge-workflow.html#cb132-2" tabindex="-1"></a>padj.cutoff <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb132-3"><a href="summary-of-dge-workflow.html#cb132-3" tabindex="-1"></a>lfc.cutoff <span class="ot">&lt;-</span> <span class="fl">0.58</span> <span class="do">## change in expression of 1.5</span></span>
-<span id="cb132-4"><a href="summary-of-dge-workflow.html#cb132-4" tabindex="-1"></a></span>
-<span id="cb132-5"><a href="summary-of-dge-workflow.html#cb132-5" tabindex="-1"></a><span class="co"># Turn the results object into a data frame</span></span>
-<span id="cb132-6"><a href="summary-of-dge-workflow.html#cb132-6" tabindex="-1"></a>res_df <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
-<span id="cb132-7"><a href="summary-of-dge-workflow.html#cb132-7" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb132-8"><a href="summary-of-dge-workflow.html#cb132-8" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>) </span>
-<span id="cb132-9"><a href="summary-of-dge-workflow.html#cb132-9" tabindex="-1"></a></span>
-<span id="cb132-10"><a href="summary-of-dge-workflow.html#cb132-10" tabindex="-1"></a><span class="co"># Subset the significant results</span></span>
-<span id="cb132-11"><a href="summary-of-dge-workflow.html#cb132-11" tabindex="-1"></a>sig_res <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(res_df, padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span>  </span>
-<span id="cb132-12"><a href="summary-of-dge-workflow.html#cb132-12" tabindex="-1"></a>                  <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="summary-of-dge-workflow.html#cb113-1" tabindex="-1"></a><span class="do">### Set thresholds</span></span>
+<span id="cb113-2"><a href="summary-of-dge-workflow.html#cb113-2" tabindex="-1"></a>padj.cutoff <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb113-3"><a href="summary-of-dge-workflow.html#cb113-3" tabindex="-1"></a>lfc.cutoff <span class="ot">&lt;-</span> <span class="fl">0.58</span>  <span class="do">## change in expression of 1.5</span></span>
+<span id="cb113-4"><a href="summary-of-dge-workflow.html#cb113-4" tabindex="-1"></a></span>
+<span id="cb113-5"><a href="summary-of-dge-workflow.html#cb113-5" tabindex="-1"></a><span class="co"># Turn the results object into a data frame</span></span>
+<span id="cb113-6"><a href="summary-of-dge-workflow.html#cb113-6" tabindex="-1"></a>res_df <span class="ot">&lt;-</span> res <span class="sc">%&gt;%</span></span>
+<span id="cb113-7"><a href="summary-of-dge-workflow.html#cb113-7" tabindex="-1"></a>    <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb113-8"><a href="summary-of-dge-workflow.html#cb113-8" tabindex="-1"></a>    <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;gene&quot;</span>)</span>
+<span id="cb113-9"><a href="summary-of-dge-workflow.html#cb113-9" tabindex="-1"></a></span>
+<span id="cb113-10"><a href="summary-of-dge-workflow.html#cb113-10" tabindex="-1"></a><span class="co"># Subset the significant results</span></span>
+<span id="cb113-11"><a href="summary-of-dge-workflow.html#cb113-11" tabindex="-1"></a>sig_res <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(res_df, padj <span class="sc">&lt;</span> padj.cutoff <span class="sc">&amp;</span> <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> lfc.cutoff)</span></code></pre></div>
 </div>
 <div id="visualize-results-volcano-plots-heatmaps-normalized-counts-plots-of-top-genes-etc." class="section level3 hasAnchor" number="7.0.7">
 <h3><span class="header-section-number">7.0.7</span> 7. Visualize results: volcano plots, heatmaps, normalized counts plots of top genes, etc.<a href="summary-of-dge-workflow.html#visualize-results-volcano-plots-heatmaps-normalized-counts-plots-of-top-genes-etc." class="anchor-section" aria-label="Anchor link to header"></a></h3>
 </div>
 <div id="make-sure-to-output-the-versions-of-all-tools-used-in-the-de-analysis" class="section level3 hasAnchor" number="7.0.8">
 <h3><span class="header-section-number">7.0.8</span> 8. Make sure to output the versions of all tools used in the DE analysis:<a href="summary-of-dge-workflow.html#make-sure-to-output-the-versions-of-all-tools-used-in-the-de-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="summary-of-dge-workflow.html#cb133-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="summary-of-dge-workflow.html#cb114-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.5.1 (2025-06-13)
 ## Platform: x86_64-apple-darwin20
 ## Running under: macOS Sequoia 15.6
@@ -387,35 +384,60 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## tzcode source: internal
 ## 
 ## attached base packages:
-## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
-##  [1] ggrepel_0.9.6               pheatmap_1.0.13             DESeq2_1.48.1              
-##  [4] SummarizedExperiment_1.38.1 Biobase_2.68.0              MatrixGenerics_1.20.0      
-##  [7] matrixStats_1.5.0           GenomicRanges_1.60.0        GenomeInfoDb_1.44.1        
-## [10] IRanges_2.42.0              S4Vectors_0.46.0            BiocGenerics_0.54.0        
-## [13] generics_0.1.4              RColorBrewer_1.1-3          lubridate_1.9.4            
-## [16] forcats_1.0.0               stringr_1.5.1               dplyr_1.1.4                
-## [19] purrr_1.1.0                 readr_2.1.5                 tidyr_1.3.1                
-## [22] tibble_3.3.0                ggplot2_3.5.2               tidyverse_2.0.0            
+##  [1] ggrepel_0.9.6               pheatmap_1.0.13            
+##  [3] DESeq2_1.48.1               SummarizedExperiment_1.38.1
+##  [5] Biobase_2.68.0              MatrixGenerics_1.20.0      
+##  [7] matrixStats_1.5.0           GenomicRanges_1.60.0       
+##  [9] GenomeInfoDb_1.44.2         IRanges_2.42.0             
+## [11] S4Vectors_0.46.0            BiocGenerics_0.54.0        
+## [13] generics_0.1.4              RColorBrewer_1.1-3         
+## [15] lubridate_1.9.4             forcats_1.0.0              
+## [17] stringr_1.5.1               dplyr_1.1.4                
+## [19] purrr_1.1.0                 readr_2.1.5                
+## [21] tidyr_1.3.1                 tibble_3.3.0               
+## [23] ggplot2_3.5.2               tidyverse_2.0.0            
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] gtable_0.3.6            xfun_0.52               bslib_0.9.0             lattice_0.22-7         
-##  [5] numDeriv_2016.8-1.1     tzdb_0.5.0              vctrs_0.6.5             tools_4.5.1            
-##  [9] parallel_4.5.1          pkgconfig_2.0.3         Matrix_1.7-3            lifecycle_1.0.4        
-## [13] GenomeInfoDbData_1.2.14 compiler_4.5.1          farver_2.1.2            codetools_0.2-20       
-## [17] htmltools_0.5.8.1       sass_0.4.10             yaml_2.3.10             pillar_1.11.0          
-## [21] crayon_1.5.3            jquerylib_0.1.4         MASS_7.3-65             BiocParallel_1.42.1    
-## [25] DelayedArray_0.34.1     cachem_1.1.0            emdbook_1.3.14          abind_1.4-8            
-## [29] bdsmatrix_1.3-7         tidyselect_1.2.1        locfit_1.5-9.12         digest_0.6.37          
-## [33] mvtnorm_1.3-3           stringi_1.8.7           bookdown_0.43           labeling_0.4.3         
-## [37] fastmap_1.2.0           grid_4.5.1              cli_3.6.5               SparseArray_1.8.1      
-## [41] magrittr_2.0.3          S4Arrays_1.8.1          utf8_1.2.6              withr_3.0.2            
-## [45] scales_1.4.0            UCSC.utils_1.4.0        timechange_0.3.0        rmarkdown_2.29         
-## [49] XVector_0.48.0          httr_1.4.7              hms_1.1.3               coda_0.19-4.1          
-## [53] evaluate_1.0.4          knitr_1.50              bbmle_1.0.25.1          rlang_1.1.6            
-## [57] Rcpp_1.1.0              glue_1.8.0              apeglm_1.30.0           rstudioapi_0.17.1      
-## [61] jsonlite_2.0.0          plyr_1.8.9              R6_2.6.1</code></pre>
+##   [1] rstudioapi_0.17.1       jsonlite_2.0.0          magrittr_2.0.3         
+##   [4] ggtangle_0.0.7          farver_2.1.2            rmarkdown_2.29         
+##   [7] fs_1.6.6                vctrs_0.6.5             memoise_2.0.1          
+##  [10] ggtree_3.16.3           htmltools_0.5.8.1       S4Arrays_1.8.1         
+##  [13] SparseArray_1.8.1       gridGraphics_0.5-1      sass_0.4.10            
+##  [16] bslib_0.9.0             plyr_1.8.9              cachem_1.1.0           
+##  [19] igraph_2.1.4            lifecycle_1.0.4         pkgconfig_2.0.3        
+##  [22] Matrix_1.7-3            R6_2.6.1                fastmap_1.2.0          
+##  [25] gson_0.1.0              GenomeInfoDbData_1.2.14 digest_0.6.37          
+##  [28] numDeriv_2016.8-1.1     aplot_0.2.8             enrichplot_1.28.4      
+##  [31] colorspace_2.1-1        patchwork_1.3.1         AnnotationDbi_1.70.0   
+##  [34] RSQLite_2.4.3           labeling_0.4.3          timechange_0.3.0       
+##  [37] httr_1.4.7              abind_1.4-8             compiler_4.5.1         
+##  [40] bit64_4.6.0-1           withr_3.0.2             BiocParallel_1.42.1    
+##  [43] DBI_1.2.3               R.utils_2.13.0          MASS_7.3-65            
+##  [46] rappdirs_0.3.3          DelayedArray_0.34.1     tools_4.5.1            
+##  [49] ape_5.8-1               R.oo_1.27.1             glue_1.8.0             
+##  [52] nlme_3.1-168            GOSemSim_2.34.0         grid_4.5.1             
+##  [55] reshape2_1.4.4          fgsea_1.34.2            gtable_0.3.6           
+##  [58] tzdb_0.5.0              R.methodsS3_1.8.2       data.table_1.17.8      
+##  [61] hms_1.1.3               utf8_1.2.6              XVector_0.48.0         
+##  [64] pillar_1.11.0           yulab.utils_0.2.1       emdbook_1.3.14         
+##  [67] splines_4.5.1           treeio_1.32.0           lattice_0.22-7         
+##  [70] bit_4.6.0               tidyselect_1.2.1        GO.db_3.21.0           
+##  [73] locfit_1.5-9.12         Biostrings_2.76.0       knitr_1.50             
+##  [76] bookdown_0.44           xfun_0.53               stringi_1.8.7          
+##  [79] UCSC.utils_1.4.0        lazyeval_0.2.2          ggfun_0.2.0            
+##  [82] yaml_2.3.10             evaluate_1.0.4          codetools_0.2-20       
+##  [85] bbmle_1.0.25.1          qvalue_2.40.0           ggplotify_0.1.2        
+##  [88] cli_3.6.5               jquerylib_0.1.4         Rcpp_1.1.0             
+##  [91] coda_0.19-4.1           png_0.1-8               bdsmatrix_1.3-7        
+##  [94] parallel_4.5.1          blob_1.2.4              clusterProfiler_4.16.0 
+##  [97] DOSE_4.2.0              mvtnorm_1.3-3           apeglm_1.30.0          
+## [100] tidytree_0.4.6          scales_1.4.0            crayon_1.5.3           
+## [103] rlang_1.1.6             cowplot_1.2.0           fastmatch_1.1-6        
+## [106] KEGGREST_1.48.1         formatR_1.14</code></pre>
 
 </div>
 </div>

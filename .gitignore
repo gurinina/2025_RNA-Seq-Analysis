@@ -2,11 +2,12 @@
 student_notes/*
 !student_notes/.gitkeep
 
-# bookdown
-_book
-_bookdown_files
-_pdf
-_epub
+# Ignore the output folder (where the book is built)
+# bookdown files
+_book/
+_pdf/
+_epub/
+_bookdown_files/
 data/res_tableOE.RDS
 data/res_tableKD.RDS
 data/sigOE.RDS

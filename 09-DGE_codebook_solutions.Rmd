@@ -606,6 +606,7 @@ Calculate the expected log2 counts for all genes and samples using matrix multip
 # Your code here
 ```
 
+# Then your original code would work:
 ```{r, echo = FALSE}
 # Execute calculations
 beta_coefficients <- coef(dds)

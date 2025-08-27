@@ -20,9 +20,9 @@ link-citations: true
 
 ```{r setup function, include=FALSE}
 
-source("source/setup.R")
+source("scripts/setup.R")
 
-source("source/solutions.R")
+source("scripts/solutions.R")
 
 ```
 

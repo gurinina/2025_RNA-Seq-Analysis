@@ -8,7 +8,7 @@ comment = NA,
 echo = TRUE
 )
 
-source("source/solutions.R")
+source("scripts/solutions.R")
 library(ggplot2)
 library(details)
 library(GOenrichment)

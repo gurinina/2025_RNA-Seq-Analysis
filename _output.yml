@@ -4,7 +4,7 @@ bookdown::gitbook:
   includes:
     in_header: includes/header.html
     highlight: tango
-    after_body: "source/collapse-output.html"
+    after_body: "scripts/collapse-output.html"
   df_print: kable
   mathjax: default
   config:
@@ -17,7 +17,7 @@ bookdown::gitbook:
 bookdown::pdf_book:
   fig_caption: false  # Disable figure captions in PDF output
   includes:
-    in_header: source/preamble.tex
+    in_header: scripts/preamble.tex
   latex_engine: xelatex
   toc: true
   number_sections: true

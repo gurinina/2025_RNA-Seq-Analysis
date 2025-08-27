@@ -1,7 +1,7 @@
 output:
   bookdown::gitbook:
     includes:
-      before_body: source/toggle.js
+      before_body: scripts/toggle.js
     config:
       code_folding: show
 book_filename: "2025_RNA-Seq-Analysis-instructor"

@@ -11,7 +11,7 @@ We’ll keep all personal work inside a folder named **`students_notes/`** at th
 
 ---
 
-## One‑time setup (RStudio UI only)
+## One‑time setup
 
 **Make your personal codebook from the template**
    - In the **Files** pane, navigate to `lessons/` and locate:  

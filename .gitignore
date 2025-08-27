@@ -12,8 +12,8 @@ data/res_tableKD.RDS
 data/sigOE.RDS
 data/sigKD.RDS
 data/normalized_counts.txt
-2025_RNA-Seq-Analysis-instructor.Rmd
-2025_RNA-Seq-Analysis-instructor_files/
+2025_RNA-Seq-Analysis.Rmd
+2025_RNA-Seq-Analysis_files/
 # Ignore everything in the results folder
 results/*
 results/clusterProfiler_Mov10oe.csv

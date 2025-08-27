@@ -13,15 +13,13 @@ We’ll keep all personal work inside a folder named **`students_notes/`** at th
 
 ## One‑time setup (RStudio UI only)
 
-1. **Create your notes folder**
-   - In the **Files** pane (bottom right), click **New Folder** → name it `students_notes` → **OK**.
-
-2. **Make your personal codebook from the template**
+**Make your personal codebook from the template**
    - In the **Files** pane, navigate to `lessons/` and locate:  
-     **`09-DGE_codebook_template.Rmd`**
+     ** '17-introR_codebook_template.Rmd'
+    
    - Check the box next to that file → click **More** → **Copy To…**
    - In the dialog, choose the **`students_notes/`** folder and set the new name to:  
-     **`<lastname>_09_codebook.Rmd`** (for example, `garcia_09_codebook.Rmd`) → **OK**.
+     **`<lastname>_17-introR_codebook.Rmd`** (for example, `garcia_17_codebook.Rmd`) → **OK**.
    - Click the new file in `students_notes/` to open it. This is now **your** working copy.
 
 > From now on, **work only inside `students_notes/`**. Anything you create or edit there is yours and won’t interfere with course updates.

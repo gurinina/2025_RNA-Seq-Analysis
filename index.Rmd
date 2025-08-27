@@ -8,7 +8,7 @@ output:
       toc:                               # Table of Contents
         collapse: section                # Collapsible Table of Contents
       download: ["pdf", "epub"]   
-github-repo: "gurinina/2025_RNA-seq-analysis"
+github-repo: "gurinina/2025_RNA-Seq-Analysis"
 url: "https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis"
 site: bookdown::bookdown_site
 documentclass: book
@@ -31,4 +31,4 @@ source("scripts/setup.R")
 </p>
 
 
-The published version for this module can be found on my bookdown site [2024_RNA-seq-analysis](https://bookdown.org/ggiaever/2024_RNA-seq-analysis/).
+The published version for this module can be found on my bookdown site [2024_RNA-Seq-Analysis](https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis/).

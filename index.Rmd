@@ -9,8 +9,8 @@ output:
       toc:
         collapse: section
       download: ["pdf", "epub"]
-github-repo: "gurinina/2024_RNA-seq-analysis-instructor"
-url: "https://bookdown.org/ggiaever/2024_RNA-seq-analysis-instructor"
+github-repo: "gurinina/2024_RNA-Seq-Analysis-instructor"
+url: "https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis-instructor"
 site: bookdown::bookdown_site
 documentclass: book
 cover-image: "img/football.png"
@@ -33,4 +33,4 @@ source("source/solutions.R")
 </p>
 
 
-The published version for this module can be found on my bookdown site [2024_RNA-seq-analysis-instructor](https://bookdown.org/ggiaever/2024_RNA-seq-analysis-instructor/).
+The published version for this module can be found on my bookdown site [2024_RNA-Seq-Analysis-instructor](https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis-instructor/).

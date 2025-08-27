@@ -5,7 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-**Subject**: Important: R Installation Instructions for 2024_RNA-seq-analysis
+**Subject**: Important: R Installation Instructions for 2024_RNA-Seq-Analysis
 
 **Please read this entire message carefully.**
 
@@ -75,19 +75,19 @@ nickname       Pile of Leaves
 
 Given all the issues we had in class, I think you should all reclone the course repository (unless everything is already working for you). Here's how to do it:
 
-1. First delete the current 2024_RNA-seq-analysis RStudio projedct on your computer. You can do this by navigating to the project in your file explorer and deleting it. 
+1. First delete the current 2024_RNA-Seq-Analysis RStudio projedct on your computer. You can do this by navigating to the project in your file explorer and deleting it. 
 
 2. Open RStudio and select `File -> New Project -> Version Control -> Git`.
 
 **Note**: If you don't have git installed on your device, you might have to first download and install it from [github](https://git-scm.com/downloads). Close Rstudio before installing git and re-open it afterwards.
 	
-3. In the "Repository URL" field, paste the following URL for the course material repository: `https://github.com/gurinina/2024_RNA-seq-analysis.git`
+3. In the "Repository URL" field, paste the following URL for the course material repository: `https://github.com/gurinina/2024_RNA-Seq-Analysis.git`
 
 4. Choose a local folder on your computer to store the project files.
 
 5. Click "Create Project" to clone the repository.
 
-After the repository is cloned, you can sync your copy of 2024_RNA-seq-analysis with the GitHub course repository 2024_RNA-seq-analysis by clicking the "Pull" button in the "Git" tab in RStudio. This ensures that you have the latest version of the course materials.
+After the repository is cloned, you can sync your copy of 2024_RNA-Seq-Analysis with the GitHub course repository 2024_RNA-Seq-Analysis by clicking the "Pull" button in the "Git" tab in RStudio. This ensures that you have the latest version of the course materials.
 
 ## Installing Required R Packages
 
@@ -199,7 +199,7 @@ git reset --hard origin/main
      
 ```
 
-- These commands will update your 2024_RNA-seq-analysis copy to match the remote 2024_RNA-seq-analysis course `main` branch, discarding your changes.
+- These commands will update your 2024_RNA-Seq-Analysis copy to match the remote 2024_RNA-Seq-Analysis course `main` branch, discarding your changes.
 
 - If you have any questions or need assistance with any part of the above, please let me know, and I will help you troubleshoot. I would like to hear from each of you to confirm that you have successfully knitted the bookdown file.
 

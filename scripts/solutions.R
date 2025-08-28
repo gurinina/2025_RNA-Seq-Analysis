@@ -24,7 +24,12 @@ evaluate_and_display <- function(expr, title = "Click to Show/Hide") {
 
 folded <- function(solution_text, evaluated_output) {
   output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-
+  
+  # Handle case where output_format is NULL or empty
+  if (is.null(output_format) || length(output_format) == 0) {
+    output_format <- "html"  # Default to HTML
+  }
+  
   if (output_format == "html") {
     # For GitBook (HTML), output as raw HTML and wrap the solution in <details><pre><code> tags
     knitr::asis_output(paste0(
@@ -56,9 +61,14 @@ wrap_in_quotes <- function(...) {
 }
 
 
-# Modified solutions function that accepts two arguments
 solutions <- function(code_expr, result_value = NULL) {
   output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
+  
+  # Handle NULL or empty output_format
+  if (is.null(output_format) || length(output_format) == 0) {
+    output_format <- "html"  # Default to HTML
+  }
+  
   if (output_format == "html") {
     # Convert expressions to strings for display
     code_lines <- sapply(code_expr, deparse)
@@ -101,10 +111,14 @@ solutions <- function(code_expr, result_value = NULL) {
   }
 }
 
-
 solution3 <- function(solution_text) {
   output_format <- knitr::opts_knit$get("rmarkdown.pandoc.to")
-
+  
+  # Handle NULL or empty output_format
+  if (is.null(output_format) || length(output_format) == 0) {
+    output_format <- "html"  # Default to HTML
+  }
+  
   if (output_format == "html") {
     # For GitBook (HTML), output as raw HTML and wrap the solution in <pre><code> tags
     knitr::asis_output(paste0(
@@ -118,3 +132,4 @@ solution3 <- function(solution_text) {
     cat("")  # No output for non-HTML formats
   }
 }
+

@@ -60,6 +60,7 @@ rownames(meta)
 names(data)
 
 ```
+
 You’ll notice the colnames of the data are the sample names, and the rownames of the metadata are the sample names. This is important as we will be merging the metadata with the data based on the sample names.
 
 ### DGE analysis workflow

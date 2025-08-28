@@ -349,6 +349,7 @@ foldchanges <- sort(foldchanges, decreasing = TRUE)
 
 We can explore the enrichment of BP Gene Ontology terms using gene set enrichment analysis (GSEA) using gene sets associated with BP Gene Ontology terms
 ```{r}
+
 gseaGO <- clusterProfiler::gseGO(
   geneList = foldchanges,
   ont = "BP",

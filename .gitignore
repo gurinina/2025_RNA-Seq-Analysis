@@ -28,6 +28,8 @@ shared-files/
 
 # Session Data files
 .RData
+.RData 2
+.RData 3
 .RDataTmp
 
 # User-specific files

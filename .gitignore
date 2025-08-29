@@ -5,8 +5,6 @@ student_notes/*
 # Ignore the output folder (where the book is built)
 # bookdown files
 _book/
-_pdf/
-_epub/
 _bookdown_files/
 data/res_tableOE.RDS
 data/res_tableKD.RDS

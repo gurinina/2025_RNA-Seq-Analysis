@@ -15,12 +15,14 @@ We’ll keep all personal work inside a folder named **`students_notes/`** at th
 
 **Make your personal codebook from the template**
    - In the **Files** pane, navigate to `lessons/` and locate:  
-     ** '09-DGE_codebook_template.Rmd'
+     **'09-DGE_codebook_template.Rmd'**
     
    - Check the box next to that file → click **More** → **Copy To…**
+   
    - In the dialog, choose the **`students_notes/`** folder and set the new name to:  
      **`<lastname>_09-DGE_codebook.Rmd`** (for example, `garcia_17_codebook.Rmd`) → **OK**.
-   - Click the new file in `students_notes/` to open it. This is now **your** working copy.
+     
+   - Click the new file in `students_notes/` to open it. This is now **your** working copy for your homework.
 
    - We'll do this for each of the three modules with GitHub repos
    

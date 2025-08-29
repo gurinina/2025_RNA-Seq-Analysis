@@ -1141,6 +1141,7 @@ library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
+library(tidyr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.

@@ -1141,6 +1141,7 @@ library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
+library(tidyr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -1342,15 +1343,11 @@ To save any of these figures if they become too cluttered, click on the Export b
 The **`ssplot()`** function generates a spatial map of enriched terms, where each node represents a gene set and the distance between nodes reflects the similarity between gene sets. This plot is useful for identifying clusters of related terms and overall trends in the enrichment results.
 ```{r}
 
-library(tidyr)
-
-# Try without the problematic arguments:
-ssplot(pwt, showCategory = 50, node_label = "category") +
+emapplot(pwt, showCategory = 50, node_label = "category", layout = "kk") +
   theme(legend.position = "none")
 
-ssplot(pwt, showCategory = 50, node_label = "group") +
+emapplot(pwt, showCategory = 50, node_label = "group", layout = "kk") +
   theme(legend.position = "none")
-
 
 ```
 If you are wanting a general overview of enrichment results and trends, `ssplot()` is more useful. If you want detailed information on the pairwise similarity between enrichment terms and to explore specific **networks of functional relationships**, `emapplot()` is more informative.

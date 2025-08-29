@@ -5,8 +5,6 @@ student_notes/*
 # bookdown
 _book
 _bookdown_files
-_pdf
-_epub
 data/res_tableOE.RDS
 data/res_tableKD.RDS
 data/sigOE.RDS

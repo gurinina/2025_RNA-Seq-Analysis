@@ -22,7 +22,7 @@ We’ll keep all personal work inside a folder named **`students_notes/`** at th
    - In the dialog, choose the **`students_notes/`** folder and set the new name to:  
      **`<lastname>09-DGE_codebook.Rmd`** (for example, `garcia_09-DGE_codebook.Rmd`) → **OK**.
      
-   - Click the new file in `students_notes/` to open it. This is now **your** working copy.
+   - Click the new file in `students_notes/` to open it. This is now **your** working copy for your homework.
 
 > From now on, **work only inside `students_notes/`**. Anything you create or edit there is yours and won’t interfere with course updates.
 

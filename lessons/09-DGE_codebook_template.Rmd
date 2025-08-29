@@ -1343,10 +1343,11 @@ To save any of these figures if they become too cluttered, click on the Export b
 The **`ssplot()`** function generates a spatial map of enriched terms, where each node represents a gene set and the distance between nodes reflects the similarity between gene sets. This plot is useful for identifying clusters of related terms and overall trends in the enrichment results.
 ```{r}
 
-emapplot(pwt, showCategory = 50, node_label = "category", layout = "kk") +
+# Try without the problematic arguments:
+ssplot(pwt, showCategory = 50, node_label = "category") +
   theme(legend.position = "none")
 
-emapplot(pwt, showCategory = 50, node_label = "group", layout = "kk") +
+ssplot(pwt, showCategory = 50, node_label = "group") +
   theme(legend.position = "none")
 
 ```

@@ -1120,7 +1120,6 @@ STOP
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-
 # IMPORTANT!!! Uncomment the following to update the GOenrichment package
 # remove.package("GOenrichment")
 # devtools::install_github("gurinina/GOenrichment", force = TRUE)

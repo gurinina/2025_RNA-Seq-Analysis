@@ -4,7 +4,8 @@
 
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, tidy = FALSE)
+source("scripts/setup.R")
 ```
 ## DGE analysis overview
 
@@ -1115,13 +1116,6 @@ STOP
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-
-# Uncomment the following if you haven't yet installed the required packages
-# BiocManager::install(c("ggraph", "igraph", "visNetwork", 
-# "GO.db", "GOSemSim"), force = TRUE)
-
-# IMPORTANT!!! Uncomment the following to update the GOenrichment package
-# remove.package("GOenrichment")
 # devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
 ## Load required libraries
@@ -1136,7 +1130,7 @@ library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
-library(tidyr)
+library(tidydr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -1337,6 +1331,7 @@ To save any of these figures if they become too cluttered, click on the Export b
 
 The **`ssplot()`** function generates a spatial map of enriched terms, where each node represents a gene set and the distance between nodes reflects the similarity between gene sets. This plot is useful for identifying clusters of related terms and overall trends in the enrichment results.
 ```{r}
+
 
 # Try without the problematic arguments:
 ssplot(pwt, showCategory = 50, node_label = "category") +

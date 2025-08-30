@@ -4,7 +4,7 @@ options(width = 80)
 knitr::opts_chunk$set(
   echo = TRUE,                         # Show code by default
   tidy.opts = list(width.cutoff = 80),  # Format code width
-  tidy = TRUE,
+  tidy = FALSE,
   message = FALSE,                      # Silence messages by default
   warning = FALSE                       # Silence warnings by default
 )

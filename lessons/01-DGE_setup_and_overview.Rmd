@@ -71,9 +71,11 @@ To load the data into our current environment, we will be using the `read.table`
 
 ```{r}
 ## Load in data
-data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1) 
+data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1, sep = "\t") 
 
-meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1)
+meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1, , sep = "\t")
+
+
 ```
 
 Use `class()` to inspect our data and make sure we are working with data frames:
@@ -86,7 +88,7 @@ class(data)
 
 ### Viewing data
 
-Make sure your datasets contain the expected samples / information before proceeding to perfom any type of analysis. 
+Make sure your datasets contain the expected samples / information before proceeding to perform any type of analysis. 
 
 ```{r}
 

@@ -1121,20 +1121,16 @@ STOP
 ```{r, message=FALSE}
 
 
-# Uncomment the following if you haven't yet installed the required packages
-# BiocManager::install(c("ggraph", "igraph", "visNetwork", 
-# "GO.db", "GOSemSim"), force = TRUE)
-
 # IMPORTANT!!! Uncomment the following to update the GOenrichment package
 # remove.package("GOenrichment")
 # devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
 ## Load required libraries
-library(org.Hs.eg.db)#
-library(clusterProfiler)#
+library(org.Hs.eg.db)
+library(clusterProfiler)
 library(tidyverse)
-library(enrichplot)#
-library(fgsea) #
+library(enrichplot)
+library(fgsea) 
 library(igraph)
 library(ggraph)
 library(visNetwork)
@@ -1142,6 +1138,7 @@ library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
 library(tidyr)
+library(tidydr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -1344,10 +1341,10 @@ The **`ssplot()`** function generates a spatial map of enriched terms, where eac
 ```{r}
 
 # Try without the problematic arguments:
-ssplot(pwt, showCategory = 50, node_label = "category") +
+ssplot(pwt_filtered, showCategory = 50, node_label = "category") +
   theme(legend.position = "none")
 
-ssplot(pwt, showCategory = 50, node_label = "group") +
+ssplot(pwt_filtered, showCategory = 50, node_label = "group") +
   theme(legend.position = "none")
 
 ```
@@ -1430,8 +1427,8 @@ pwt <- pairwise_termsim(
 )
 
 # Use safer emapplot parameters
-emapplot(pwt, showCategory = 20,     # Reduced from 30
-         node_label = "category",    # Changed from "all" 
+emapplot(pwt, showCategory = 50,     
+         node_label = "category",   
          layout = "mds") + 
          theme(legend.position = "none")
 

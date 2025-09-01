@@ -232,6 +232,3 @@ vignette("DESeq2")
 ```
 
 This is very convenient, as it provides a wealth of information at your fingertips! Be sure to use this as you need during the workshop.
-
-
-***

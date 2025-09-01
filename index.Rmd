@@ -22,8 +22,6 @@ link-citations: true
 
 source("scripts/setup.R")
 
-source("scripts/solutions.R")
-
 ```
 
 # RNA-seq analysis workshop {-}

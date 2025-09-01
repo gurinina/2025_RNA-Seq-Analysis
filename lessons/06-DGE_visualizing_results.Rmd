@@ -286,6 +286,5 @@ ggplot(res_tableOE_tb, aes(x = log2FoldChange,
         axis.title = element_text(size = rel(1.25))) 
 ```
 
-***
 
 

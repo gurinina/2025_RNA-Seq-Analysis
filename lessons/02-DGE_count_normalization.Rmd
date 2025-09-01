@@ -16,7 +16,7 @@ Accounting for sequencing depth is necessary for comparison of gene expression b
 
 ![Alt text](img/normalization_methods_depth.png){ width=400 }
   
->***NOTE:** In the figure above, each pink and green rectangle represents a read aligned to a gene. Reads connected by dashed lines connect a read spanning an intron.*
+>**NOTE:** In the figure above, each pink and green rectangle represents a read aligned to a gene. Reads connected by dashed lines connect a read spanning an intron.*
  
  - **Gene length:** 
  
@@ -32,7 +32,7 @@ In the example, if we were to divide each sample by the total number of counts t
 	
 ![Alt text](img/normalization_methods_composition.png){ width=400 }
     
-***While normalization is essential for differential expression analyses, it is also necessary for exploratory data analysis, visualization of data, and whenever you are exploring or comparing counts between or within samples.***
+**While normalization is essential for differential expression analyses, it is also necessary for exploratory data analysis, visualization of data, and whenever you are exploring or comparing counts between or within samples.**
  
 ### Common normalization methods
 
@@ -267,27 +267,11 @@ size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
 
 ```
 
-```{r, results = "asis", echo = FALSE}
+```{r}
 
-solutions(list(
-  quote({
-    # Raw counts for PD1
-    PD1 <- c(21, 58, 17, 97, 83, 10)
-    names(PD1) <- paste0("Sample", 1:6)
-    PD1 <- data.frame(PD1)
-    PD1 <- t(PD1)
-    
-    # Size factors for each sample
-    size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
-    
-    # Calculate normalized counts by dividing raw counts by size factors
-    normalized_counts <- PD1 / size_factors
-    normalized_counts
-  })
-))
+# Your code here
+
 ```
-
-***
 
 ## Count normalization of Mov10
 
@@ -321,13 +305,10 @@ all(colnames(data) == rownames(meta))
 
 Suppose we had sample names matching in the counts matrix and metadata file, but they were out of order. Write the line(s) of code required to create a new matrix with columns ordered such that they were identical to the row names of the metadata.
 
-```{r, results = "asis", echo = FALSE}
 
-solutions(list(
-  quote(idx <- match(rownames(metadata), colnames(counts))),
-  quote(counts <- counts[, idx]),
-  quote(all(colnames(counts) == rownames(metadata)))
-))
+```{r}
+
+# Your code here
 
 ```
 

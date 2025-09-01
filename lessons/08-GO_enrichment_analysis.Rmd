@@ -511,38 +511,7 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the res_tableKD_tb$log2FoldChange and cbind to build an input matrix. Use a significance threshold of 0.58 and an FDR threshold of 0.2. Save the results in a variable called `kresp`.
 
-
-
-```{r, class.source='fold-hide', echo=FALSE}
-
-solutions(list(
-  quote(res_tableKD <- readRDS("data/res_tableKD.RDS")),
-  quote(res_tableKD_tb <- res_tableKD %>% 
-    data.frame() %>% rownames_to_column(var = "gene") %>% 
-    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()),
-  quote(kdfoldchanges <- res_tableKD_tb$log2FoldChange),
-  quote(names(kdfoldchanges) <- res_tableKD_tb$gene),
-  quote(kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)),
-  quote(matkd <- cbind(kdfoldchanges, kdfoldchanges)),
-  quote(scoreMatkd <- compSCORE(matkd, coln = 1, sig = 0.58)),
-  quote(kresp <- runGORESP(fdrThresh = 0.2, bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20, maxSetSize = 300, scoreMat = scoreMatkd))
-))
-
-```
-
-
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the results in a variable called `kvis`.
-
-**Ans-1.3.1.5:**
-
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote(kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)),
-  quote(runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network"))
-))
-
-```
 
 ### Other tools and resources
 

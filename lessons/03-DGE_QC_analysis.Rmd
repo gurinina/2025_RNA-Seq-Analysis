@@ -128,49 +128,15 @@ The figure below was generated from a time course experiment with sample groups 
 
 ![Alt text](img/PCA_example3.png){ width=600 }
 
-**Determine the sources explaining the variation represented by PC1 and PC2.** 
-
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote("The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2")
-))
-```
+**Determine the sources explaining the variation represented by PC1 and PC2.**
 
 **Do the sample groups separate well?**
-  
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote("Yes")
-))
-```
 
 **Do the replicates cluster together for each sample group?**
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote("For the most part")
-))
-```
-
 **Are there any outliers in the data?**
-  
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote("Yes, sci8_rep2, ctrl0_rep3 cluster away from their replicates")
-))
-
-```
 
 **Should we have any other concerns regarding the samples in the dataset?**
-  
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote("Yes, sci8 and sci16 don't separate well, the ctrl0 group shows big variations among replicates")
-))
-
-```
 
 ### Recommended Resources
 
@@ -307,23 +273,4 @@ display.brewer.all()
 heat.colors <- brewer.pal(9, "Blues")
 ```
 
-```{r, results = "asis", echo = FALSE}
 
-solutions(list(
-  quote(display.brewer.all()),
-  quote({
-    # This changes the color palette to Blues
-    heat.colors <- brewer.pal(9, "Blues")
-  }),
-  quote({
-    # This adds border color, changes font sizes, and shows row/column names
-    pheatmap(rld_cor, color = heat.colors, 
-             border_color = "black", fontsize = 10, 
-             fontsize_row = 12, show_rownames = T,
-             show_colnames = T)
-  })
-))
-
-```
-
-***

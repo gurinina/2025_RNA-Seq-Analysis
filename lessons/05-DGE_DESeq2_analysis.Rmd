@@ -128,17 +128,6 @@ $$
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
 
-- Ans:
-
-
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote("The design matrix captures the experimental conditions for each sample, allowing the model to estimate the expected mean expression for each gene in each sample based on the experimental covariates. The design matrix is used to model the relationship between the expected mean expression and the beta coefficients for each gene, which represent the log2 fold changes in gene expression between different conditions.")
-))
-
-```
-
 ### Matrix Multiplication Form:
 If you want to calculate the fitted values for all genes and samples at once, you can express the model as a **matrix multiplication**:
 
@@ -403,30 +392,8 @@ saveRDS(sigOE,"data/sigOE.RDS")
 **Exercise** points = +3
 
 How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?
-```{r}
-# Your code here
-```
-
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote(nrow(sigOE))
-))
-
-```
   
 **Does this reduce our results?** 
-
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote(nrow(sigOE)),
-  quote(nrow(res_tableOE)),
-  quote(100 - (nrow(sigOE)/nrow(res_tableOE) * 100)),
-  quote("Yes, it is decreased from 23368 to 951 (representing about 4% of the genes).")
-))
-
-```
 
 ### MOV10 Knockdown Analysis: Control vs. Knockdown
 
@@ -447,19 +414,6 @@ saveRDS(sigKD,"data/sigKD.RDS")
 ```
 
 **How many genes are differentially expressed in the Knockdown compared to Control?**
-```{r}
-# Your code here
-```
-
-
-```{r, results = "asis", echo = FALSE}
-
-solutions(list(
-  quote(nrow(sigKD))
-))
-
-```
-  
 With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.
 
 

@@ -515,42 +515,33 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 ```{r, class.source='fold-hide', echo=FALSE}
 
-solution3('
-res_tableKD <- readRDS("data/res_tableKD.RDS")
-
-res_tableKD_tb <- res_tableKD %>% 
+solutions(list(
+  quote(res_tableKD <- readRDS("data/res_tableKD.RDS")),
+  quote(res_tableKD_tb <- res_tableKD %>% 
     data.frame() %>% rownames_to_column(var = "gene") %>% 
-    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()
-    
-  
-kdfoldchanges <- res_tableKD_tb$log2FoldChange
+    dplyr::filter(!is.na(log2FoldChange)) %>% as_tibble()),
+  quote(kdfoldchanges <- res_tableKD_tb$log2FoldChange),
+  quote(names(kdfoldchanges) <- res_tableKD_tb$gene),
+  quote(kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)),
+  quote(matkd <- cbind(kdfoldchanges, kdfoldchanges)),
+  quote(scoreMatkd <- compSCORE(matkd, coln = 1, sig = 0.58)),
+  quote(kresp <- runGORESP(fdrThresh = 0.2, bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20, maxSetSize = 300, scoreMat = scoreMatkd))
+))
 
-names(kdfoldchanges) <- res_tableKD_tb$gene
-
-kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)
-
-matkd <- cbind(kdfoldchanges,kdfoldchanges)
-
-scoreMatkd = compSCORE(matkd, coln = 1, sig =  0.58)
-
-kresp = runGORESP(fdrThresh = 0.2,bp_input = hGOBP.gmt,go_input = NULL,minSetSize = 20,maxSetSize = 300,scoreMat = scoreMatkd)
-
-')
 ```
 
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the results in a variable called `kvis`.
 
-
-
 <div class="fold s o">
 **Ans-1.3.1.5:**
-```{r, echo = FALSE}
-solution3('
-kvis = visSetup(kresp$enrichInfo,kresp$edgeMat)
-runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network")
-')
 
+```{r, results = "asis", echo = FALSE}
+
+solutions(list(
+  quote(kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)),
+  quote(runNetwork(kvis$nodes, kvis$edges, main = "MOV10 Knockdown GO Enrichment Network"))
+))
 
 ```
 </div>

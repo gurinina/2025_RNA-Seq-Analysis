@@ -26,7 +26,12 @@ We’ll keep all personal work inside a folder named **`students_notes/`** at th
 
    - We'll do this for each of the three modules with GitHub repos
    
-> From now on, **work only inside `students_notes/`**. Anything you create or edit there is yours and won’t interfere with course updates.
+> From now on, **work only inside `students_notes/`**. Anything you create or edit there is yours and won’t 
+interfere with course updates.
+
+Now go to the build pane and click on the dropdown menu 'Build Book' and select 'bookdown:gitbook'.
+
+This should now knit the course module and output the .html file in RStudio Viewer.
 
 ---
 

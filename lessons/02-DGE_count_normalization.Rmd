@@ -267,23 +267,24 @@ size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
 
 ```
 
-```{r}
-
-# Your code here
-
-```
-
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-
-PD1_normalized <- PD1 / size_factors 
-
-# OR
-
-PD1_normalized <- sweep(PD1,2,size_factors,FUN = "/")
-
-')
+solutions(list(
+  quote({
+    # Raw counts for PD1
+    PD1 <- c(21, 58, 17, 97, 83, 10)
+    names(PD1) <- paste0("Sample", 1:6)
+    PD1 <- data.frame(PD1)
+    PD1 <- t(PD1)
+    
+    # Size factors for each sample
+    size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
+    
+    # Calculate normalized counts by dividing raw counts by size factors
+    normalized_counts <- PD1 / size_factors
+    normalized_counts
+  })
+))
 ```
 
 ***
@@ -319,27 +320,16 @@ all(colnames(data) == rownames(meta))
 **Exercise** points = +2
 
 Suppose we had sample names matching in the counts matrix and metadata file, but they were out of order. Write the line(s) of code required to create a new matrix with columns ordered such that they were identical to the row names of the metadata.
-```{r, eval = FALSE}
-
-# write the code to reorder the columns of the 'counts' matrix to match the rownames of the metadata
-
-# check that the rownames of the metadata match the colnames of the 'counts' matrix
-
-
-```
-
 
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-idx <- match(rownames(metadata), colnames(counts))\n
-counts <- counts[, idx]\n
-all(colnames(counts) == rownames(metadata))
-')
+solutions(list(
+  quote(idx <- match(rownames(metadata), colnames(counts))),
+  quote(counts <- counts[, idx]),
+  quote(all(colnames(counts) == rownames(metadata)))
+))
 
 ```
-
-*** 
 
 ### 2. Create DESEq2 object
 

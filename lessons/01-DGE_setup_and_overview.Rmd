@@ -22,7 +22,7 @@ The aim of the RNAseq part of the study was to characterize the transcription ex
 
 ![Alt text](img/model_mov10.png){ width=400 }
 
-**Model for **MOV10-FMRP** Association in Translation Regulation**. Top: fate of RNAs bound by **MOV10**. **MOV10** binds the 3′ UTR-encoded G-rich structure to reveal MREs for subsequent AGO2 association. Middle: fate of RNAs bound by **FMRP**. **FMRP** binds RNAs in the nucleus. Upon export, **FMRP** recruits **MOV10**, which ultimately unwinds MREs for association with AGO2. Bottom: **FMRP** recruits **MOV10** to RNAs; however, binding of both **FMRP** and **MOV10** in proximity of MRE blocks association with AGO2. Red line indicates MRE.
+**Model for **MOV10-FMRP** Association in Translation Regulation**. Top: fate of RNAs bound by **MOV10**. **MOV10** binds the 3′ UTR-encoded G-rich structure to reveal MREs for subsequent AGO2 association. Middle: fate of RNAs bound by **FMRP**. **FMRP** binds mRNAs in the nucleus. Upon export, **FMRP** recruits **MOV10**, which ultimately unwinds MREs for association with AGO2. Bottom: **FMRP** recruits **MOV10** to mRNAs; however, for this subset of mRNAs, binding of both **FMRP** and **MOV10** in proximity of MRE blocks association with AGO2. Red line indicates MRE.
 
 RNA-seq was performed on HEK293F cells that were either transfected with a **MOV10** transgene, or siRNA to knock down Mov10 expression, or non-specific (irrelevant) siRNA. This resulted in 3 conditions **Mov10 oe** (over expression), **Mov10 kd** (knock down) and **Irrelevant kd**, respectively. The number of replicates is as shown below.
 
@@ -45,9 +45,14 @@ Using these data, we will evaluate transcriptional patterns associated with pert
 
 ## Setting up
 
-Go to the `File` menu and to the `lessons` directory and open `09-DGE_codebook.Rmd`. This will open in the script editor in the top left hand corner. This is where we will be running all commands required for this analysis, and like last time this is where you will enter the code/answers for your homework assignment. Please save this as something with your name in it (e.g. `firstname_lastname_09-DGE_codebook.Rmd`). 
+Go to the `File` menu and navigate to the lessons folder -- 
+you'll see something like the figure below. Open `09-DGE_codebook.Rmd`. 
+This will open in the script editor in the top left hand corner. This is where we will be running
+all commands required for this analysis, and like last time this is where you will enter the 
+code/answers for your homework assignment. Please save this as something with your name in it 
+(e.g. ` **`<lastname>_09-DGE_codebook.Rmd`**`). 
 
-![setup](img/settingup.png)
+![setup](img/lessons.png)
 
 ### Loading libraries
 

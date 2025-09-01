@@ -70,31 +70,26 @@ Including known sources of variation (like **sex** and **age**) ensures any gene
 
 1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were **sex** and **treatment**, how would the design formula be written?
 
-```{r, eval = FALSE}
-
-# Your code here
-
-```
-
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last:\n
-
-~ sex + treatment + age'
-)
+solutions(list(
+  quote({
+    # The default behavior of `results` is to return the comparison of the last group 
+    # in the design formula, so your condition of interest should come last:
+    # ~ sex + treatment + age
+  })
+))
 
 ```
 
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
-- Ans: 
-
 ```{r, results = "asis", echo = FALSE}
-solution3("
-sampletype, you could also use MOVexpr, but it is 
-redundant with sampletype. Sampletype is also 
-more descriptive.")
+
+solutions(list(
+  quote("sampletype, you could also use MOVexpr, but it is redundant with sampletype. Sampletype is also more descriptive.")
+))
+
 ```
 
 
@@ -104,9 +99,9 @@ more descriptive.")
   
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-Add the factor as an additional column in the metadata points
-')
+solutions(list(
+  quote("Add the factor as an additional column in the metadata")
+))
 
 ```
 
@@ -171,16 +166,12 @@ colSums(counts(dds))
 ```
 
 **How do the numbers correlate with the size factor?**
-```{r}
-
-# Your code here
-```
 
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-cor(colSums(counts(dds)),sizeFactors(dds))
-')
+solutions(list(
+  quote(cor(colSums(counts(dds)), sizeFactors(dds)))
+))
 
 ```
 

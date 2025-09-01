@@ -133,7 +133,9 @@ In the DESeq2 workflow, what is the purpose of the design matrix in the context 
 
 ```{r, results = "asis", echo = FALSE}
 
-solution3('The design matrix captures the experimental conditions for each sample, allowing the model to estimate the expected mean expression for each gene in each sample based on the experimental covariates. The design matrix is used to model the relationship between the expected mean expression and the beta coefficients for each gene, which represent the log2 fold changes in gene expression between different conditions.')
+solutions(list(
+  quote("The design matrix captures the experimental conditions for each sample, allowing the model to estimate the expected mean expression for each gene in each sample based on the experimental covariates. The design matrix is used to model the relationship between the expected mean expression and the beta coefficients for each gene, which represent the log2 fold changes in gene expression between different conditions.")
+))
 
 ```
 
@@ -407,39 +409,24 @@ How many genes are differentially expressed in the **Overexpression vs. Control*
 
 ```{r, results = "asis", echo = FALSE}
 
-solution3('nrow(sigOE)')
-
+solutions(list(
+  quote(nrow(sigOE))
+))
 
 ```
   
 **Does this reduce our results?** 
-```{r}
-# Your code here
-```
-
-
-```{r, echo = FALSE}
-# The code to be executed
-code_text <- 
-'nrow(sigOE)
-nrow(res_tableOE)
-100 - (nrow(sigOE)/nrow(res_tableOE) *100)
-"Yes, it is decreased from 23368 to 951 
-(representing about 4% of the genes)."'
-
-
-# Evaluate the code and capture the output
-evaluated_output <- capture.output(eval(parse(text = code_text)))
-
-```
-
 
 ```{r, results = "asis", echo = FALSE}
 
-folded(code_text, paste(evaluated_output, collapse = "\n"))
+solutions(list(
+  quote(nrow(sigOE)),
+  quote(nrow(res_tableOE)),
+  quote(100 - (nrow(sigOE)/nrow(res_tableOE) * 100)),
+  quote("Yes, it is decreased from 23368 to 951 (representing about 4% of the genes).")
+))
 
 ```
-
 
 ### MOV10 Knockdown Analysis: Control vs. Knockdown
 
@@ -467,8 +454,9 @@ saveRDS(sigKD,"data/sigKD.RDS")
 
 ```{r, results = "asis", echo = FALSE}
 
-
-solution3(nrow(sigKD))
+solutions(list(
+  quote(nrow(sigKD))
+))
 
 ```
   

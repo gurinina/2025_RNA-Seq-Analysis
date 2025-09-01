@@ -18,6 +18,60 @@ git pull --rebase origin main	Rebases your local changes on top of the remote br
 git push --force origin main	Overwrites the remote branch with your local branch.
 git push --force-with-lease origin main	Force push, but only if the remote branch hasn’t changed unexpectedly.
 
+for specific mRNA bound FMRP MRE site is unwound by Mov10 recruiting miRISC and TL gets stopped. while other mRNAs 
+bind to the Mov10-FMRP complex in a way that blocks MRE sites so miRISC never 
+get's recruited and TL is upregulated.
+Pattern 1 mRNAs: FMRP recruits MOV10 → MOV10 unwinds secondary structures 
+→ MRE sites exposed → miRISC recruited → Translation STOPPED
+Pattern 2 mRNAs: FMRP-MOV10 complex binds near MRE sites → 
+Complex physically blocks MRE access → miRISC can't get recruited → Translation UPREGULATED
+The key insight you've nailed is that it's mRNA-specific - 
+the same FMRP-MOV10 machinery produces opposite outcomes depending 
+on the structural context of each individual mRNA.
+
+Figure Legend:
+
+**Model for context-dependent **MOV10-FMRP** Association in Translation Regulation**.
+**FMRP** exhibits context-dependent dual regulatory functions through **MOV10** interaction. 
+**FMRP** binds to G-quadruplex-containing mRNAs in the 3' UTR and can recruit **MOV10** 
+to produce opposite translational outcomes. Top pathway: **FMRP** recruits **MOV10**
+which unwinds G-quadruplex secondary structures, exposing MRE sites for 
+AGO2/RISC binding and resulting in translation suppression. Bottom pathway: 
+**MOV10-FMRP** complex binds in proximity to MRE sites and physically blocks 
+AGO2/RISC access, preventing miRNA-mediated suppression and de-repressing 
+translation. The bidirectional arrows indicate a dynamic regulatory 
+switch where the same **MOV10-FMRP** machinery produces opposite translational
+outcomes depending on mRNA structural context and complex positioning relative
+to MRE sites. This dual function allows **FMRP** to fine-tune protein synthesis 
+by either enhancing or antagonizing miRNA-mediated regulation on different 
+target mRNAs.
+
+
+
+![Alt text](img/model_mov10.png){ width=400 }
+
+**Model for **MOV10-FMRP** Association in Translation Regulation**. Top: fate of RNAs bound by **MOV10**. **MOV10** binds the 3′ UTR-encoded G-rich structure to reveal MREs for subsequent AGO2 association. Middle: fate of RNAs bound by **FMRP**. **FMRP** binds RNAs in the nucleus. Upon export, **FMRP** recruits **MOV10**, which ultimately unwinds MREs for association with AGO2. Bottom: **FMRP** recruits **MOV10** to RNAs; however, binding of both **FMRP** and **MOV10** in proximity of MRE blocks association with AGO2. Red line indicates MRE.
+
+Figure Legend:
+FMRP modulates agonistic or antagonistic miRNA function through its interaction with MOV10. 
+(A) MOV10 alone unwinds G-quadruplex structures upstream of MREs on the 3′ UTR of target mRNAs. 
+(B) MOV10 resolves secondary structure to facilitate RISC binding to the MRE site (red) that 
+was once embedded within the G-quadruplex, leading to translation suppression. 
+(C) FMRP-MOV10 complex bound proximal to a G-quadruplex containing an MRE acts to block RISC 
+access and de-represses gene expression. In Fragile X Syndrome, loss of FMRP disrupts 
+both regulatory patterns: Panel A mRNAs show moderate translation increases due to impaired
+miRNA machinery despite MRE exposure, while Panel C mRNAs show greater translation increases
+due to loss of protective FMRP-MOV10 blocking combined with global miRNA system breakdown.
+
+The binomial distribution is used to model scenarios where there are two possible outcomes, 
+such as “success” or “failure,” over a fixed number of trials. For example, flipping a coin
+10 times and counting the number of “heads” out of those 10 flips follows a binomial 
+distribution with a probability of success (p) equal to 0.5.
+
+The geometric mean is used in DESeq2 normalization because it's much more robust to 
+outliers and skewed data compared to the arithmetic mean, 
+which is crucial when dealing with RNA-seq count data.
+
 
 GO enrichment analysis background ratio gene list ratio
 

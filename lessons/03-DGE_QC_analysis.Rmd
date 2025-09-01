@@ -130,42 +130,46 @@ The figure below was generated from a time course experiment with sample groups 
 
 **Determine the sources explaining the variation represented by PC1 and PC2.** 
 
-- Ans: 
-
 ```{r, results = "asis", echo = FALSE}
-solution3("The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2")
+solutions(list(
+  quote("The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2")
+))
 ```
 
 **Do the sample groups separate well?**
-
-- Ans: 
   
 ```{r, results = "asis", echo = FALSE}
-solution3("Yes")
+solutions(list(
+  quote("Yes")
+))
 ```
 
 **Do the replicates cluster together for each sample group?**
 
-- Ans:
-
 ```{r, results = "asis", echo = FALSE}
-solution3("For the most part")
+solutions(list(
+  quote("For the most part")
+))
 ```
 
 **Are there any outliers in the data?**
-
-- Ans:
   
 ```{r, results = "asis", echo = FALSE}
-solution3("Yes, sci8_rep2, ctrl0_rep3 cluster away from their replicates")
+
+solutions(list(
+  quote("Yes, sci8_rep2, ctrl0_rep3 cluster away from their replicates")
+))
+
 ```
 
 **Should we have any other concerns regarding the samples in the dataset?**
-
-- Ans: 
   
 ```{r, results = "asis", echo = FALSE}
-solution3("Yes, sci8 and sci16 don't separate well, the ctrl0 group shows big variations among replicates")
+
+solutions(list(
+  quote("Yes, sci8 and sci16 don't separate well, the ctrl0 group shows big variations among replicates")
+))
+
 ```
 
 ### Recommended Resources
@@ -183,8 +187,6 @@ The hierarchical tree can indicate which samples are more similar to each other 
 **In the plot below, we would be quite concerned about 'Wt_3' and 'KD_3' samples not clustering with the other replicates. We would want to explore the PCA to see if we see the same clustering of samples.**
 
 ![Alt text](img/heatmap_example.png){ width=500 }
-
-
 ## Gene-level QC
 
 In addition to examining how well the samples/replicates cluster together, there are a few more QC steps. Prior to differential expression analysis it is beneficial to omit genes that have little or no chance of being detected as differentially expressed. This will increase the power to detect differentially expressed genes. The genes omitted fall into three categories:
@@ -290,8 +292,6 @@ pheatmap(rld_cor, color = colorRampPalette(brewer.pal(9, "Blues"))(100))
 pheatmap(rld_cor)
 ```
 
-
-
 ```{r}
 
 pheatmap(rld_cor)
@@ -305,27 +305,24 @@ display.brewer.all()
 ```{r}
 # The color palette "Blues" is a good choice for this heatmap
 heat.colors <- brewer.pal(9, "Blues")
-
-# Your code here
 ```
 
 ```{r, results = "asis", echo = FALSE}
 
-solution3('
-
-display.brewer.all()\n
-  
-heat.colors <- brewer.pal(9, "Blues")\n
-
-pheatmap(rld_cor, color = heat.colors, 
-border_color = "black", fontsize = 10, fontsize_row = 12,  show_rownames = T,
-show_colnames = T)\n
-
-"It changes the color palette, adds a border color, 
-changes the font size 
-of the heatmap, row names, and column names, and shows the row and column names."
-
-')
+solutions(list(
+  quote(display.brewer.all()),
+  quote({
+    # This changes the color palette to Blues
+    heat.colors <- brewer.pal(9, "Blues")
+  }),
+  quote({
+    # This adds border color, changes font sizes, and shows row/column names
+    pheatmap(rld_cor, color = heat.colors, 
+             border_color = "black", fontsize = 10, 
+             fontsize_row = 12, show_rownames = T,
+             show_colnames = T)
+  })
+))
 
 ```
 

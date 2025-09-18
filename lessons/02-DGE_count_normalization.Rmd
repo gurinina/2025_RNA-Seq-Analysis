@@ -240,7 +240,7 @@ Each raw count value in a given sample is divided by that sample's normalization
 
 ### Summary of Key Reasons for Using DESeq2
 
-- **Median of Ratios**: This method accounts for sequencing depth and RNA composition, making it more appropriate for RNA-Seq data analysis.
+- **Median of Ratios**: This method accounts for sequencing depth and RNA composition, making it more appropriate for RNA-seq data analysis.
 
 - **Geometric Mean**: It creates a pseudo-reference that reduces sensitivity to extreme values, affording more stable estimates.
 
@@ -248,7 +248,7 @@ Each raw count value in a given sample is divided by that sample's normalization
 
 This combination of methodologies allows DESeq2 to provide robust results, enhancing the identification of differentially expressed genes in complex biological datasets.
 
-**Exercise**
+**Exercise** points = +1
 
 Determine the normalized counts for your gene of interest, PD1, given the raw counts and size factors below. 
 
@@ -267,9 +267,12 @@ size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
 
 ```
 
-```{r}
+```{r, results = "asis", echo = FALSE}
 
-# Your code here
+solutions(list(quote({
+  normalized_counts <- PD1 / size_factors
+  normalized_counts
+})))
 
 ```
 
@@ -303,13 +306,19 @@ all(colnames(data) == rownames(meta))
 
 **Exercise** points = +2
 
-Suppose we had sample names matching in the counts matrix and metadata file, but they were out of order. Write the line(s) of code required to create a new matrix with columns ordered such that they were identical to the row names of the metadata.
-
-
-```{r}
-
-# Your code here
-
+Suppose we had the same sample names in the `colnames` of the counts matrix and the `rownames` of the metadata file, but they were in a different order. Write the line(s) of code required to create a new matrix with columns ordered such that they were identical to the row names of the metadata.
+```{r, results = "asis", echo = FALSE}
+solutions(list(
+  quote({
+    idx <- match(rownames(metadata), colnames(counts))
+  }),
+  quote({
+    counts <- counts[, idx]
+  }),
+  quote({
+    all(colnames(counts) == rownames(metadata))
+  })
+))
 ```
 
 ### 2. Create DESEq2 object

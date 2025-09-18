@@ -120,23 +120,47 @@ Still we haven't found if `treatment` is a major source of variation after `stra
 ![Alt text](img/example_PCA_treatmentPC3.png){ width=600 }
 
 We find that the samples separate by `treatment` on PC3, and are optimistic about our DE analysis since our condition of interest, `treatment`, is separating on PC3 and we can regress out the variation driving PC1 and PC2. Treatment separating on PC3 indicates that it still contributes to variation, but its effect is smaller and is only captured after accounting for the larger effects (`strain`, `sex`)..
-me stop
 
 **Exercise** points = +5
 
 The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
-
 ![Alt text](img/PCA_example3.png){ width=600 }
 
-**Determine the sources explaining the variation represented by PC1 and PC2.**
+**Determine the sources explaining the variation represented by PC1 and PC2.** 
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  # The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2
+  cat("The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2")
+})))
+```
 
 **Do the sample groups separate well?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("Yes")
+})))
+```
 
 **Do the replicates cluster together for each sample group?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("For the most part")
+})))
+```
 
 **Are there any outliers in the data?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("Yes, sci8_rep2, ctrl0_rep3 cluster away from their replicates")
+})))
+```
 
 **Should we have any other concerns regarding the samples in the dataset?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("Yes, sci8 and sci16 don't separate well, the ctrl0 group shows big variations among replicates")
+})))
+```
 
 ### Recommended Resources
 
@@ -171,7 +195,7 @@ Now that we have a good understanding of the QC steps normally employed for RNA-
 
 ### Transform normalized counts using the rlog transformation
 
-**To improve the distances/clustering for the PCA and heirarchical clustering visualization methods**, we need to apply the **regularized log transformation (rlog)** transformation to the normalized counts. **rlog** is used for visualizations in RNA-Seq data analysis, particularly with tools like DESeq2, because it stabilizes the variance across different levels of gene expression, making it easier to interpret patterns in the data.
+**To improve the distances/clustering for the PCA and heirarchical clustering visualization methods**, we need to apply the **regularized log transformation (rlog)** transformation to the normalized counts. **rlog** is used for visualizations in RNA-seq data analysis, particularly with tools like DESeq2, because it stabilizes the variance across different levels of gene expression, making it easier to interpret patterns in the data.
 
 **Example of Variance Stabilization**
 Raw RNA-Seq count data has different levels of variability:
@@ -235,33 +259,9 @@ pheatmap(rld_cor)
 
 Overall, we observe pretty high correlations across the board ( > 0.999) suggesting no outlying sample(s). Also, similar to the PCA plot you see the samples clustering together by sample group. Together, these plots suggest to us that the data are of good quality and we have the green light to proceed to differential expression analysis.
 
-**Exercise** points = +3
+**Exercise** points = +6
 
 The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
-
-
-Pheatmap for exercise:
-
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-
-library(pheatmap)
-library(RColorBrewer)
-
-heat.colors <- colorRampPalette(brewer.pal(9, "Blues"))(100)
-
-pheatmap(rld_cor, color = colorRampPalette(brewer.pal(9, "Blues"))(100))
-
-```
-
-```{r, fig.width=6, fig.height=6, fig.align='center'}
-
-pheatmap(rld_cor)
-```
-
-```{r}
-
-pheatmap(rld_cor)
-```
 
 ```{r, fig.width=8, fig.height=8, echo=FALSE}
 # Display all available color palettes
@@ -271,6 +271,33 @@ display.brewer.all()
 ```{r}
 # The color palette "Blues" is a good choice for this heatmap
 heat.colors <- brewer.pal(9, "Blues")
+
 ```
 
+```{r, results = "asis", echo = FALSE}
+solutions(list(
+  quote({
+    display.brewer.all()
+  }),
+  quote({
+    heat.colors <- brewer.pal(9, "Blues")
+    pheatmap(rld_cor, 
+             color = heat.colors, 
+             border_color = "black", 
+             fontsize = 10, 
+             fontsize_row = 12, 
+             show_rownames = TRUE,
+             show_colnames = TRUE)
+  }),
+  quote({
+    cat("Explanation of changes:\n")
+    cat("- color: Changes the color palette to blue tones\n")
+    cat("- border_color: Adds black borders around each cell\n") 
+    cat("- fontsize: Sets the overall font size to 10\n")
+    cat("- fontsize_row: Sets row name font size to 12\n")
+    cat("- show_rownames: Shows the row names (sample names)\n")
+    cat("- show_colnames: Shows the column names (sample names)\n")
+  })
+))
+```
 

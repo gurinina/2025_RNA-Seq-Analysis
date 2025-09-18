@@ -68,11 +68,33 @@ Including known sources of variation (like **sex** and **age**) ensures any gene
 
 **Exercise** points = +3
 
-1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were **sex** and **treatment**, how would the design formula be written?
+1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were `sex` and `treatment`, how would the design formula be written?
+
+```{r, eval = FALSE}
+# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last:
+```
+
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("~ sex + treatment + age")
+})))
+```
 
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("sampletype, you could also use MOVexpr, but it is redundant with sampletype. Sampletype is also more descriptive.")
+})))
+```
+
 3. What would you do if you wanted to include a factor in your design formula that is not in your metadata?
+
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("Add the factor as an additional column in the metadata")
+})))
+```
 
 ### MOV10 Differential Expression Analysis
 
@@ -134,17 +156,33 @@ Take a look at the total number of reads for each sample:
 colSums(counts(dds))
 ```
 
+
+**Exercise** points = +1
+
 **How do the numbers correlate with the size factor?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(
+  quote({
+    # Calculate correlation between total counts and size factors
+    correlation <- cor(colSums(counts(dds, normalized = FALSE)), sizeFactors(dds))
+    correlation
+  }),
+  quote({
+    cat("The total number of raw counts per sample and the size factors are highly correlated.")
+    cat("\nThis makes sense because size factors are calculated to normalize for sequencing depth differences.")
+  })
+))
+```
 
 ### Step 2: Estimate Gene-wise Dispersion
 
 ![Dispersion Workflow](img/deseq2_workflow_separate_dis.png){ width=200 }
 
-The next step in differential expression analysis is estimating gene-wise dispersions. Understanding dispersion is crucial in RNA-Seq analysis.
+The next step in differential expression analysis is estimating gene-wise dispersions. Understanding dispersion is crucial in RNA-seq analysis.
 
 **What is Dispersion?**
 
-Dispersion measures the variability in gene expression that cannot be explained by the mean expression levels alone. It captures the extra-Poisson variability observed in RNA-Seq data, where the variance tends to exceed the mean due to biological and technical factors.
+Dispersion measures the variability in gene expression that cannot be explained by the mean expression levels alone. It captures the extra-Poisson variability observed in RNA-seq data, where the variance tends to exceed the mean due to biological and technical factors.
 
 In DESeq2, dispersion reflects the variability in gene expression for a given mean count and is characterized by:
 
@@ -157,7 +195,7 @@ The plot below illustrates the relationship between mean expression and variance
 
 **Modeling Dispersion Using the Negative Binomial Distribution**
 
-DESeq2 utilizes the Negative Binomial (NB) distribution to model RNA-Seq count data, effectively managing overdispersion, which is common in biological data. The two key parameters of the NB model are the mean expression level and the dispersion.
+DESeq2 utilizes the Negative Binomial (NB) distribution to model RNA-seq count data, effectively managing overdispersion, which is common in biological data. The two key parameters of the NB model are the mean expression level and the dispersion.
 
 For each gene \( i \), the observed count \( Y_{ij} \) in sample \( j \) is modeled as:
 
@@ -195,7 +233,7 @@ Using DESeq2’s `plotDispEsts()` function visualizes the fit of the model and t
 
 #### Examples of Problematic Dispersion Plots
 
-Certainly! Problematic dispersion plots in RNA-Seq analysis, particularly when using tools like DESeq2, can arise from various issues. Here are some reasons that could lead to visual discrepancies in dispersion plots:
+Certainly! Problematic dispersion plots in RNA-seq analysis, particularly when using tools like DESeq2, can arise from various issues. Here are some reasons that could lead to visual discrepancies in dispersion plots:
 
 **Reasons for Problematic Dispersion Plots**
 
@@ -233,7 +271,7 @@ To tackle issues identified in problematic dispersion plots:
 
 - **Visual Inspection**: Regularly visualize data through various methods (e.g., PCA, heatmaps, dispersion plots) to check for quality and consistency.
 
-By understanding the potential causes for problematic dispersion plots, you can troubleshoot and improve your RNA-Seq analysis to yield more reliable results. If you have specific questions or scenarios you want to discuss, feel free to ask!
+By understanding the potential causes for problematic dispersion plots, you can troubleshoot and improve your RNA-seq analysis to yield more reliable results. If you have specific questions or scenarios you want to discuss, feel free to ask!
 
 Here are examples of dispersion plots suggesting potential data quality or fitting issues:
 
@@ -250,5 +288,13 @@ Now, let's explore the dispersion estimates for the MOV10 dataset:
 plotDispEsts(dds)
 ```
 
-**Since we have a small sample size, for many genes we see quite a bit of shrinkage. Do you think our data are a good fit for the model?**
+**Since we have a small sample size, for many genes we see quite a bit of shrinkage.**
 
+**Exercise** points = +1
+
+**Do you think our data are a good fit for the model?**
+```{r, results = "asis", echo = FALSE}
+solutions(list(quote({
+  cat("Yes, our data appear to be a good fit for the model. The shrinkage we observe is expected and beneficial with small sample sizes. The shrinkage helps stabilize log2 fold change estimates for genes with high dispersion or low counts, making the results more reliable. This is a feature of the DESeq2 model, not a problem with our data.")
+})))
+```

@@ -1,6 +1,6 @@
 ---
 title: "PHAR520: Applied Omics Science for Drug Discovery and Development"
-subtitle: "ModuleII: 2025_RNA-Seq-Analysis"
+subtitle: "ModuleII: 2025_RNA-Seq-Analysis-instructor"
 output:
   bookdown::gitbook:
     css: [css/git.css, css/toc.css]
@@ -9,8 +9,8 @@ output:
       toc:
         collapse: section
       download: ["pdf", "epub"]
-github-repo: "gurinina/2024_RNA-Seq-Analysis-instructor"
-url: "https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis-instructor"
+github-repo: "gurinina/2025_RNA-Seq-Analysis-instructor"
+url: "https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis-instructor"
 site: bookdown::bookdown_site
 documentclass: book
 cover-image: "img/football.png"
@@ -21,8 +21,10 @@ link-citations: true
 ```{r setup function, include=FALSE}
 
 source("scripts/setup.R")
+source("scripts/solutions.R")
 
 ```
+
 
 # RNA-seq analysis workshop {-}
 
@@ -31,4 +33,4 @@ source("scripts/setup.R")
 </p>
 
 
-The published version for this module can be found on my bookdown site [2024_RNA-Seq-Analysis-instructor](https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis-instructor/).
+The published version for this module can be found on my bookdown site [2024_RNA-Seq-Analysis](https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis/).

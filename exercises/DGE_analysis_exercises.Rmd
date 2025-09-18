@@ -137,25 +137,15 @@ res_tableOE <-  readRDS("data/res_tableOE.RDS")
 ```{r}
 normalized_counts <- read.delim("data/normalized_counts.txt",row.names = 1)
 
-
 meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1)
-
-
 
 sigKD <- readRDS("data/sigKD.RDS")
 
-
-
 ## Extract normalized expression for significant genes
-
 
 # Your code here
 
-```
-	
-```{r}
-### Annotate our heatmap (optional)
-
+### Annotate our heatmap
 
 # Your code here
 

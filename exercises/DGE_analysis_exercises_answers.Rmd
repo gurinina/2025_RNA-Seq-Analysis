@@ -174,7 +174,6 @@ normalized_counts <- normalized_counts %>%
   rownames_to_column(var="gene") %>% 
   as_tibble()
 
-
 meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1)
 
 mov10_meta <- meta %>% 
@@ -186,24 +185,16 @@ sigKD <- readRDS("data/sigKD.RDS")
 colnames(normalized_counts)
 
 ## Extract normalized expression for significant genes
-
-
 norm_KDsig <- normalized_counts[,c(1,2:4,5:6)] %>% 
-              filter(gene %in% sigKD$gene) %>% 
-	      data.frame() %>%
-	      column_to_rownames(var = "gene") 
+  filter(gene %in% sigKD$gene) %>% 
+  data.frame() %>% 
+  column_to_rownames(var = "gene") 
 
-
-```
-	
-```{r}
-### Annotate our heatmap (optional)
-
+### Annotate your heatmap
 
 annotation <- mov10_meta %>% 
 	dplyr::select(samplename, sampletype) %>% 
 	data.frame(row.names = "samplename")
-
 
 ```
 

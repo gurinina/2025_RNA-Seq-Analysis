@@ -23,6 +23,8 @@ What is the function of **FMRP**, **MOV10** and **AGO2**?
 The aim of the RNA-Seq part of the study was to characterize the transcription expression patterns of **FMRP** and **MOV10** to identify overlapping target genes which would suggest that these genes are regulated by the **MOV10-FMRP** complex.
 
 ![Alt text](img/model_mov10.png){ width=400 }
+
+
 Model for **MOV10-FMRP** Cooperation in microRNA-Mediated Translation Regulation
 
 Top: **MOV10** helicase unwinds G-rich structures in 3′ UTRs, exposing **microRNA response elements (MREs)** for **AGO2/RISC** binding and translational repression.
@@ -34,6 +36,8 @@ Bottom: **FMRP-MOV10** complex binds in proximity to **MREs**, sterically blocki
 RNA-seq was performed on HEK293F cells that were either transfected with a **MOV10** transgene, or siRNA to knock down Mov10 expression, or non-specific (irrelevant) siRNA. This resulted in 3 conditions **Mov10 oe** (over expression), **Mov10 kd** (knock down) and **Irrelevant kd**, respectively. The number of replicates is as shown below.
 
 ![Alt text](img/dataset.png){ width=400 }
+
+
 Using these data, we will evaluate transcriptional patterns associated with perturbation of **MOV10** expression. Please note that the irrelevant siRNA will be treated as our control condition.
 
 **Links to raw data**
@@ -163,23 +167,24 @@ These images illustrate some common features of RNA-seq count data, including a 
 
 ### Modeling count data
 
-Count data is often modeled using the **binomial distribution**. The Binomial distribution is a common probability distribution that models the probability of obtaining one of two outcomes under a given number of parameters. It summarizes the number of successes in a fixed number of trials when each trial has two possible outcomes. For example, a coin toss is typically modeled using a binomial distribution, where the number of successes (e.g., heads) in a fixed number of trials (e.g., 10 coin tosses) when each trial has two possible outcomes (e.g., heads or tails) and the probability of success is constant. However, not all count data can be fit with the binomial distribution. The binomial is based on discrete events and used in situations when you have a certain number of cases.
+Count data is often modeled using the **binomial distribution**, which models the probability of success/failure outcomes over fixed trials (like counting heads in 10 coin tosses).
+**When dealing with very large numbers of cases but very small probabilities of events (like lottery tickets), the Poisson distribution is more appropriate.**
 
-
-The **binomial distribution** is used to model scenarios where there are two possible outcomes, such as "success" or "failure," over a fixed number of trials. For example, flipping a coin 10 times and counting the number of "heads" out of those 10 flips follows a binomial distribution with a probability of success (\( p \)) equal to 0.5.
-
-When **the number of cases is very large (i.e. people who buy lottery tickets), but the probability of an event is very small (probability of winning)**, the **Poisson distribution** is used to model these types of count data. 
 
 ![Alt text](img/poisson-distribution-formula.png){ width=300 }
 
-**With RNA-seq data, for each sample we have millions of reads being sequenced and the probability of a read mapping to a gene is extremely low.** Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance given by the single parameter $\lambda$.
+RNA-seq data fits this scenario perfectly: **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. 
+However, a unique property of the Poisson distribution is that the mean == variance given by the single parameter $\lambda$.
 
-For us to apply a poisson distribution to our data, we first need to find out
-whether our data fulfills the criteria to use the poisson distribution. To do that we can plot the *mean versus variance* for the 'Mov10 overexpression' replicates:
+To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
-To calculate the mean and variance of our data, we will use the `apply` function. The `apply` function allows you to apply a function to the margins (rows or columns) of a matrix. The syntax for `apply` is as follows: `apply(X, MARGIN, FUN)`, where `X` is a matrix, `MARGIN` is the margin of the matrix to apply the function to (1 = rows, 2 = columns), and `FUN` is the function to apply. 
+`apply(X, MARGIN, FUN)` applies a function to matrix margins, where:
 
-We will use `MARGIN = 1` to apply the function mean and variance of the counts for each row (gene) across the 'Mov10 overexpression' replicates. We will then create a data frame with the mean and variance of the counts for each gene.
+X = matrix
+MARGIN = 1 (rows) or 2 (columns)
+FUN = function to apply
+
+We will use `MARGIN = 1` to to calculate mean and variance for each gene (row) across the **Mov10 overexpression** replicates. We will then create a data frame with the mean and variance of the counts for each gene.
 ```{r}
 
 # calculate the mean and variance of the counts for each gene
@@ -199,44 +204,34 @@ ggplot(df) +
   scale_y_log10() + scale_x_log10()
 ```
 
-By plotting the *mean versus the variance* of our data we can easily see that the **variance > mean** and therefore it does not fit the Poisson distribution. Genes having higher mean counts have even higher variance. Also for gene having low mean counts, there is a scatter of points and we can see that there is variability even in the variance. To account for this extra variance we need a new model. 
+By plotting the *mean versus the variance* of our data we can easily see that the **variance > mean** violating the Poisson assumption. Higher mean genes have even higher variance, indicating we need a different model.
 
-The model that fits best, given this type of variability between replicates, is the **Negative Binomial (NB) model**. Essentially, **the NB model** is a good approximation for data where the **variance > mean**, as is the case with RNA-seq count data.
+The **Negative Binomial (NB)** model fits RNA-seq data well because it handles cases where **variance > mean**.
 
 ### Improving mean estimates (i.e. reducing variance) with biological replicates
+More biological replicates reduce variance and improve mean estimates. Additional replicates provide increasingly precise group means and greater power to detect differences between conditions.
 
-The variance or scatter tends to reduce as we increase the number of biological replicates (*the distribution will approach the Poisson distribution with increasing numbers of replicates*). **The value of additional replicates is that as you add more data (replicates), you get increasingly precise estimates of group means, and ultimately greater confidence in the ability to distinguish differences between sample classes (i.e. more DE genes).**
+The figure below shows that **increasing replicates identifies more DE genes than increasing sequencing depth** because biological variability between samples is the main source of noise, not technical measurement precision.
 
-The figure below shows how the number of differentially expressed (DE) genes identified is influenced by sequencing depth and number of replicates [[1](https://academic.oup.com/bioinformatics/article/30/3/301/228651/RNA-seq-differential-expression-studies-more)]. Notice that increasing the number of replicates identifies more DE genes compared to increasing sequencing depth. This is because most of the biological variability occurs between samples. As a result, having more replicates typically yields better results than increasing sequencing depth, as it captures natural biological variability more effectively and leads to more accurate estimates of within-group variation. While increasing sequencing depth reduces technical noise, it has less impact on detecting DE genes since it doesn't account for biological variability. Generally, a minimum sequencing depth of 20-30 million reads per sample is recommended, though successful RNA-seq experiments have been conducted with as few as 10 million reads when enough replicates are included.
+Key insight: You can sequence one sample infinitely deep, but you still have n=1 for statistics. DESeq2 requires biological replicates to estimate variance and perform statistical tests.
 
-Biological replicates vs Sequencing depth
-
-More biological replicates → better estimates of biological variability → more statistical power to detect real differences
-More sequencing depth → better precision for individual measurements but doesn't help with biological inference
-
-The key insight: You can sequence one sample to infinite depth, but you still only have n=1 for statistical testing. DESeq2 and other tools require biological replicates to estimate variance and perform statistical tests.
+Recommendation: Minimum 20-30M reads per sample, but prioritize replicates over depth.
 
 ![Alt text](img/de_replicates_img.png){ width=500 }
 
 >**NOTE** 
 >
-> - **Biological replicates** represent multiple samples (i.e. RNA from different mice) representing the same sample class
-> - **Technical replicates** represent the same sample (i.e. RNA from the same mouse) but with technical steps replicated
-> - Usually biological variance is much greater than technical variance, so we do not need to account for technical variance to identify biological differences in expression
+> - **Biological replicates** = multiple samples (different mice)
+> - **Technical replicates**  = same sample (same mouse) with technical steps replicated
 > - **Don't spend money on technical replicates - biological replicates are much more useful**
 
 ### Differential expression analysis workflow
 
-To model counts appropriately when performing a differential expression analysis, there are a number of software packages that have been developed for differential expression analysis of RNA-seq data. Even as new methods are continuously being developed a few  tools are generally recommended as best practice, e.g. **[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)** and **[EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html)**. Both these tools use the negative binomial model, employ similar methods, and typically, yield similar results. They are pretty stringent, and have a good balance between sensitivity and specificity (reducing both false positives and false negatives).
+To model counts appropriately when performing a differential expression analysis, a few  tools are generally recommended as best practice, e.g. **[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)** and **[EdgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html)**. Both these tools use the negative binomial model, employ similar methods, and typically, yield similar results. They are pretty stringent, and have a good balance between sensitivity and specificity (reducing both false positives and false negatives).
 
-Here is a comparison of the three most highy used software packages for differential expression analysis. No single method is optimal under all circumstances, for example, limma works best when sample number is high, and edgeR and DESeq2 perform well for small sample sizes. It is also difficult to compare analysis methods due to different procedures in calculating pvalues. 
-
-![Alt text](img/venn.png){ width=300 }
-
-**We will be using [DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) for the DE analysis, and the analysis steps with DESeq2 are shown in the flowchart below**. DESeq2 first normalizes the count data to account for differences in library sizes and RNA composition between samples. Then, we will use the normalized counts to make some plots for QC at the gene and sample level. The final step is to use the appropriate functions from the DESeq2 package to perform the differential expression analysis. 
+**For this tutorial, we will be using [DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) for the DE analysis, and the analysis steps with DESeq2 are shown in the flowchart below**. DESeq2 first normalizes the count data to account for differences in library sizes and RNA composition between samples. Then, we will use the normalized counts to make some plots for QC at the gene and sample level. The final step is to use the appropriate functions from the DESeq2 package to perform the differential expression analysis. 
 
 ![Alt text](img/deseq_workflow_full_2018.png){ width=500 }
-
 We will go in-depth into each of these steps in the following lessons, but additional details and helpful suggestions regarding DESeq2 can be found in the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). As you go through this workflow and questions arise, you can reference the vignette from within RStudio:
 
 ```{r, eval=FALSE}

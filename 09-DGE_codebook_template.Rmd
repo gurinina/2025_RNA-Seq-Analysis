@@ -507,8 +507,6 @@ log2_fitted <- beta_coefficients %*% t(X)
 
 This step multiplies the beta coefficients matrix by the transpose of the design matrix to compute the fitted log2 counts.
 
-STOP Tues Oct 22
-
 ## MOV10 Differential Expression Analysis:
 
 Control versus Overexpression

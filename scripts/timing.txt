@@ -18,7 +18,7 @@ lesson 01: 47'
 lesson 02: 38' 26' to design(dds)
 lesson 03: 31'  1hr 56' to here lesson 01,02,03 116' includes 03
 lesson 04: 24'
-lesson 05: 33'
+lesson 05: 33' to ## MOV10 Differential Expression Analysis stopped
 lesson 06: 23'  1hr 20' lesson 04,05,06 ~3hr 15' up to here = 
 lesson 07: 0'
 lesson 08: 36' 37"

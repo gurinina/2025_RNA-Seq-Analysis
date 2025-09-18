@@ -25,12 +25,10 @@ source("scripts/solutions.R")
 
 ```
 
-
 # RNA-seq analysis workshop {-}
 
 <p align="center">
   <img src="img/football333.png" alt="Welcome to Omics Science!" width="300" />
 </p>
 
-
-The published version for this module can be found on my bookdown site [2024_RNA-Seq-Analysis](https://bookdown.org/ggiaever/2024_RNA-Seq-Analysis/).
+The published version for this module can be found on my bookdown site [2025_RNA-Seq-Analysis](https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis/).

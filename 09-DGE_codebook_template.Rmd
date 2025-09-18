@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Codebook
 
 35 total points
@@ -28,9 +33,9 @@ library(ggrepel)
 #### Loading data
 ```{r}
 
-data <- read.delim("data/Mov10_full_counts.txt", row.names = 1)
+data <- read.table("data/Mov10_full_counts.txt", header = TRUE, row.names = 1, sep= "\t")
 
-meta <- read.delim("data/Mov10_full_meta.txt", row.names = 1)
+meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1, , sep = "\t")
 ```
 
 Use class() to inspect our data and make sure we are working with data frames:
@@ -46,13 +51,13 @@ class(data)
 
 rownames(meta)
 
-names(data)
+colnames(data)
 
 data[1:4,1:4]
 
 ```
 
-You’ll notice that the colnames of the data and the rownames of metadata are the same except that they are in a different order. This is important later as we will be merging the metadata with the data based on these sample names.
+You’ll notice that the colnames of the data and the rownames of meta are the same except that they are in a different order. This is important later as we will be merging the metadata with the count data based on these sample names.
 
 ### DGE analysis workflow
 
@@ -81,11 +86,16 @@ These images illustrate some common features of RNA-seq count data, including a 
 
 By plotting the *mean versus the variance* of our data we should be able to see that the variance > mean and therefore it does not fit the Poisson distribution and is better suited to the Negative Binomial (NB) model.
 
-To calculate the mean and variance of our data, we will use the `apply` function. The `apply` function allows you to apply a function to the margins (rows or columns) of a matrix. The syntax for `apply` is as follows: `apply(X, MARGIN, FUN)`, where `X` is a matrix, `MARGIN` is the margin of the matrix to apply the function to (1 = rows, 2 = columns), and `FUN` is the function to apply. 
+To calculate the mean and variance of our data, we will use the `apply` function. The `apply` function allows you to apply a function to the margins (rows or columns) of a matrix. The syntax for `apply` is as follows: 
 
-We will use `MARGIN = 1` to apply the mean and variance of the counts for each row (gene) across the 'Mov10 overexpression' replicates. We will then create a data frame with the mean and variance of the counts for each gene.
+`apply(X, MARGIN, FUN)`
+
+where `X` is a matrix, `MARGIN` is the margin of the matrix to apply the function to (1 = rows, 2 = columns), and `FUN` is the function to apply. 
+
+We will use `MARGIN = 1` to apply the mean and variance of the counts for each row (gene) across the **Mov10 overexpression** replicates. We will then create a data frame with the mean and variance of the counts for each gene.
 ```{r}
 
+# **Mov10 overexpression** is in columns 3:5
 mean_counts <- apply(data[, 3:5], 1, mean)
 
 variance_counts <- apply(data[, 3:5], 1, var)
@@ -94,7 +104,7 @@ variance_counts <- apply(data[, 3:5], 1, var)
 df <- data.frame(mean_counts, variance_counts)
 ```
 
-Run the following code to plot the *mean versus variance* for the 'Mov10 overexpression' replicates:
+Run the following code to plot the *mean versus variance* for the **Mov10 overexpression** replicates:
 ```{r}
 
 ggplot(df) +
@@ -507,6 +517,8 @@ log2_fitted <- beta_coefficients %*% t(X)
 
 This step multiplies the beta coefficients matrix by the transpose of the design matrix to compute the fitted log2 counts.
 
+STOP Tues Oct 22
+
 ## MOV10 Differential Expression Analysis:
 
 Control versus Overexpression
@@ -590,7 +602,7 @@ contrast_kd <-  c("sampletype",
 
 # extract results table
 res_tableKD_unshrunken <- results(dds, 
-                                  contrast = contrast_kd), 
+                                  contrast = contrast_kd)
                                
 
 resultsNames(dds)

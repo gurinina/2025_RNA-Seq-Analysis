@@ -129,11 +129,6 @@ $$
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
 
-```{r}
-# Your code here
-
-```
-
 ### Matrix Multiplication Form:
 If you want to calculate the fitted values for all genes and samples at once, you can express the model as a **matrix multiplication**:
 
@@ -398,17 +393,7 @@ saveRDS(sigOE,"data/sigOE.RDS")
 
 How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?
 
-```{r}
-# Your code here
-
-```
-
 **Does this reduce our results?** 
-
-```{r}
-# Your code here
-
-```
 
 ### MOV10 Knockdown Analysis: Control vs. Knockdown
 
@@ -431,11 +416,6 @@ saveRDS(sigKD,"data/sigKD.RDS")
 **Exercise** points = +1
 
 How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
-
-```{r}
-# Your code here
-
-```
 
 With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.
 

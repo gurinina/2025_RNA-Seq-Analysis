@@ -75,24 +75,9 @@ Including known sources of variation (like **sex** and **age**) ensures any gene
 ```
 
 
-```{r}
-# Your code here
-
-```
-
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
-```{r}
-# Your code here
-
-```
-
 3. What would you do if you wanted to include a factor in your design formula that is not in your metadata?
-
-```{r}
-# Your code here
-
-```
 
 
 ### MOV10 Differential Expression Analysis
@@ -159,10 +144,6 @@ colSums(counts(dds))
 **Exercise** points = +1
 
 **How do the numbers correlate with the size factor?**
-```{r}
-# Your code here
-
-```
 
 ### Step 2: Estimate Gene-wise Dispersion
 
@@ -283,7 +264,3 @@ plotDispEsts(dds)
 **Exercise** points = +1
 
 **Do you think our data are a good fit for the model?**
-```{r}
-# Your code here
-
-```

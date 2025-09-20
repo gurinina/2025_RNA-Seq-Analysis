@@ -1,4 +1,9 @@
-# Quality Control
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# Quality Control (QC)
 
 The next step in the DESeq2 workflow is QC, which includes sample-level and gene-level steps to perform QC checks on the count data to help us ensure that the samples/replicates look good. 
 
@@ -16,70 +21,60 @@ To explore the similarity of our samples, we will be performing sample-level QC 
 
 ![Alt text](img/sample_qc.png){ width=700 }
 
-When using these unsupervised clustering methods, log2-transformation of the normalized counts improves the distances/clustering for visualization. DESeq2 uses a **regularized log transform** (rlog) of the normalized counts for sample-level QC as it moderates the variance across the mean, improving the clustering.
+When using these unsupervised clustering methods, DESeq2 uses a **regularized log transform** (rlog) of the normalized counts for sample-level QC as it moderates the variance across the mean, improving the clustering.
+
+**What it does:**
+- Converts counts to log2 scale (makes highly and lowly expressed genes more comparable)
+- Stabilizes variance across expression levels (prevents highly variable genes from dominating)
+- Results in data where all genes contribute more equally to PCA and clustering
+
+**When to use it:**
+Use rlog-transformed data for sample-level quality control like PCA plots, heatmaps, and sample clustering. Don't use it for differential expression analysis - that uses the original count data.
 
 ![Alt text](img/rlog_transformation.png){ width=500 }
 
-Principal Component Analysis (PCA) is a technique used to emphasize variation and highlight strong patterns in a dataset. It is particularly useful for dimensionality reduction, meaning it simplifies large datasets by identifying the directions (or principal components) that explain the greatest variation in the data. For a more detailed introduction to PCA, we recommend watching this [StatQuest's video](https://www.youtube.com/watch?v=_UVHneBUBW0).
+### Principal Component Analysis 
 
-Suppose we have a dataset with two samples and four genes. To evaluate the relationship between these samples, we can plot the counts of one sample against the other, with Sample 1 on the x-axis and Sample 2 on the y-axis, as shown below:
+Principal Component Analysis (PCA) is a technique used to emphasize variation and bring out strong patterns in a dataset (dimensionality reduction). Details regarding PCA are given below (based on [materials from StatQuest](https://www.youtube.com/watch?v=_UVHneBUBW0), and if you would like a more thorough description, we encourage you to explore [StatQuest's video](https://www.youtube.com/watch?v=_UVHneBUBW0). 
+
+Suppose we had a dataset with two samples and four genes. Based on this expression data we want to evaluate the relationship between these samples. We could plot the counts of one sample versus another, with Sample 1 on the x-axis and Sample 2 on the y-axis as shown below:
 
 ![Alt text](img/PCA_2sample_genes.png){ width=600 }
 
-For PCA analysis, the first step is finding the **first principal component** (PC1). The **first principal component** is the direction that **maximizes the variance** (the sum of squared distances from the mean) and simultaneously **minimizes the squared distances between the data points** and their projections onto that line. Why? Because variance is essentially the spread (or squared distances) of the data from its mean, and PCA wants to capture as much of this spread as possible. In this example, the most variation is along the diagonal. That is, the **largest spread in the data** is between the two endpoints of this line. **This is called the first principal component, or PC1.**  The genes at the endpoints of this line (Gene B and Gene C) have the **greatest influence** on the direction of this line. 
+For PCA analysis, the first step is finding the **first principal component** (PC1), the direction through your data that shows the most variation. In this example, the most variation is along the diagonal - that's where the data is most spread out -- capturing the longest possible distance through this set of data points. The genes at the ends of this line (Gene B and Gene C) contribute most to the variability because they have the largest range of expression values across the samples.
 
 ![Alt text](img/pca_with_PC1_line.png){ width=300 }
 
-After determining PC1, PCA assigns each sample a **PC1 score**, which represents how each sample aligns with this principal component. The score for each sample is calculated by taking the product of each gene’s influence on PC1 and its normalized expression in the sample, and summing these products across all genes. A second line can then be drawn to represent the **second principal component (PC2)**, which captures the second-largest amount of variation in the data. This process can continue for additional principal components.
+After drawing this line and establishing the amount of contribution per gene, **PCA will compute a per sample score**. The per sample PC1 score is computed by taking the product of each gene's loading (its contribution to PC1) and its normalized expression in the sample, summed across all genes. We could draw another line through the data representing the second most amount of variation in the data (PC2) and compute scores, followed by a third line and so on until you hit the total number of samples in your dataset.
 
-The formula to calculate a sample’s PC1 score is as follows: 
+The formula to calculate a sample's PC1 score is as follows: 
 
 $$
-\text{Sample1 PC1 score} = \sum_{i=1}^{n} (\text{counts}_{i} \times \text{influence}_{i})
+\text{Sample1 PC1 score} = (\text{expr}_{\text{GeneA}} \times \text{loading}_{\text{GeneA}}) + (\text{expr}_{\text{GeneB}} \times \text{loading}_{\text{GeneB}}) + \ldots + (\text{expr}_{\text{GeneN}} \times \text{loading}_{\text{GeneN}})
 $$
+
+More compact notation:
+$$\text{PC1}_j = \sum_{i=1}^{n} x_{ij} \cdot w_{i1}$$
 
 Where:
 
-- \( \text{counts}_{i} \): Normalized expression of gene \( i \) in the sample
+- $\text{PC1}_j$ is the PC1 score for sample j
 
-- \( \text{influence}_{i} \): Influence of gene \( i \) on PC1
+- $x_{ij}$ is the normalized expression value of gene i in sample j  
 
-While calculating the **influence** of each gene on PC1 is complex, a key step involves calculating a z-score for each gene. 
+- $w_{i1}$ is the PC1 loading (weight) for gene i
 
-A z-score measures how far a gene’s expression deviates from the mean, and genes with larger z-scores (like Gene B and Gene C in this example) have a greater influence on PC1 because they contribute more to the variation.
+- $n$ = the total number of genes in the dataset
+
+- $i$ = index for genes (goes from 1 to n)
+
+- $j$ = index for samples
+
+In reality, your dataset will have larger dimensions (more samples, and many, many more genes). The initial sample-to-sample plot, will therefore be in *n*-dimensional space with *n* axes representing the total number of samples you have. The end result is a 2-dimensional matrix with rows representing samples and columns reflecting scores for each of the principal components. To evaluate the results of a PCA, we usually plot principal components against each other, starting with PCs that explain the most amount of variation in your data.
 
 ![Alt text](img/PCA_samples.png){ width=600 }
 
-Briefly, calculating PCA and the influence of each gene on PC1 involves the following steps:
-
-#### Steps to calculate PCA
-
-1. **Z-Scores**:
-- A z-score transforms the data points, indicating how far a value is from the mean in terms of standard deviations. This standardization adjusts for differences in scale between different genes, allowing for more accurate comparisons.
-- The formula for calculating a z-score for a value \( x \) of a gene is:
-
-$$
-z = \frac{x - \mu}{\sigma}
-$$
-
-Where:
-
-- \( \mu \) is the mean expression of the gene across samples.
-
-- \( \sigma \) is the standard deviation of the gene expression.
-
-2. **Covariance matrix**:
-- Covariance measures the degree to which two variables change together. In the context of PCA, we calculate the covariance matrix for standardized (z-scored) gene expressions to understand how genes vary together.
-
-- A positive covariance indicates that higher values of one gene correspond to higher values of another, while a negative covariance implies that higher values of one gene correspond to lower values of another. 
-
-- After standardizing the data, calculate the covariance between the z-scores of different genes. This will produce a covariance matrix that reveals how gene expressions vary together.
-
-- In the context of Principal Component Analysis (PCA), the covariance matrix is a crucial component. It captures how variables in the dataset change with respect to one another and is used to determine the principal components. 
-
-3. **Eigenvectors and Eigenvalues:** Find these from the covariance matrix. They reveal the directions (principal components) and their importance (variance explained) in the data. Think of PCA as creating new "axes" or dimensions that capture the most variation in the data. PCA will identify the direction of these axes based on the covariance of the standardized gene expressions that better highlight differences in your data. 
-
-The **take-home message** is that if **two samples have similar levels of expression for the genes that contribute significantly to PC1**, they will have similar PC1 scores and will be plotted close to each other on the PC1 axis. Therefore, we would expect **biological replicates** (samples from the same condition) to have similar PC1 scores and cluster together. On the other hand, samples from different treatment groups should have different PC1 scores, reflecting their distinct gene expression patterns. This is more easily understood through visualizing example PCA plots.
+**If two samples have similar levels of expression for the genes that contribute significantly to the variation represented by PC1, they will be plotted close together on the PC1 axis.** Therefore, we would expect that biological replicates to have similar scores (since the same genes are changing) and cluster together on PC1 and/or PC2, and the samples from different treatment groups to have different score. This is easiest to understand by visualizing example PCA plots.
 
 #### Interpreting PCA plots
 
@@ -95,7 +90,7 @@ We have an example dataset and a few associated PCA plots below to get a feel fo
 
 ![Alt text](img/example_metadata.png){ width=600 }
 
-When visualizing the samples on PC1 and PC2, we can color the points based on different metadata columns to identify potential sources of variation. In the first plot, if we don't observe a clear separation of samples by `treatment`, we can explore other factors that may explain the variation. Ideally, our metadata table includes all known sources of variation (such as batch effects, age, or gender), and we can use these factors to color the PCA plot to see if they explain any underlying patterns.
+When visualizing on PC1 and PC2, we don't see the samples separate by `treatment`, so we decide to explore other sources of variation present in the data. We hope that we have included all possible known sources of variation in our metadata table, and we can use these factors to color the PCA plot. 
 
 ![Alt text](img/example_PCA_treatmentPC1.png){ width=600 }
 
@@ -119,54 +114,46 @@ Still we haven't found if `treatment` is a major source of variation after `stra
 
 ![Alt text](img/example_PCA_treatmentPC3.png){ width=600 }
 
-We find that the samples separate by `treatment` on PC3, and are optimistic about our DE analysis since our condition of interest, `treatment`, is separating on PC3 and we can regress out the variation driving PC1 and PC2. Treatment separating on PC3 indicates that it still contributes to variation, but its effect is smaller and is only captured after accounting for the larger effects (`strain`, `sex`)..
+We find that the samples separate by `treatment` on PC3, and are optimistic about our DE analysis since our condition of interest, `treatment`, is separating on PC3 and we can regress out the variation driving PC1 and PC2.
+
+Depending on how much variation is explained by the first few principal components, you **may want to explore more (i.e consider more components and plot pairwise combinations)**. Even if your samples do not separate clearly by the experimental variable, you may still get biologically relevant results from the DE analysis. If you are expecting very small effect sizes, then it's possible the signal is drowned out by extraneous sources of variation. In situations **where you can identify those sources, it is important to account for these in your model**, as it provides more power to the tool for detecting DE genes.  
 
 **Exercise** points = +5
 
 The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
+
 ![Alt text](img/PCA_example3.png){ width=600 }
 
+
 **Determine the sources explaining the variation represented by PC1 and PC2.** 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  # The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2
-  cat("The sample groups 'Ctrl' and 'Sci' separate well on PC1 and PC2")
-})))
+```{r}
+# Your code here
+
 ```
 
 **Do the sample groups separate well?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("Yes")
-})))
+```{r}
+# Your code here
+
 ```
 
 **Do the replicates cluster together for each sample group?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("For the most part")
-})))
+```{r}
+# Your code here
+
 ```
 
 **Are there any outliers in the data?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("Yes, sci8_rep2, ctrl0_rep3 cluster away from their replicates")
-})))
+```{r}
+# Your code here
+
 ```
 
 **Should we have any other concerns regarding the samples in the dataset?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("Yes, sci8 and sci16 don't separate well, the ctrl0 group shows big variations among replicates")
-})))
+```{r}
+# Your code here
+
 ```
-
-### Recommended Resources
-
-For further reading and visual examples of PCA, consider resources such as:
-- StatQuest's PCA video ([Link](https://www.youtube.com/watch?v=_UVHneBUBW0))
-- Online tutorials on PCA in bioinformatics.
 
 ### Hierarchical Clustering Heatmap
 
@@ -177,17 +164,13 @@ The hierarchical tree can indicate which samples are more similar to each other 
 **In the plot below, we would be quite concerned about 'Wt_3' and 'KD_3' samples not clustering with the other replicates. We would want to explore the PCA to see if we see the same clustering of samples.**
 
 ![Alt text](img/heatmap_example.png){ width=500 }
+
+
 ## Gene-level QC
 
-In addition to examining how well the samples/replicates cluster together, there are a few more QC steps. Prior to differential expression analysis it is beneficial to omit genes that have little or no chance of being detected as differentially expressed. This will increase the power to detect differentially expressed genes. The genes omitted fall into three categories:
-
-- Genes with zero counts in all samples
-- Genes with an extreme count outlier
-- Genes with a low mean normalized counts
-
-![Alt text](img/gene_filtering.png){ width=600 }
-
-**DESeq2 will perform this filtering by default; however other DE tools, such as EdgeR will not.**  Filtering is a necessary step, especially when you are using methods other than DESeq2. 
+Gene-level QC
+Prior to differential expression analysis, it's beneficial to remove genes that have little chance of being detected as differentially expressed (such as genes with very low counts across all samples). This filtering increases the power to detect truly differentially expressed genes.
+DESeq2 performs this filtering automatically, so we don't need to do additional gene filtering steps for our analysis.
 
 ## Mov10 quality assessment and exploratory analysis using DESeq2	
 
@@ -195,14 +178,13 @@ Now that we have a good understanding of the QC steps normally employed for RNA-
 
 ### Transform normalized counts using the rlog transformation
 
-**To improve the distances/clustering for the PCA and heirarchical clustering visualization methods**, we need to apply the **regularized log transformation (rlog)** transformation to the normalized counts. **rlog** is used for visualizations in RNA-seq data analysis, particularly with tools like DESeq2, because it stabilizes the variance across different levels of gene expression, making it easier to interpret patterns in the data.
+**To improve the distances/clustering for the PCA and hierarchical clustering visualization methods**, we need to apply the **regularized log transformation (rlog)** transformation to the normalized counts. **rlog** is used for visualizations in RNA-seq data analysis, particularly with tools like DESeq2, because it stabilizes the variance across different levels of gene expression, making it easier to interpret patterns in the data.
 
 **Example of Variance Stabilization**
 Raw RNA-Seq count data has different levels of variability:
 
 Without stabilization: Lowly expressed genes show high variability between samples (often due to noise), and highly expressed genes show less variability.
 With stabilization (e.g., rlog or vst): Variance across genes is more evenly distributed, which makes the data easier to work with in analyses like clustering or PCA.
-
 
 > The rlog transformation of the normalized counts is only necessary for these visualization methods during this quality assessment. 
 
@@ -227,10 +209,6 @@ plotPCA(rld, intgroup="sampletype")
 
 
 **What does this plot tell you about the similarity of samples? Does it fit the expectation from the experimental design?** By default the function uses the *top 500 most variable genes*. You can change this by adding the `ntop` argument and specifying how many genes you want to use to draw the plot.
-
-
-> [Resources](http://www.sthda.com/english/wiki/principal-component-analysis-in-r-prcomp-vs-princomp-r-software-and-data-mining) are available to learn how to do more complex inquiries using the PCs.
-
 
 ### Hierarchical Clustering
 
@@ -262,7 +240,6 @@ Overall, we observe pretty high correlations across the board ( > 0.999) suggest
 **Exercise** points = +6
 
 The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
-
 ```{r, fig.width=8, fig.height=8, echo=FALSE}
 # Display all available color palettes
 display.brewer.all()
@@ -272,32 +249,20 @@ display.brewer.all()
 # The color palette "Blues" is a good choice for this heatmap
 heat.colors <- brewer.pal(9, "Blues")
 
-```
-
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    display.brewer.all()
-  }),
-  quote({
-    heat.colors <- brewer.pal(9, "Blues")
-    pheatmap(rld_cor, 
+pheatmap(rld_cor, 
              color = heat.colors, 
              border_color = "black", 
              fontsize = 10, 
              fontsize_row = 12, 
+             fontsize_col = 12,
              show_rownames = TRUE,
              show_colnames = TRUE)
-  }),
-  quote({
-    cat("Explanation of changes:\n")
-    cat("- color: Changes the color palette to blue tones\n")
-    cat("- border_color: Adds black borders around each cell\n") 
-    cat("- fontsize: Sets the overall font size to 10\n")
-    cat("- fontsize_row: Sets row name font size to 12\n")
-    cat("- show_rownames: Shows the row names (sample names)\n")
-    cat("- show_colnames: Shows the column names (sample names)\n")
-  })
-))
+
+```
+
+Identify what each of the added arguments is contributing to the plot.
+```{r}
+# Your code here
+
 ```
 

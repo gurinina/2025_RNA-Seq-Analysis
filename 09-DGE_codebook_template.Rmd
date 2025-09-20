@@ -33,9 +33,11 @@ library(ggrepel)
 #### Loading data
 ```{r}
 
-data <- read.table("data/Mov10_full_counts.txt", header = TRUE, row.names = 1, sep= "\t")
+data <- read.table("data/Mov10_full_counts.txt", 
+                   header = TRUE, row.names = 1, sep= "\t")
 
-meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1, , sep = "\t")
+meta <- read.table("data/Mov10_full_meta.txt", 
+                   header=T, row.names=1, , sep = "\t")
 ```
 
 Use class() to inspect our data and make sure we are working with data frames:
@@ -84,7 +86,20 @@ These images illustrate some common features of RNA-seq count data, including a 
 
 #### Modeling count data
 
-By plotting the *mean versus the variance* of our data we should be able to see that the variance > mean and therefore it does not fit the Poisson distribution and is better suited to the Negative Binomial (NB) model.
+Count data is often modeled using the **binomial distribution**, which models the probability of success/failure outcomes over fixed trials (like counting heads in 10 coin tosses).
+**When dealing with very large numbers of cases but very small probabilities of events (like lottery tickets), the Poisson distribution is more appropriate.**
+
+![Alt text](img/poisson-distribution-formula.png){ width=300 }
+
+Where:
+
+- λ = the average number of "successes"
+- x = the specific number you're asking about 
+- P(X = x) = probability of getting exactly that many events
+
+With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-Seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
+
+To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
 To calculate the mean and variance of our data, we will use the `apply` function. The `apply` function allows you to apply a function to the margins (rows or columns) of a matrix. The syntax for `apply` is as follows: 
 
@@ -114,7 +129,9 @@ ggplot(df) +
   scale_x_log10()
 ```
 
-By plotting the mean versus the variance of our data, we can see that the variance is greater than the mean, indicating that the data does not fit the Poisson distribution and is better suited to the Negative Binomial (NB) model.
+By plotting the *mean versus the variance* of our data we can easily see that the **variance > mean** violating the Poisson assumption. Higher mean genes have even higher variance, indicating we need a different model.
+
+The **Negative Binomial (NB)** model fits RNA-seq data well because it handles cases where **variance > mean**.
 
 ## Count normalization
 

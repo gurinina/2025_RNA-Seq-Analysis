@@ -129,10 +129,9 @@ $$
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("The design matrix captures the experimental conditions for each sample, allowing the model to estimate the expected mean expression for each gene in each sample based on the experimental covariates. The design matrix is used to model the relationship between the expected mean expression and the beta coefficients for each gene, which represent the log2 fold changes in gene expression between different conditions.")
-})))
+```{r}
+# Your code here
+
 ```
 
 ### Matrix Multiplication Form:
@@ -399,35 +398,16 @@ saveRDS(sigOE,"data/sigOE.RDS")
 
 How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  nrow(sigOE)
-})))
+```{r}
+# Your code here
+
 ```
 
 **Does this reduce our results?** 
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    # Number of significant genes with both FDR and fold change criteria
-    nrow(sigOE)
-  }),
-  quote({
-    # Total number of genes tested
-    nrow(res_tableOE)
-  }),
-  quote({
-    # Calculate percentage reduction
-    percent_reduction <- 100 - (nrow(sigOE)/nrow(res_tableOE) * 100)
-    percent_reduction
-  }),
-  quote({
-    cat("Yes, adding the fold change threshold reduces the results significantly.")
-    cat("\nFrom", nrow(res_tableOE), "total genes to", nrow(sigOE), "significant genes")
-    cat("\nThis represents about", round((nrow(sigOE)/nrow(res_tableOE) * 100), 1), "% of the genes")
-  })
-))
+```{r}
+# Your code here
+
 ```
 
 ### MOV10 Knockdown Analysis: Control vs. Knockdown
@@ -452,10 +432,9 @@ saveRDS(sigKD,"data/sigKD.RDS")
 
 How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  nrow(sigKD)
-})))
+```{r}
+# Your code here
+
 ```
 
 With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.

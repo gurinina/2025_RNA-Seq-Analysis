@@ -8,59 +8,61 @@ To determine the expression levels of genes, our RNA-seq workflow follows the st
 
 In the next few lessons, we will walk you through an **end-to-end gene-level RNA-seq differential expression workflow** using various R packages. We will start with the count matrix, perform exploratory data analysis for quality assessment and to explore the relationship between samples, perform differential expression analysis, and visually explore the results prior to performing downstream functional analysis.
 
-## Review of the dataset
+## RNA-seq Introduction: MOV10-FMRP Study
 
-We will be using the full count matrix from the RNA-seq dataset that is part of a larger study described in [Kenny PJ et al, Cell Rep 2014](http://www.ncbi.nlm.nih.gov/pubmed/25464849) investigating the interactions between genes potentially involved in Fragile X syndrome (FXS). FXS is a genetic disorder and the leading cause of inherited intellectual disabilities like autism. FXS is caused by aberrant production of a protein called Fragile X Messenger Ribonucleoprotein (**FMRP**) that is needed for brain development. People who have FXS do not make this protein. The authors demonstrated that **FMRP** associates with another RNA-binding protein **MOV10** (Mov10 RISC Complex RNA Helicase) and acts to regulate the translation of a subset of RNAs.
+- **Reference:** [Kenny PJ et al, Cell Rep 2014](http://www.ncbi.nlm.nih.gov/pubmed/25464849)
 
-What is the function of **FMRP**, **MOV10** and **AGO2**?
+### Background: MOV10-FMRP Biology
 
-> **FMRP** is most commonly found in the brain and is essential for normal cognitive development and female reproductive function. Mutations of this gene can lead to fragile X syndrome, intellectual disability, premature ovarian failure, autism, Parkinson's disease, and other developmental delays. **FMRP** regulates translation by binding to mRNAs and interacting with components of the microRNA pathway.
+**What is the function of FMRP and MOV10**
 
-> **MOV10** is an RNA helicase that associates with the 3' UTR of mRNAs as part of its role in the **RNA-induced silencing complex (RISC)**. **MOV10** assists in unwinding RNA secondary structures and is associated with **FMRP** in the context of the microRNA pathway. **MOV10** has a dual role in translation regulation: it can facilitate microRNA-mediated translational repression of some mRNAs while also enhancing expression of others depending on the context.
+> **FMRP** is the Fragile X Messenger Ribonucleoprotein. Loss of **FMRP** causes **Fragile X Syndrome (FXS)**, characterized by intellectual disability and autism spectrum disorder. **FMRP** regulates translation by binding to mRNAs and interacting with components of the microRNA pathway.
 
-> **AGO2** is the catalytic component of **RNA-induced silencing complex (RISC)** that mediates microRNA-guided gene silencing by binding microRNAs and guiding **RISC** to target mRNAs through **microRNA response elements (MREs)**. This typically results in translational repression, except when **FMRP** and **MOV10** co-binding blocks **RISC** access to **MREs**.
-
-The aim of the RNA-Seq part of the study was to characterize the transcription expression patterns of **FMRP** and **MOV10** to identify overlapping target genes which would suggest that these genes are regulated by the **MOV10-FMRP** complex.
+> **MOV10** usually facilitates translation suppression through the miRNA pathway. **MOV10-FMRP** interactions can either enhance this suppression or, when the **MOV10-FMRP** complex binds in proximity to **microRNA response elements (MREs)**, can sterically block **AGO2** access and translation is no longer suppressed.
 
 ![Alt text](img/model_mov10.png){ width=400 }
 
-
 Model for **MOV10-FMRP** Cooperation in microRNA-Mediated Translation Regulation
 
-Top: **MOV10** helicase unwinds G-rich structures in 3′ UTRs, exposing **microRNA response elements (MREs)** for **AGO2/RISC** binding and translational repression.
+Top: **MOV10** helicase unwinds G-rich structures in 3′ UTRs, exposing **microRNA response elements (MREs)** for **AGO2/RNA-induced silencing complex (RISC)** binding and gene silencing by translational repression.
 
-Middle: **FMRP** recruits **MOV10** to remodel RNA structure, facilitating **AGO2/RISC** access to **MREs** and gene silencing.
+Middle: **FMRP** recruits **MOV10** to remodel RNA structure, facilitating **AGO2/RISC** access to **MREs** and translational repression.
 
 Bottom: **FMRP-MOV10** complex binds in proximity to **MREs**, sterically blocking **AGO2/RISC** access and preventing microRNA-mediated suppression of translation.
 
-RNA-seq was performed on HEK293F cells that were either transfected with a **MOV10** transgene, or siRNA to knock down Mov10 expression, or non-specific (irrelevant) siRNA. This resulted in 3 conditions **Mov10 oe** (over expression), **Mov10 kd** (knock down) and **Irrelevant kd**, respectively. The number of replicates is as shown below.
+### Review of the dataset
+
+**Experimental design:**
+
+- **Cell type:** HEK293F cells
+
+- **Conditions:** Cells were either transfected with a **MOV10** transgene, or siRNA to knock down **Mov10** expression, or non-specific (irrelevant) siRNA. This resulted in 3 conditions **Mov10 oe** (over expression), **Mov10 kd** (knock down) and **Irrelevant kd**, respectively. 
+
+- **Replicates:** 2-3 biological replicates per condition (shown below)
 
 ![Alt text](img/dataset.png){ width=400 }
 
+**Research objectives:**
 
-Using these data, we will evaluate transcriptional patterns associated with perturbation of **MOV10** expression. Please note that the irrelevant siRNA will be treated as our control condition.
+The aim of the RNA-seq part of the study was to identify **MOV10** target genes and determine which overlap with **FMRP** targets, suggesting regulation by the **MOV10-FMRP** complex. Our analysis will include:
+
+- Differential gene expression analysis (**MOV10** KD vs. OE vs. control)
+- Identifying direct **MOV10** targets (genes with opposite responses to KD vs. OE)
+- Functional enrichment of **MOV10**-responsive genes
 
 **Links to raw data**
 [GEO]: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE51443 "Gene Expression Omnibus"
 [SRA]: https://trace.ncbi.nlm.nih.gov/Traces/sra/?study=SRP031507 "Sequence Read Archive"
 
-**Our questions:**
-
-- What patterns of expression can we identify with the loss or gain of MOV10? 
-
-- Are there any genes that are differentially expressed between the two conditions?
-
-- Are there any genes shared between the two conditions?
-
 ## Setting up
 
 **Make your personal codebook from the template**
+
    - In the **Files** pane, navigate to **'09-DGE_codebook_template.Rmd'**
     
    - Check the box next to that file → click **More** → **Copy To…**
    
-   - In the dialog, choose the **`students_notes/`** folder and set the new name to:  
-     **`<lastname>_09-DGE_codebook.Rmd`** (for example, `garcia_09-DGE_codebook.Rmd`) → **OK**.
+   - In the dialog, choose the **`students_notes/`** folder and set the new name to: **`<lastname>_09-DGE_codebook.Rmd`** (for example, 'garcia_09-DGE_codebook.Rmd') → **OK**.
      
    - Click the new file in `students_notes/` to open it. This is now **your** working copy for your homework. This will open in the script editor in the top left hand corner. This is where we will be running all commands required for the analysis, and like last time this is where you will enter the code/answers for your homework assignment.  
 
@@ -82,13 +84,15 @@ library(ggrepel)
 
 ### Loading data
 
-To load the data into our current environment, we will be using the `read.table` function. We need to provide the path to each file and also specify arguments to let R know that we have a header (`header = T`) and the first column is our row names (`row.names = 1`). By default the function expects tab-delimited files, which is what we have.
+To load the data into our current environment, we will be using the `read.table` function. We need to provide the path to each file and also specify arguments to let R know that we have a header (`header = T`) and the first column is our row names (`row.names = 1`). 
 
 ```{r}
 ## Load in data
-data <- read.table("data/Mov10_full_counts.txt", header=T, row.names=1, sep = "\t") 
+data <- read.table("data/Mov10_full_counts.txt", 
+                   header=T, row.names=1, sep = "\t") 
 
-meta <- read.table("data/Mov10_full_meta.txt", header=T, row.names=1, , sep = "\t")
+meta <- read.table("data/Mov10_full_meta.txt", 
+                   header=T, row.names=1, , sep = "\t")
 
 
 ```
@@ -111,6 +115,7 @@ rownames(meta)
 colnames(data)
 
 ```
+
 You'll notice the colnames of the data are the sample names, and the rownames of the metadata are the sample names. This is important as we will be merging the metadata with the data based on the sample names.
 
 ## Differential gene expression analysis overview
@@ -138,7 +143,6 @@ The "uninteresting" presents as sources of variation in your data, and so even t
 
 
 The goal of differential expression analysis is to determine, for each gene, whether the differences in expression (counts) **between groups** is significant given the amount of variation observed **within groups** (replicates). To test for significance, we need an appropriate statistical model that accurately performs normalization (to account for differences in sequencing depth, etc.) and variance modeling (to account for few numbers of replicates and large dynamic expression range).
-
 
 ### RNA-seq count distribution
 
@@ -172,9 +176,13 @@ Count data is often modeled using the **binomial distribution**, which models th
 
 
 ![Alt text](img/poisson-distribution-formula.png){ width=300 }
+Where:
 
-RNA-seq data fits this scenario perfectly: **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. 
-However, a unique property of the Poisson distribution is that the mean == variance given by the single parameter $\lambda$.
+- λ = the average number of "successes"
+- x = the specific number you're asking about 
+- P(X = x) = probability of getting exactly that many events
+
+With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
 
 To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
@@ -206,10 +214,10 @@ ggplot(df) +
 
 By plotting the *mean versus the variance* of our data we can easily see that the **variance > mean** violating the Poisson assumption. Higher mean genes have even higher variance, indicating we need a different model.
 
-The **Negative Binomial (NB)** model fits RNA-seq data well because it handles cases where **variance > mean**.
+The model that fits best, given this type of variability between replicates, is the **Negative Binomial (NB) model**. Essentially, the NB model is a good approximation for data where the **variance > mean**, as is the case with RNA-Seq count data.
 
 ### Improving mean estimates (i.e. reducing variance) with biological replicates
-More biological replicates reduce variance and improve mean estimates. Additional replicates provide increasingly precise group means and greater power to detect differences between conditions.
+Remember, the goal of differential expression analysis is to determine, for each gene, whether the differences in expression (counts) **between groups** is significant given the amount of variation observed **within groups** (replicates). More biological replicates reduce variance and improve mean estimates. Additional replicates provide increasingly precise group means and greater power to detect differences between conditions.
 
 The figure below shows that **increasing replicates identifies more DE genes than increasing sequencing depth** because biological variability between samples is the main source of noise, not technical measurement precision.
 

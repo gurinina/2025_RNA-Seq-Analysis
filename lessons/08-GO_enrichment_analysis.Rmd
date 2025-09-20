@@ -497,7 +497,7 @@ The equivalent function in the `GOenrichment` package is `runNetwork`:
 
 We use the`visSetup` function to prepare the data for network visualization. We then run the `runNetwork` function to generate the interactive network plot.
 
-```{r, echo=TRUE, results='asis'}
+```{r}
 
 vis = visSetup(hresp$enrichInfo,hresp$edgeMat)
 GOenrichment::runNetwork(vis$nodes, vis$edges, main = "MOV10 OE GO Enrichment Network")
@@ -511,50 +511,16 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the res_tableKD_tb$log2FoldChange and cbind to build an input matrix. Use a significance threshold of 0.58 and an FDR threshold of 0.2. Save the results in a variable called `kresp`.
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    # Extract log2 fold changes from knockdown results
-    kdfoldchanges <- res_tableKD_tb$log2FoldChange
-    names(kdfoldchanges) <- res_tableKD_tb$gene
-  }),
-  quote({
-    # Sort fold changes in decreasing order
-    kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)
-  }),
-  quote({
-    # Create input matrix using cbind
-    matkd <- cbind(kdfoldchanges, kdfoldchanges)
-  }),
-  quote({
-    # Compute score matrix with significance threshold of 0.58
-    scoreMatkd <- compSCORE(matkd, coln = 1, sig = 0.58)
-  }),
-  quote({
-    # Run GO enrichment analysis with FDR threshold of 0.2
-    kresp <- runGORESP(fdrThresh = 0.2,
-                       bp_input = hGOBP.gmt,
-                       go_input = NULL,
-                       minSetSize = 20,
-                       maxSetSize = 300,
-                       scoreMat = scoreMatkd)
-  })
-))
+```{r}
+# Your code here
+
 ```
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the results in a variable called `kvis`.
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    # Set up visualization data
-    kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
-  }),
-  quote({
-    # Run network visualization
-    runNetwork(kvis$nodes, kvis$edges)
-  })
-))
+```{r}
+# Your code here
+
 ```
 
 ### Other tools and resources

@@ -30,7 +30,7 @@ This final step in the differential expression analysis workflow of fitting the 
 
 ![Alt text](img/de_theory.png){ width=600 }
 
-Although the [DESeq2 paper](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) was published in 2014, but the package is continually updated and available for use in R through Bioconductor. 
+Although the [DESeq2 paper](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) was published in 2014, the package is continually updated and available for use in R through Bioconductor. 
 
 ## Running DESeq2
 
@@ -74,27 +74,26 @@ Including known sources of variation (like **sex** and **age**) ensures any gene
 # the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last:
 ```
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("~ sex + treatment + age")
-})))
+
+```{r}
+# Your code here
+
 ```
 
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("sampletype, you could also use MOVexpr, but it is redundant with sampletype. Sampletype is also more descriptive.")
-})))
+```{r}
+# Your code here
+
 ```
 
 3. What would you do if you wanted to include a factor in your design formula that is not in your metadata?
 
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("Add the factor as an additional column in the metadata")
-})))
+```{r}
+# Your code here
+
 ```
+
 
 ### MOV10 Differential Expression Analysis
 
@@ -160,18 +159,9 @@ colSums(counts(dds))
 **Exercise** points = +1
 
 **How do the numbers correlate with the size factor?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    # Calculate correlation between total counts and size factors
-    correlation <- cor(colSums(counts(dds, normalized = FALSE)), sizeFactors(dds))
-    correlation
-  }),
-  quote({
-    cat("The total number of raw counts per sample and the size factors are highly correlated.")
-    cat("\nThis makes sense because size factors are calculated to normalize for sequencing depth differences.")
-  })
-))
+```{r}
+# Your code here
+
 ```
 
 ### Step 2: Estimate Gene-wise Dispersion
@@ -293,8 +283,7 @@ plotDispEsts(dds)
 **Exercise** points = +1
 
 **Do you think our data are a good fit for the model?**
-```{r, results = "asis", echo = FALSE}
-solutions(list(quote({
-  cat("Yes, our data appear to be a good fit for the model. The shrinkage we observe is expected and beneficial with small sample sizes. The shrinkage helps stabilize log2 fold change estimates for genes with high dispersion or low counts, making the results more reliable. This is a feature of the DESeq2 model, not a problem with our data.")
-})))
+```{r}
+# Your code here
+
 ```

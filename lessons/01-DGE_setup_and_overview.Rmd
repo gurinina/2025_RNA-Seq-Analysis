@@ -66,6 +66,8 @@ The aim of the RNA-seq part of the study was to identify **MOV10** target genes 
      
    - Click the new file in `students_notes/` to open it. This is now **your** working copy for your homework. This will open in the script editor in the top left hand corner. This is where we will be running all commands required for the analysis, and like last time this is where you will enter the code/answers for your homework assignment.  
 
+> From now on, **work only inside `students_notes/`**. Anything you create or edit there is yours and won’t interfere with course updates.
+
 ### Loading libraries
 
 For this analysis we will be using several R packages, some which have been installed from CRAN and others from Bioconductor. To use these packages (and the functions contained within them), we need to **load the libraries**.
@@ -214,7 +216,7 @@ ggplot(df) +
 
 By plotting the *mean versus the variance* of our data we can easily see that the **variance > mean** violating the Poisson assumption. Higher mean genes have even higher variance, indicating we need a different model.
 
-The model that fits best, given this type of variability between replicates, is the **Negative Binomial (NB) model**. Essentially, the NB model is a good approximation for data where the **variance > mean**, as is the case with RNA-Seq count data.
+The model that fits best, given this type of variability between replicates, is the **Negative Binomial (NB) model**. Essentially, the **NB model** is a good approximation for data where the **variance > mean**, as is the case with RNA-Seq count data.
 
 ### Improving mean estimates (i.e. reducing variance) with biological replicates
 Remember, the goal of differential expression analysis is to determine, for each gene, whether the differences in expression (counts) **between groups** is significant given the amount of variation observed **within groups** (replicates). More biological replicates reduce variance and improve mean estimates. Additional replicates provide increasingly precise group means and greater power to detect differences between conditions.

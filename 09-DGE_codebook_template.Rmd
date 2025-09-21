@@ -5,7 +5,7 @@ editor_options:
 ---
 # Codebook
 
-35 total points
+32 total points
 
 
 ```{r, include = FALSE}
@@ -343,8 +343,7 @@ Overall, we observe pretty high correlations across the board ( > 0.999) suggest
 
 **Exercise** points = +6
 
-The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change. Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
-
+The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
 ```{r, fig.width=8, fig.height=8, echo=FALSE}
 # Display all available color palettes
 display.brewer.all()
@@ -354,11 +353,20 @@ display.brewer.all()
 # The color palette "Blues" is a good choice for this heatmap
 heat.colors <- brewer.pal(9, "Blues")
 
+pheatmap(rld_cor, 
+             color = heat.colors, 
+             border_color = "black", 
+             fontsize = 10, 
+             fontsize_row = 12, 
+             fontsize_col = 12,
+             show_rownames = TRUE,
+             show_colnames = TRUE)
+
 ```
 
-```{r}
-# Your code here
-```
+Identify what each of the added arguments is contributing to the plot.
+
+- Ans:
 
 ## DGE analysis workflow
 
@@ -380,7 +388,10 @@ This shows that **sampletype** is the condition of interest and as such is the o
 
 ```{r, eval = FALSE}
 
-# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last:
+# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last
+
+
+# Your code here
 
 
 ```
@@ -463,6 +474,39 @@ plotDispEsts(dds)
 
 **.Rmd file = 05_DGE_DESeq2_analysis2.Rmd**
 
+### Step-by-Step Process:
+
+1. **Define the Design Matrix \( X_j \):**
+The design matrix \( X \) includes the covariates (experimental conditions) for each sample. Each row of the matrix corresponds to a sample, and each column corresponds to a covariate (e.g., intercept, control, treatment). This matrix is generated using the **`model.matrix()`** function in R.
+
+```{r}
+X <- model.matrix(~ sampletype, data = meta)
+
+# OR
+
+X <- model.matrix(design(dds), data = colData(dds))
+
+```
+
+2. **Link Mean Expression to the Design Matrix:**
+The expected mean expression for **gene \( i \)** in **sample \( j \)** is modeled as:
+
+$$
+\log_2(\mu_{ij}) = \beta_i X_j
+$$
+
+Or equivalently:
+
+$$
+\mu_{ij} = 2^{\beta_i X_j}
+$$
+
+Here:
+
+- \( X_j \) is the row of the design matrix for sample \( j \) (it contains the covariates for that sample)
+
+- \( \beta_i \) is the vector of log2 fold changes (beta coefficients) for gene \( i \).
+
 3. **Estimate the Beta Coefficients:**
 "DESeq2 estimates the **beta coefficients** by fitting a **negative binomial GLM** to the data using **Maximum Likelihood Estimation (MLE)**. DESeq2 substitutes the mean (\( \mu_{ij} \)) with \( 2^{\beta_i X_j} \) in the negative binomial model, using MLE to predict expected counts based on experimental covariates and estimate gene expression changes while controlling for design factors.
 
@@ -506,6 +550,22 @@ The expected mean \( \mu_{ij} \) on the original count scale is obtained by expo
 $$
 \mu_{ij} = 2^{\beta_i X_j}
 $$
+
+This gives a matrix of estimated beta coefficients, where each row corresponds to a gene and each column corresponds to a covariate in the design matrix.
+
+### Example:
+For example, if the design matrix includes an intercept (control) and two conditions (MOV10 knockdown and MOV10 overexpression), the beta coefficients \( \beta_i \) for gene \( i \) would represent:
+
+- \( \beta_{i1} \): the log2 fold change for the control group (intercept)
+
+- \( \beta_{i2} \): the log2 fold change for the MOV10 knockdown group
+
+- \( \beta_{i3} \): the log2 fold change for the MOV10 overexpression group.
+
+### Calculation:
+To calculate the fitted (expected) log2 counts for **gene \( i \)** in **sample \( j \)**, you can take the **dot product** of the row of the design matrix \( X_j \) for that sample and the beta coefficients \( \beta_i \) for that gene:
+
+
 
 **Exercise** points = +1
 
@@ -889,7 +949,7 @@ pivoted_top20_sigOE <- inner_join(
 ```
 
 
-Now that we have a data frame in a format that can be utilised by ggplot easily, let's plot! 
+Now that we have a data frame in a format that can be utilized by ggplot easily, let's plot! 
 
 
 ```{r}
@@ -963,7 +1023,7 @@ A commonly used plot in RNA-seq analysis is the **volcano plot**. in which you h
 
 To generate a volcano plot, we first need to have a column in our results data indicating whether or not the gene is considered differentially expressed based on p-adjusted values.
 ```{r}
-## create a column for thresholding in the results table
+## create a column for thresh holding in the results table
 res_tableOE_tb <- res_tableOE_tb %>% 
                   mutate(threshold_OE = padj < 0.05 & 
                   abs(log2FoldChange) >= 0.58)
@@ -1000,7 +1060,7 @@ res_tableOE_tb$genelabels[1:10] <- res_tableOE_tb$gene[1:10]
 head(res_tableOE_tb)
 ```
 
-Next, we plot it as before with an additiona layer for `geom_text_repel()` wherein we can specify the column of gene labels we just created. 
+Next, we plot it as before with an additional layer for `geom_text_repel()` wherein we can specify the column of gene labels we just created. 
 
 ```{r}
 ggplot(res_tableOE_tb, aes(x = log2FoldChange, 
@@ -1033,6 +1093,8 @@ We have detailed the various steps in a differential expression analysis workflo
 # check that the rownames of the count matrix 
 # match the colnames of the metadata
 all(colnames(raw_counts) == rownames(metadata))
+
+# if they don't match write the code to match colnames of raw_counts to the rownames of metadata
 
 # Create DESeq2Dataset object
 dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = metadata, 
@@ -1127,7 +1189,7 @@ sig_res <- dplyr::filter(res_df,
 sessionInfo()
 ```
 
-**Exercise/Homework:** First save a copy of **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as <lastname>_07-DGE_summarizing_workflow.Rmd. Then modify the file to analyze the MOV dataset, starting with Mov10_full_counts.txt in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +10
+**Exercise/Homework:** First save a copy of **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as <lastname>_07-DGE_summarizing_workflow.Rmd. Then modify the file to analyze the MOV dataset, starting with Mov10_full_counts.txt in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +6
 
 ## Functional analysis of RNA-seq data
 
@@ -1549,16 +1611,8 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the res_tableKD_tb$log2FoldChange and cbind to build an input matrix. Use a significance threshold of 0.58 and an FDR threshold of 0.2. Save the results in a variable called `kresp`.
 
 ```{r}
-kdfoldchanges <- res_tableKD_tb$log2FoldChange
-names(kdfoldchanges) <- res_tableKD_tb$gene
-kdfoldchanges <- sort(kdfoldchanges, decreasing = TRUE)
 
-matkd <- cbind(kdfoldchanges,kdfoldchanges)
-
-
-scoreMatkd = compSCORE(matkd, coln = 1, sig =  0.58)
-
-kresp = runGORESP(fdrThresh = 0.2,bp_input = hGOBP.gmt,go_input = NULL,minSetSize = 20,maxSetSize = 300,scoreMat = scoreMatkd)
+# Your code here
 
 ```
 

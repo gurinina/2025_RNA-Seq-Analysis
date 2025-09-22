@@ -5,6 +5,8 @@
 The final step in the DESeq2 workflow is fitting the Negative Binomial model for each gene and performing differential expression testing.
 
 ![Alt text](img/deseq2_workflow_separate_2018.png){ width=400 }
+
+
 **Exercise** points = +1
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
@@ -297,10 +299,9 @@ saveRDS(sigOE,"data/sigOE.RDS")
 
 ```
 
-
 **Exercise** points = +3
 
-How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?
+How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? 
 
 **Does this reduce our results?** 
 

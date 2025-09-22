@@ -1,117 +1,91 @@
-# DGE analysis workflow
 
-Differential expression analysis with DESeq2 involves multiple steps as displayed in the flowchart below in blue.
+# Differential expression analysis with DESeq2
 
-![Alt text](img/DESeq2_workflow_2018.png){ width=600 }
-Here’s a more succinct version of your workflow:
-
-**DESeq2 Workflow Overview:**
-
-1. **Load Data:** Start with raw count data and sample metadata.
-
-2. **Normalize Counts:** Estimate size factors to adjust for sequencing depth or library size differences.
-
-3. **Estimate Dispersion:** Calculate gene-wise dispersion, measuring variability in counts not explained by mean expression.
-
-4. **Fit Dispersion Trend:** Model the relationship between mean counts and dispersion, either parametrically (default) or non-parametrically.
-
-5. **Shrink Dispersions:** Use empirical Bayes shrinkage to stabilize dispersion estimates, particularly for low-count genes. Empirical Bayes is a version of Bayesian statistics where the prior distribution is estimated from the data itself, rather than being set externally.
-
-In empirical Bayes shrinkage, the idea is to estimate a common pattern or distribution (the prior) across all observations (e.g., all genes) and then use this estimated distribution to influence or "shrink" each individual observation.
-
-
-6. **Fit NB Model:** Fit a negative binomial model using the shrunken dispersion estimates, capturing variability and estimating log-fold changes.
-
-7. **Shrink Log-Fold Changes:** Optionally stabilize log-fold changes with regularization, especially for low-expression genes.
-
-8. **Statistical Testing:** Perform Wald tests to identify differentially expressed genes, providing adjusted p-values for multiple testing.
-
-This final step in the differential expression analysis workflow of fitting the raw counts to the **NB model** and performing the statistical test for differentially expressed genes, is the step we care about. This is the step that performs statistical tests to identify significant differences in gene expression between sample groups.
+The final step in the differential expression analysis workflow is fitting the raw counts to the NB model and performing the statistical test for differentially expressed genes. In this step we essentially want to determine whether the mean expression levels of different sample groups are significantly different.
 
 ![Alt text](img/de_theory.png){ width=600 }
 
-Although the [DESeq2 paper](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) was published in 2014, the package is continually updated and available for use in R through Bioconductor. 
+*Image credit:  Paul  Pavlidis,  UBC*
+
+Differential expression analysis with DESeq2 involves multiple steps as displayed in the flowchart below in blue. Briefly, DESeq2 will model the raw counts, using normalization factors (size factors) to account for differences in library depth. Then, it will estimate the gene-wise dispersions and shrink these estimates to generate more accurate estimates of dispersion to model the counts. Finally, DESeq2 will fit the negative binomial model and perform hypothesis testing using the Wald test or Likelihood Ratio Test.
+
+![Alt text](img/DESeq2_workflow_2018.png){ width=600 }
 
 ## Running DESeq2
 
-Prior to performing the differential expression analysis, it is a good idea to know what **sources of variation** are present in your data, either by exploration during the QC and/or prior knowledge. **Sources of variation** refer to anything that causes differences in gene expression across your samples, including **biological factors** (**treatment**, **sex**, **age**) and **technical factors** (**batch effects**, **sequencing depth**). Ideally, these are all factors in your metadata. These factors lead to variability in the data and can affect your ability to detect meaningful biological signals (like differential expression between **treated** and **control** samples).Once you know the major sources of variation, you can remove them prior to analysis or control for them in the statistical model by including them in your **design formula**.
+Prior to performing the differential expression analysis, it is a good idea to know what **sources of variation** are present in your data, either by exploration during the QC and/or prior knowledge. Once you know the major sources of variation, you can remove them prior to analysis or control for them in the statistical model by including them in your **design formula**. 
 
-### Set the Design Formula
+### Design formula
 
-The main purpose of the **design formula** in DESeq2 is to specify the factors that are influencing gene expression so that their effects can be **accounted for** or **controlled** during the analysis. This allows DESeq2 to isolate the effect of the variable you're primarily interested in while adjusting for other known sources of variation. The design formula should have all of the factors in your metadata that account for major sources of variation in your data. The last factor entered in the formula should be the condition of interest.
+A design formula tells the statistical software the known sources of variation to control for, as well as, the factor of interest to test for during differential expression testing. For example, if you know that sex is a significant source of variation in your data, then `sex` should be included in your model. **The design formula should have all of the factors in your metadata that account for major sources of variation in your data. The last factor entered in the formula should be the condition of interest.**
 
-For example:
-```{r}
-design(dds)
-```
-This shows that **sampletype** is the condition of interest and as such is the only covariate. DESeq2 will test for differential expression between the two sample types, adjusting for any other variation.
-
-**Example**  
-
-If you want to examine the expression differences between `treatments` as shown below, and you know that major sources of variation include `sex` and `age`, then your design formula would be:
-
-`design <- ~ sex + age + treatment`
+For example, suppose you have the following metadata:
 
 ![Alt text](img/meta_example.png){ width=300 }
 
+If you want to examine the expression differences between treatments, and you know that major sources of variation include `sex` and `age`, then your design formula would be:
 
-This allows DESeq2 to adjust for **sex** and **age** while testing for differences in **treatment**.
+`design <- ~ sex + age + treatment`
 
-**Why is this important?**  
-Including known sources of variation (like **sex** and **age**) ensures any gene expression differences are due to the condition of interest (e.g., **treatment**), not confounded by other factors.
+The tilde (`~`) should always proceed your factors and tells DESeq2 to model the counts using the following formula. Note the **factors included in the design formula need to match the column names in the metadata**. 
 
-**Steps to set the design formula:**
-1. Identify your factor of interest (e.g., **treatment**).
-2. Determine any confounders (e.g., **sex**, **age**).
-3. Write the formula, placing the factor of interest last.
-4. Use **PCA** to ensure all relevant factors are included.
-
-**Exercise** points = +3
+**Exercise** points = +4
 
 1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were `sex` and `treatment`, how would the design formula be written?
 
 ```{r, eval = FALSE}
-# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last:
+# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last.
 ```
-
 
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
 3. What would you do if you wanted to include a factor in your design formula that is not in your metadata?
 
+### MOV10 DE analysis 
 
-### MOV10 Differential Expression Analysis
+Now that we know how to specify the model to DESeq2, we can run the differential expression pipeline on the **raw counts**. 
 
-Now that we understand how to specify the model in DESeq2, we can proceed with running the differential expression pipeline on the raw count data.
+**To get our differential expression results from our raw count data, we only need to run 2 lines of code!**
 
-**Running Differential Expression in Two Lines of Code**
-
-To obtain differential expression results from our raw count data, we only need to run two lines of code!
-
-First, we create a DESeqDataSet, as we did in the ['Count normalization'](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html#2-create-deseq2-object) lesson, specifying the location of our raw counts and metadata, and applying our design formula:
+First we create a DESeqDataSet as we did in Chapter \@ref(chap:normalization).
+lesson and specify the location of our raw counts and metadata, and input our design formula:
 
 ```{r}
 ## Create DESeq object
 dds <- DESeqDataSetFromMatrix(countData = data, colData = meta, design = ~ sampletype)
 ```
 
-Next, we run the actual differential expression analysis with a single call to the `DESeq()` function. This function handles everything—from **normalization** to **linear** modeling—all in one step. During execution, `DESeq2` will print messages detailing the steps being performed: estimating size factors, estimating dispersions, gene-wise dispersion estimates, modeling the mean-dispersion relationship, and statistical testing for differential expression.
+Then, to run the actual differential expression analysis, we use a single call to the function `DESeq()`. 
+
 ```{r}
 ## Run analysis
 dds <- DESeq(dds)
 ```
 
-By re-assigning the result to back to the same variable name (`dds`), we update our `DESeqDataSet` object, which will now contain the results of each step in the analysis, effectively filling in the `slots` of our `DESeqDataSet` object.
+By re-assigning the results of the function back to the same variable name (`dds`), we can fill in the `slots` of our `DESeqDataSet` object.
 
-![deseq1](img/deseq_obj2.png)
+![Alt text](img/deseq_obj2.png)
+
+**Everything from normalization to linear modeling was carried out by the use of a single function!** This function will print out a message for the various steps it performs: 
+
+```
+estimating size factors
+estimating dispersions
+gene-wise dispersion estimates
+mean-dispersion relationship
+final dispersion estimates
+fitting model and testing
+``` 
+
+> **NOTE:** There are individual functions available in DESeq2 that would allow us to carry out each step in the workflow in a step-wise manner, rather than a single call. We demonstrated one example when generating size factors to create a normalized matrix. By calling `DESeq()`, the individual functions for each step are run for you.
 
 ## DESeq2 differential gene expression analysis workflow
 
-With these two lines of code, we have completed the core steps in the DESeq2 differential gene expression analysis. The key steps in this workflow are summarized below:
+With the 2 lines of code above, we just completed the workflow for the differential gene expression analysis with DESeq2. The steps in the analysis are output below:
 
 ![Alt text](img/deseq2_workflow_separate.png){ width=200 }
 
-In the following sections, we will explore each step in detail to better understand how DESeq2 performs the statistical analysis and what metrics we should focus on to evaluate the quality of the results.
+We will be taking a detailed look at each of these steps to better understand how DESeq2 is performing the statistical analysis and what metrics we should examine to explore the quality of our analysis.
 
 ### Step 1: Estimate size factors
 
@@ -119,9 +93,9 @@ The first step in the differential expression analysis is to estimate the size f
 
 ![Alt text](img/deseq2_workflow_separate_sf.png){ width=200 }
 
-DESeq2 will automatically estimate the size factors when performing the differential expression analysis. However, if you have already generated the size factors using `estimateSizeFactors()`, as we did earlier, then `DESeq2` will use these values.
+DESeq2 will automatically estimate the size factors when performing the differential expression analysis. However, if you have already generated the size factors using `estimateSizeFactors()`, as we did earlier, then DESeq2 will use these values.
 
-To normalize the count data, `DESeq2` calculates size factors for each sample using the *median of ratios method* discussed previously in the Count normalization (Chapter \@ref(count-normalization)) lesson.
+To normalize the count data, DESeq2 calculates size factors for each sample using the *median of ratios method* discussed previously in the Chapter \@ref(chap:normalization) lesson. 
 
 #### MOV10 DE analysis: examining the size factors
 
@@ -132,135 +106,69 @@ Let's take a quick look at size factor values we have for each sample:
 sizeFactors(dds)
 
 ```
- 
-Take a look at the total number of reads for each sample:
 
+ 
+These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`. Take a look at the total number of reads for each sample:
 ```{r}
 ## Total number of raw counts per sample
 colSums(counts(dds))
 ```
 
 
-**Exercise** points = +1
+**Exercise** points = +2
 
 **How do the numbers correlate with the size factor?**
 
-### Step 2: Estimate Gene-wise Dispersion
+Now take a look at the total depth after normalization using:
 
-![Dispersion Workflow](img/deseq2_workflow_separate_dis.png){ width=200 }
+```{r}
+## Total number of normalized counts per sample
+colSums(counts(dds, normalized=T))
+```
 
-The next step in differential expression analysis is estimating gene-wise dispersions. Understanding dispersion is crucial in RNA-seq analysis.
+**How do the values across samples compare with the total counts taken for each sample?**
 
-**What is Dispersion?**
+### Step 2: Estimate gene-wise dispersion
 
-Dispersion measures the variability in gene expression that cannot be explained by the mean expression levels alone. It captures the extra-Poisson variability observed in RNA-seq data, where the variance tends to exceed the mean due to biological and technical factors.
+DESeq2 estimates dispersion for each gene - a measure of how much gene expression varies between biological replicates.
 
-In DESeq2, dispersion reflects the variability in gene expression for a given mean count and is characterized by:
+![Alt text](img/deseq2_workflow_separate_dis.png){ width=200 }
+Key pattern observed in RNA-seq data:
 
-- **Lower mean counts**: Higher dispersion (more variability).
-- **Higher mean counts**: Lower dispersion (less variability).
+- **Low-expression genes** tend to be more variable between replicates (**higher dispersion**)
 
-The plot below illustrates the relationship between mean expression and variance: each black dot represents a gene, showing that variance can be predicted more reliably for genes with higher mean counts, while lower mean counts exhibit greater variability.
+- **High-expression genes** tend to be more consistent between replicates (**lower dispersion**)
 
-![Mean vs Variance](img/deseq_mean_vs_variance.png){ width=600 }
-
-**Modeling Dispersion Using the Negative Binomial Distribution**
-
-DESeq2 utilizes the Negative Binomial (NB) distribution to model RNA-seq count data, effectively managing overdispersion, which is common in biological data. The two key parameters of the NB model are the mean expression level and the dispersion.
-
-For each gene \( i \), the observed count \( Y_{ij} \) in sample \( j \) is modeled as:
-
-$$
-Y_{ij} \sim \text{NB}(\mu_{ij}, \alpha_{i})
-$$
-
-Where:
-- \( Y_{ij} \) is the observed count for gene \( i \) in sample \( j \).
-- \( \mu_{ij} \) is the expected normalized count for gene \( i \).
-- \( \alpha_{i} \) is the gene-specific dispersion parameter.
+**Why this matters:**
+With only a few replicates per group, individual gene dispersion estimates can be noisy and unreliable. DESeq2 improves these estimates by using information from all genes, assuming that genes with similar expression levels should have similar variability using a statistical method called maximum likelihood estimation (MLE).  In other words, **given the count values of the replicates, the most likely estimate of dispersion is calculated**. 
 
 ### Step 3: Fit Curve to Gene-wise Dispersion Estimates
-
-After estimating gene-wise dispersions using maximum likelihood, DESeq2 fits a global trend to model how dispersion changes as a function of mean expression across all genes. This process stabilizes the dispersion estimates, especially for low-count genes.
-
-- **Low-count genes** with more uncertain dispersion estimates are pulled closer to the global trend.
-- **Genes with higher counts** or more reliable estimates will be shrunk less.
-
-**Why is Shrinkage Important?**
-
-Shrinkage improves the reliability of dispersion estimates, making them more stable for genes with low or moderate counts, which typically have noisier estimates. This reduces the influence of random fluctuations and results in more accurate estimates for downstream differential expression testing. 
-
-Additionally, shrinkage helps to reduce false positives in differential expression analysis, ensuring that estimates for these genes are more reliable for subsequent testing.
-
-Genes with extremely high dispersion values (outliers) may demonstrate variability that is unexpected for their mean expression levels and are typically not shrunk. These genes are often biological outliers or affected by technical issues.
+After estimating gene-wise dispersions, DESeq2 fits a smooth curve of dispersion vs. mean expression across all genes.
 
 ![Global Dispersion Trend](img/deseq2_workflow_separate_fit.png){ width=200 }
 
-### Step 4: Assessing Model Fit with Dispersion Plots
+This curve is displayed as a red line in the figure below, which plots the estimate for the **expected dispersion value for genes of a given expression strength**. Each black dot is a gene with an associated mean expression level and maximum likelihood estimation (MLE) of the dispersion.
 
-After shrinkage, it’s essential to evaluate how well the model fits the data through dispersion plots. Ideally, most genes should scatter around the fitted curve, with dispersions decreasing as mean expression increases. Unusual patterns, such as points far from the curve, may indicate data quality issues, like outliers or contamination.
+![Alt text](img/deseq_dispersion1.png){ width=400 }
 
-Using DESeq2’s `plotDispEsts()` function visualizes the fit of the model and the extent of shrinkage across genes.
+### Step 4: Shrink gene-wise dispersion estimates toward the values predicted by the curve
 
-#### Examples of Problematic Dispersion Plots
+![Alt text](img/deseq2_workflow_separate_shr.png){ width=200 }
 
-Certainly! Problematic dispersion plots in RNA-seq analysis, particularly when using tools like DESeq2, can arise from various issues. Here are some reasons that could lead to visual discrepancies in dispersion plots:
+DESeq2 then "shrinks" each gene's noisy estimate toward this curve. Genes with **unreliable estimates (low counts)** get adjusted more, while genes with **reliable estimates (high counts)** stay closer to their original values.
 
-**Reasons for Problematic Dispersion Plots**
+**This shrinkage method is particularly important to reduce false positives in the differential expression analysis.** Genes with low dispersion estimates are shrunken towards the curve, and the more accurate, higher shrunken values are output for fitting of the model and differential expression testing.
 
-- **Low Count Data**:
-- **High Variability**: Genes with low expression levels often exhibit greater variability (higher dispersion) across replicates, leading to noisy estimates.
-- **Unstable Estimates**: With few counts, it's difficult to obtain reliable dispersion estimates, resulting in significant scattering in the plot.
+This entire dispersion estimation and shrinkage process happens automatically when you run `DESeq(dds)`.
 
-- **Outliers in the Data**:
-   - **Biological Outliers**: Certain genes may genuinely exhibit high variability due to biological conditions (e.g., activation in response to stimuli), leading to higher dispersion estimates.
-   - **Technical Outliers**: Poor quality samples or technical errors in sequencing (e.g., contamination or failed PCR) can result in erroneous high counts for certain genes, affecting overall variability.
+#### MOV10 DE analysis: exploring the dispersion estimates and assessing model fit
+#### MOV10 DE analysis: exploring the dispersion estimates and assessing model fit
 
-- **Batch Effects**:
-   - Differences in sequencing runs or sample processing can introduce variability independent of biological differences. If not normalized, batch effects can distort dispersion estimates, making it seem like certain genes are more variable than they truly are.
-
-- **Unequal Group Sizes**:
-   - Uneven distribution of samples across experimental conditions can affect dispersion estimates, particularly if one group has fewer replicates or more variability.
-   
-- **Unaccounted Biological Variation**:
-   - Biological variability among samples or genes that is not captured by the experimental design can affect estimates. For instance, genes involved in complex pathways may show higher dispersion due to interactions.
-
-- **Data Quality Issues**:
-   - Problems with sample handling, library construction, or sequencing can introduce discrepancies in data that visually manifest as unexpected dispersion.
-
-### Assessing and Addressing Issues
-
-To tackle issues identified in problematic dispersion plots:
-
-- **Quality Control**: Always perform thorough quality control checks on your raw sequencing data to identify outliers and poorly performing samples.
-  
-- **Filtering**: Remove low-count genes or outliers that might skew your data before running the analysis.
-
-- **Increasing Replicates**: Where possible, aim for more replicates to stabilize dispersion estimates, particularly for low-expressed genes.
-
-- **Model Evaluation**: Consider exploring different statistical models if patterns suggest that the negative binomial model is not a good fit.
-
-- **Visual Inspection**: Regularly visualize data through various methods (e.g., PCA, heatmaps, dispersion plots) to check for quality and consistency.
-
-By understanding the potential causes for problematic dispersion plots, you can troubleshoot and improve your RNA-seq analysis to yield more reliable results. If you have specific questions or scenarios you want to discuss, feel free to ask!
-
-Here are examples of dispersion plots suggesting potential data quality or fitting issues:
-
-![Bad Dispersion Plot 1](img/bad_dispersion1.png){ width=600 }
-
-![Bad Dispersion Plot 2](img/bad_dispersion2.png){ width=600 }
-
-### MOV10 Differential Expression Analysis: Exploring Dispersion Estimates
-
-Now, let's explore the dispersion estimates for the MOV10 dataset:
-
+Let's take a look at the dispersion estimates for our MOV10 data:
 ```{r}
 ## Plot dispersion estimates
 plotDispEsts(dds)
 ```
+You should see genes scattered around a decreasing curve, with dispersion decreasing as mean expression increases. Since we have a small sample size, many genes show shrinkage toward the fitted trend (red line), which is expected and beneficial for the analysis.
 
-**Since we have a small sample size, for many genes we see quite a bit of shrinkage.**
 
-**Exercise** points = +1
-
-**Do you think our data are a good fit for the model?**

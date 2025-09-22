@@ -137,6 +137,33 @@ top20_sigOE_norm <- normalized_counts %>%
 
 Now that we have the normalized counts for each of the top 20 genes for all 8 samples, to plot using `ggplot()`, we need to `pivot_longer` top20_sigOE_norm from a wide format to a long format so the counts for all samples will be in a single column to allow us to give ggplot the one column with the values we want it to plot.
 
+**Current data format (wide):**
+Your data has one row per gene and separate columns for each sample (like Sample1, Sample2, Sample3, etc.). This is convenient for looking at, but ggplot needs the data structured differently.
+
+**What ggplot needs (long format):**
+ggplot works best when all the values you want to plot are in a single column, with another column identifying which sample each value came from.
+
+**What pivot_longer does:**
+It transforms your data from:
+
+Gene    Sample1  Sample2  Sample3
+GeneA   100      150      120
+GeneB   200      180      220
+
+To:
+Gene    Sample   Count
+GeneA   Sample1  100
+GeneA   Sample2  150  
+GeneA   Sample3  120
+GeneB   Sample1  200
+GeneB   Sample2  180
+GeneB   Sample3  220
+
+**Why this helps:**
+Now ggplot can use the "Count" column for the y-axis and color/group by the "Sample" column to create your visualization.
+
+**Simple analogy:** Think of it like converting a spreadsheet where data goes across columns into a list where everything is stacked vertically - making it easier for ggplot to understand what to plot.
+
 The `pivot_longer()` function in the **tidyr** package will perform this operation and will output the normalized counts for all genes for *Mov10_oe_1* listed in the first 20 rows, followed by the normalized counts for *Mov10_oe_2* in the next 20 rows, so on and so forth.
 
 ![Alt text](img/melt_wide_to_long_format.png){ width=800 }

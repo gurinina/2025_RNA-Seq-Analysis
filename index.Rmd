@@ -9,8 +9,8 @@ output:
       toc:
         collapse: section
       download: ["pdf", "epub"]
-github-repo: "gurinina/2025_RNA-Seq-Analysis-instructor"
-url: "https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis-instructor"
+github-repo: "gurinina/2025_RNA-Seq-Analysis"
+url: "https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis"
 site: bookdown::bookdown_site
 documentclass: book
 cover-image: "img/football.png"
@@ -21,14 +21,13 @@ link-citations: true
 ```{r setup function, include=FALSE}
 
 source("scripts/setup.R")
-source("scripts/solutions.R")
 
 ```
 
 # RNA-seq analysis workshop {-}
 
 <p align="center">
-  <img src="img/football333.png" alt="Welcome to Omics Science!" width="300" />
+  <img src="img/football.png" alt="Welcome to Omics Science!" width="300" />
 </p>
 
 The published version for this module can be found on my bookdown site [2025_RNA-Seq-Analysis](https://bookdown.org/ggiaever/2025_RNA-Seq-Analysis/).

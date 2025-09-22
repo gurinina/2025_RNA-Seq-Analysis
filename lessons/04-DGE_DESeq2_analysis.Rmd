@@ -108,14 +108,17 @@ sizeFactors(dds)
 ```
 
  
-These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`. Take a look at the total number of reads for each sample:
+These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`.
+
+**Exercise** points = +2
+
+Take a look at the total number of reads for each sample:
 ```{r}
 ## Total number of raw counts per sample
 colSums(counts(dds))
 ```
 
-
-**Exercise** points = +2
+**How do the numbers correlate with the size factor?**
 
 **How do the numbers correlate with the size factor?**
 
@@ -147,7 +150,7 @@ After estimating gene-wise dispersions, DESeq2 fits a smooth curve of dispersion
 
 ![Global Dispersion Trend](img/deseq2_workflow_separate_fit.png){ width=200 }
 
-This curve is displayed as a red line in the figure below, which plots the estimate for the **expected dispersion value for genes of a given expression strength**. Each black dot is a gene with an associated mean expression level and maximum likelihood estimation (MLE) of the dispersion.
+This curve is displayed as a red line in the figure below, which plots the estimate for the **expected dispersion value for genes of a given expression strength**. Each black dot represents one gene, showing both its mean expression level (x-axis position) and its initial dispersion estimate (y-axis position). Blue dots show the final shrunken estimates that DESeq2 uses for statistical testing. 
 
 ![Alt text](img/deseq_dispersion1.png){ width=400 }
 
@@ -161,7 +164,6 @@ DESeq2 then "shrinks" each gene's noisy estimate toward this curve. Genes with *
 
 This entire dispersion estimation and shrinkage process happens automatically when you run `DESeq(dds)`.
 
-#### MOV10 DE analysis: exploring the dispersion estimates and assessing model fit
 #### MOV10 DE analysis: exploring the dispersion estimates and assessing model fit
 
 Let's take a look at the dispersion estimates for our MOV10 data:

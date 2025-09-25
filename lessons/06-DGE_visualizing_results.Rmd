@@ -297,7 +297,7 @@ res_tableOE_tb$genelabels[1:10] <- res_tableOE_tb$gene[1:10]
 head(res_tableOE_tb)
 ```
 
-Next, we plot it as before with an additiona layer for `geom_text_repel()` wherein we can specify the column of gene labels we just created. 
+Next, we plot it as before with an additional layer for `geom_text_repel()` wherein we can specify the column of gene labels we just created. 
 ```{r}
 ggplot(res_tableOE_tb, aes(x = log2FoldChange, 
         y = -log10(padj))) +

@@ -34,10 +34,12 @@ library(ggrepel)
 ```{r}
 
 data <- read.table("data/Mov10_full_counts.txt", 
-                   header = TRUE, row.names = 1, sep= "\t")
+                   header = TRUE, row.names = 1, 
+                   sep= "\t")
 
 meta <- read.table("data/Mov10_full_meta.txt", 
-                   header=T, row.names=1, , sep = "\t")
+                   header=T, row.names=1, 
+                   sep = "\t")
 ```
 
 Use class() to inspect our data and make sure we are working with data frames:
@@ -97,7 +99,7 @@ Where:
 - x = the specific number you're asking about 
 - P(X = x) = probability of getting exactly that many events
 
-With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-Seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
+With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
 
 To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
@@ -184,6 +186,7 @@ The colnames of our data don't match the rownames of our metadata so we need to 
 
 idx <- match(rownames(meta),colnames(data))
 data <- data[,idx]
+
 
 all(colnames(data) == rownames(meta))
 
@@ -406,12 +409,11 @@ This shows that **sampletype** is the condition of interest and as such is the o
 
 ### MOV10 Differential Expression Analysis
 
-
 **Running Differential Expression in Two Lines of Code**
 
 To obtain differential expression results from our raw count data, we only need to run two lines of code!
 
-First, we create a DESeqDataSet, as we did in the ['Count normalization'](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html#2-create-deseq2-object) lesson, specifying the location of our raw counts and metadata, and applying our design formula:
+First, we create a DESeqDataSet, as we did in the 'Count normalization' lesson, specifying the location of our raw counts and metadata, and applying our design formula:
 
 ```{r}
 ## Create DESeq object
@@ -870,8 +872,7 @@ We can also use ggplot2 to plot the `MOV10` counts. We can save the output of `p
 
 ```{r}
 # Save `plotCounts()` to a data frame object
-d <- plotCounts(dds, gene = "MOV10", intgroup = "sampletype", 
-                returnData=TRUE)
+d <- plotCounts(dds, gene = "MOV10", intgroup = "sampletype", returnData=TRUE)
 
 # Plot using ggplot2
 ggplot(d, aes(x = sampletype, y = count, color = sampletype)) + 
@@ -883,9 +884,6 @@ ggplot(d, aes(x = sampletype, y = count, color = sampletype)) +
 ```
 
 > Note that in the plot below (code above), we are using `geom_text_repel()` from the `ggrepel` package to label our individual points on the plot.
-
-
-
 #### Using `ggplot2` to plot multiple genes (e.g. top 20)
 
 Often it is helpful to check the expression of multiple genes of interest at the same time. This often first requires some data wrangling.
@@ -1097,8 +1095,7 @@ all(colnames(raw_counts) == rownames(metadata))
 # if they don't match write the code to match colnames of raw_counts to the rownames of metadata
 
 # Create DESeq2Dataset object
-dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = metadata, 
-                              design = ~ condition)
+dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = metadata, design = ~ condition)
 
 ```
 

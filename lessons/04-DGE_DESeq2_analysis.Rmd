@@ -1,4 +1,3 @@
-
 # Differential expression analysis with DESeq2
 
 The final step in the differential expression analysis workflow is fitting the raw counts to the NB model and performing the statistical test for differentially expressed genes. In this step we essentially want to determine whether the mean expression levels of different sample groups are significantly different.
@@ -29,7 +28,7 @@ If you want to examine the expression differences between treatments, and you kn
 
 The tilde (`~`) should always proceed your factors and tells DESeq2 to model the counts using the following formula. Note the **factors included in the design formula need to match the column names in the metadata**. 
 
-**Exercise** points = +4
+**Exercise** points = +3
 
 1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were `sex` and `treatment`, how would the design formula be written?
 
@@ -47,10 +46,19 @@ Now that we know how to specify the model to DESeq2, we can run the differential
 
 **To get our differential expression results from our raw count data, we only need to run 2 lines of code!**
 
-First we create a DESeqDataSet as we did in Chapter \@ref(chap:normalization).
-lesson and specify the location of our raw counts and metadata, and input our design formula:
+First we create a DESeqDataSet as we did in the count normalization chapter lesson and specify the location of our raw counts and metadata, and input our design formula:
 
 ```{r}
+
+all(colnames(data) %in% rownames(meta))
+all(colnames(data) == rownames(meta))
+
+# These were matched in the chapter 'Count normalization'
+# idx <- match(rownames(meta),colnames(data))
+# data <- data[,idx]
+# 
+# all(colnames(data) == rownames(meta))
+
 ## Create DESeq object
 dds <- DESeqDataSetFromMatrix(countData = data, colData = meta, design = ~ sampletype)
 ```
@@ -95,8 +103,6 @@ The first step in the differential expression analysis is to estimate the size f
 
 DESeq2 will automatically estimate the size factors when performing the differential expression analysis. However, if you have already generated the size factors using `estimateSizeFactors()`, as we did earlier, then DESeq2 will use these values.
 
-To normalize the count data, DESeq2 calculates size factors for each sample using the *median of ratios method* discussed previously in the Chapter \@ref(chap:normalization) lesson. 
-
 #### MOV10 DE analysis: examining the size factors
 
 Let's take a quick look at size factor values we have for each sample:
@@ -107,8 +113,7 @@ sizeFactors(dds)
 
 ```
 
- 
-These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`.
+These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`. 
 
 **Exercise** points = +2
 
@@ -120,10 +125,7 @@ colSums(counts(dds))
 
 **How do the numbers correlate with the size factor?**
 
-**How do the numbers correlate with the size factor?**
-
 Now take a look at the total depth after normalization using:
-
 ```{r}
 ## Total number of normalized counts per sample
 colSums(counts(dds, normalized=T))
@@ -150,7 +152,7 @@ After estimating gene-wise dispersions, DESeq2 fits a smooth curve of dispersion
 
 ![Global Dispersion Trend](img/deseq2_workflow_separate_fit.png){ width=200 }
 
-This curve is displayed as a red line in the figure below, which plots the estimate for the **expected dispersion value for genes of a given expression strength**. Each black dot represents one gene, showing both its mean expression level (x-axis position) and its initial dispersion estimate (y-axis position). Blue dots show the final shrunken estimates that DESeq2 uses for statistical testing. 
+This curve is displayed as a red line in the figure below, which plots the estimate for the **expected dispersion value for genes of a given expression strength**. Each black dot is a gene with an associated mean expression level and maximum likelihood estimation (MLE) of the dispersion.
 
 ![Alt text](img/deseq_dispersion1.png){ width=400 }
 

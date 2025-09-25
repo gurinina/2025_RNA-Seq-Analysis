@@ -5,8 +5,6 @@
 The final step in the DESeq2 workflow is fitting the Negative Binomial model for each gene and performing differential expression testing.
 
 ![Alt text](img/deseq2_workflow_separate_2018.png){ width=400 }
-
-
 **Exercise** points = +1
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
@@ -138,18 +136,6 @@ head(res_tableOE)
 names(res_tableOE)
 ```
 
-log2 fold change (MAP): sampletype MOV10_overexpression vs control 
-Wald test p-value: sampletype MOV10_overexpression vs control 
-DataFrame with 6 rows and 6 columns
-               baseMean log2FoldChange      lfcSE       stat    pvalue       padj
-              <numeric>      <numeric>  <numeric>  <numeric> <numeric>  <numeric>
-1/2-SBSRNA4  45.6520399     0.26976764 0.18775752  1.4367874 0.1507784 0.25242910
-A1BG         61.0931017     0.20999700 0.17315013  1.2128030 0.2252051 0.34444163
-A1BG-AS1    175.6658069    -0.05197768 0.12366259 -0.4203185 0.6742528 0.77216278
-A1CF          0.2376919     0.02237286 0.04577046  0.4888056 0.6249793         NA
-A2LD1        89.6179845     0.34598540 0.15901426  2.1758136 0.0295692 0.06725157
-A2M           5.8600841    -0.27850841 0.18051805 -1.5428286 0.1228724 0.21489067
-
 In some cases, p-values or adjusted p-values may be set to NA for a gene. This happens in three scenarios:
 
 1. **Zero counts:** If all samples have zero counts for a gene, its baseMean will be zero, and the log2 fold change, p-value, and adjusted p-value will all be set to NA.
@@ -164,7 +150,7 @@ Note that we have pvalues and p-adjusted values in the output. Which should we u
 
 If we used the `p-value` directly from the Wald test with a significance cut-off of p < 0.05, that means there is a 5% chance it is a false positives. Each p-value is the result of a single test (single gene). The more genes we test, the more we inflate the false positive rate. **This is the multiple testing problem.** For example, if we test 20,000 genes for differential expression, at p < 0.05 we would expect to find 1,000 genes by chance. If we found 3000 genes to be differentially expressed total, roughly one third of our genes are false positives. We would not want to sift through our "significant" genes to identify which ones are true positives.
 
-DESeq2 helps reduce the number of genes tested by removing those genes unlikely to be significantly DE prior to testing, such as those with low number of counts and outlier samples (gene-level QC). However, we still need to correct for multiple testing to reduce the number of false positives. 
+DESeq2 helps reduce the number of genes tested by removing those genes unlikely to be significantly DE prior to testing, such as those with low number of counts and outlier samples (gene-level QC). However, we still need to correct for multiple testing to reduce the number of false positives.
 
 - **FDR/Benjamini-Hochberg:** Benjamini and Hochberg (1995) defined the concept of FDR and created an algorithm to control the expected FDR below a specified level given a list of independent p-values. **An interpretation of the BH method for controlling the FDR is implemented in DESeq2 in which we rank the genes by p-value, then multiply each ranked p-value by m/rank where m represents the total number of tests**.
 
@@ -193,7 +179,6 @@ How many genes are differentially expressed in the **Overexpression vs. Control*
 ### MOV10 DE Analysis: **Control vs. Knockdown**
 
 After examining the overexpression results, let's move on to the comparison between **Control vs. Knockdown**. We’ll use contrasts in the `results()` function to extract the results table and store it in the `res_tableKD` variable.
-
 ```{r}
 
 # define contrast
@@ -223,85 +208,6 @@ res_tableKD <- lfcShrink(dds = dds,
 saveRDS(res_tableKD, file = "data/res_tableKD.RDS")
 
 ```
-
-
-
-Next, let’s perform the same analysis for the **Control vs. Mov10 knockdown** comparison. We’ll use the same thresholds for adjusted p-value (FDR < 0.05) and log2 fold change (|log2FC| > 0.58).
-```{r}
-
-res_tableKD_tb <- res_tableKD %>%
-  data.frame() %>%
-  rownames_to_column(var = "gene") %>%
-  as_tibble()
-
-sigKD <- res_tableKD_tb %>%
-         dplyr::filter(padj < padj.cutoff & 
-         abs(log2FoldChange) > lfc.cutoff)
-
-# We'll save this object for use in the homework
-saveRDS(sigKD,"data/sigKD.RDS")
-```
-
-**Exercise** points = +1
-
-How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
-
-
-## Summarizing Results
-
-To summarize the results, DESeq2 offers the `summary()` function, which conveniently reports the number of genes that are significantly differentially expressed at a specified threshold (`default FDR < 0.05`). Note that, even though the output refers to p-values, it actually summarizes the results using **adjusted p-values (padj/FDR)**.
-
-Let’s start by summarizing the results for the OE vs. control comparison:
-```{r}
-## Summarize results
-summary(res_tableOE)
-```
-
-In addition to reporting the number of up- and down-regulated genes at the default significance threshold, this function also provides information on:
-
-- **Number of genes tested** (genes with non-zero total read count)
-- **Number of genes excluded** from multiple test correction due to low mean counts
-
-### Extracting Significant Differentially Expressed Genes
-
-In some cases, using only the FDR threshold doesn’t sufficiently reduce the number of significant genes, making it difficult to extract biologically meaningful results. To increase stringency, we can apply an additional fold change threshold.
-
-Although the summary() function doesn't include an argument for fold change thresholds, we can define our own criteria.
-
-Let’s start by setting the thresholds for both adjusted p-value (FDR < 0.05) and log2 fold change (|log2FC| > 0.58, corresponding to a 1.5-fold change):
-
-```{r}
-### Set thresholds
-padj.cutoff <- 0.05
-lfc.cutoff <- 0.58
-```
-
-Next, we’ll convert the results table to a tibble for easier subsetting:
-
-```{r}
-res_tableOE_tb <- res_tableOE %>%
-  data.frame() %>%
-  rownames_to_column(var = "gene") %>% 
-  as_tibble()
-```
-
-Now, we can filter the table to retain only the genes that meet the significance and fold change criteria:
-
-```{r}
-
-sigOE <- res_tableOE_tb %>%
-  dplyr::filter(padj < padj.cutoff & abs(log2FoldChange) > lfc.cutoff)
-
-# Save the results for future use
-saveRDS(sigOE,"data/sigOE.RDS")
-
-```
-
-**Exercise** points = +3
-
-How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? 
-
-**Does this reduce our results?** 
 
 Next, let’s perform the same analysis for the **Control vs. Mov10 knockdown** comparison. We’ll use the same thresholds for adjusted p-value (FDR < 0.05) and log2 fold change (|log2FC| > 0.58).
 ```{r}

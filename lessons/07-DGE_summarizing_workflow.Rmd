@@ -7,7 +7,7 @@
 library(DESeq2)
 ```
 
-#### Loading data
+#### Loading Mov10 data
 ```{r}
 
 data <- read.delim("data/Mov10_full_counts.txt", row.names = 1)
@@ -17,7 +17,7 @@ meta <- read.delim("data/Mov10_full_meta.txt", row.names = 1)
 
 We have detailed the various steps in a differential expression analysis workflow, providing theory with example code. To provide a more succinct reference for the code needed to run a DGE analysis, we have summarized the steps in an analysis below:
 
-### 1. Import data into dds object (be careful of the names of the count file and metadata):
+### 1. Import data into dds object (be careful of the names of the count file and metadata): points = +2
 ```{r, eval = FALSE}
 
 # Check that the row names of the metadata equal the column names
@@ -25,12 +25,11 @@ We have detailed the various steps in a differential expression analysis workflo
 all(colnames(raw_counts) == rownames(metadata))
 
 # Create DESeq2Dataset object
-dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = metadata, 
-                              design = ~ condition)
+dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = metadata, design = ~ condition)
 
 ```
 
-### 2. Exploratory data analysis (PCA & heirarchical clustering) - identifying outliers and sources of variation in the data:
+### 2. Exploratory data analysis (PCA & heirarchical clustering) - identifying outliers and sources of variation in the data: 
 ```{r, eval = FALSE}
 
 # Transform counts for data visualization
@@ -49,13 +48,8 @@ rld_cor <- cor(rld_mat)
 pheatmap(rld_cor)
 ```
 
-### 3. Run DESeq2:
+### 3. Run DESeq2 and normalize counts. Write the normalized counts to a file using write.table: ponts = +2
 ```{r, eval = FALSE}
-
-# **Optional step** - Re-create DESeq2 dataset if the design formula has changed after QC analysis in include other sources of variation
-
-dds <- DESeqDataSetFromMatrix(countData = raw_counts, 
-                              colData = metadata, design = ~ condition)
 
 # Run DESeq2 differential expression analysis
 dds <- DESeq(dds)
@@ -75,7 +69,7 @@ write.table(normalized_counts, file = "data/normalized_counts.txt",
 plotDispEsts(dds)
 ```
 
-### 5. Create contrasts to perform Wald testing on the shrunken log2 foldchanges between specific conditions:
+### 5. Create contrasts to perform Wald testing on the shrunken log2 foldchanges between specific conditions: points = +2
 ```{r, eval = FALSE}
 
 # Output results of Wald test for contrast
@@ -89,7 +83,7 @@ res_table <- lfcShrink(dds, coef = coef[2], res = res,
                        type = "apeglm")
 ```
 
-### 6. Output significant results:
+### 6. Output significant results: pointts = +1
 ```{r, eval = FALSE}
 ### Set thresholds
 padj.cutoff <- 0.05
@@ -105,7 +99,7 @@ sig_res <- dplyr::filter(res_df, padj < padj.cutoff &
                   abs(log2FoldChange) > lfc.cutoff)
 ```
 
-### 7. Visualize results: volcano plots, heatmaps, normalized counts plots of top genes, etc.
+### 7. Visualize results: volcano plots, heatmaps, normalized counts plots of top genes, etc. points = +3
 
 ### 8. Make sure to output the versions of all tools used in the DE analysis:
 ```{r}

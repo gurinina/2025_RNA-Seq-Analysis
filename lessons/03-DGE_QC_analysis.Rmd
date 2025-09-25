@@ -122,8 +122,7 @@ Depending on how much variation is explained by the first few principal componen
 
 The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
 
-![Alt text](img/PCA_example3.png){ width=600 }
-
+![Alt text](img/PCA_example3.png){ width=600 
 
 **Determine the sources explaining the variation represented by PC1 and PC2.** 
 
@@ -134,6 +133,7 @@ The figure below was generated from a time course experiment with sample groups 
 **Are there any outliers in the data?**
 
 **Should we have any other concerns regarding the samples in the dataset?**
+
 
 ### Hierarchical Clustering Heatmap
 
@@ -241,4 +241,5 @@ pheatmap(rld_cor,
 ```
 
 Identify what each of the added arguments is contributing to the plot.
+
 

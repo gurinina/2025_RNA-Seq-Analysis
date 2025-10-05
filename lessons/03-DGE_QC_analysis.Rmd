@@ -74,7 +74,7 @@ In reality, your dataset will have larger dimensions (more samples, and many, ma
 
 ![Alt text](img/PCA_samples.png){ width=600 }
 
-**If two samples have similar levels of expression for the genes that contribute significantly to the variation represented by PC1, they will be plotted close together on the PC1 axis.** Therefore, we would expect that biological replicates to have similar scores (since the same genes are changing) and cluster together on PC1 and/or PC2, and the samples from different treatment groups to have different score. This is easiest to understand by visualizing example PCA plots.
+**If two samples have similar levels of expression for the genes that contribute significantly to the variation represented by PC1, they will be plotted close together on the PC1 axis.** Therefore, we would expect that biological replicates to have similar scores (since the same genes are changing) and cluster together on PC1 and/or PC2, and the samples from different treatment groups to have different scores. 
 
 #### Interpreting PCA plots
 
@@ -114,15 +114,25 @@ Still we haven't found if `treatment` is a major source of variation after `stra
 
 ![Alt text](img/example_PCA_treatmentPC3.png){ width=600 }
 
-We find that the samples separate by `treatment` on PC3, and are optimistic about our DE analysis since our condition of interest, `treatment`, is separating on PC3 and we can regress out the variation driving PC1 and PC2.
+We find that the samples separate by `treatment` on PC3, and are optimistic about our DE analysis since our condition of interest, `treatment`, is separating on PC3 and we can regress out the variation driving PC1 and PC2. 
 
-Depending on how much variation is explained by the first few principal components, you **may want to explore more (i.e consider more components and plot pairwise combinations)**. Even if your samples do not separate clearly by the experimental variable, you may still get biologically relevant results from the DE analysis. If you are expecting very small effect sizes, then it's possible the signal is drowned out by extraneous sources of variation. In situations **where you can identify those sources, it is important to account for these in your model**, as it provides more power to the tool for detecting DE genes.  
+Design formula:
+
+ ~ strain + sex + treatment:
+ 
+Gene Expression = β₀ + β₁(strain) + β₂(sex) + β₃(treatment) + ε
+
+DESeq2 estimates separate coefficients (β₁, β₂, β₃) for each factor, then tests specifically for β₃ (treatment effect).
+
+**Key Point:**
+You're not making strain/sex disappear - you're statistically controlling for them so you can get a cleaner estimate of the treatment effect.
 
 **Exercise** points = +5
 
 The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
 
-![Alt text](img/PCA_example3.png){ width=600 
+![Alt text](img/PCA_example3.png){ width=600 }
+
 
 **Determine the sources explaining the variation represented by PC1 and PC2.** 
 
@@ -133,7 +143,6 @@ The figure below was generated from a time course experiment with sample groups 
 **Are there any outliers in the data?**
 
 **Should we have any other concerns regarding the samples in the dataset?**
-
 
 ### Hierarchical Clustering Heatmap
 
@@ -148,7 +157,6 @@ The hierarchical tree can indicate which samples are more similar to each other 
 
 ## Gene-level QC
 
-Gene-level QC
 Prior to differential expression analysis, it's beneficial to remove genes that have little chance of being detected as differentially expressed (such as genes with very low counts across all samples). This filtering increases the power to detect truly differentially expressed genes.
 DESeq2 performs this filtering automatically, so we don't need to do additional gene filtering steps for our analysis.
 
@@ -220,6 +228,8 @@ Overall, we observe pretty high correlations across the board ( > 0.999) suggest
 **Exercise** points = +6
 
 The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
+
+The library RColorBrewer provides different palettes for plotting. We can display all of the palettes using:
 ```{r, fig.width=8, fig.height=8, echo=FALSE}
 # Display all available color palettes
 display.brewer.all()
@@ -232,14 +242,11 @@ heat.colors <- brewer.pal(9, "Blues")
 pheatmap(rld_cor, 
              color = heat.colors, 
              border_color = "black", 
-             fontsize = 10, 
              fontsize_row = 12, 
-             fontsize_col = 12,
+             fontsize_col = 10,
              show_rownames = TRUE,
              show_colnames = TRUE)
 
 ```
 
 Identify what each of the added arguments is contributing to the plot.
-
-

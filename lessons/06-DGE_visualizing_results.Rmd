@@ -13,6 +13,7 @@ library(DESeq2)
 library(pheatmap)
 library(dplyr)
 ```
+
 We will be working with three different data objects we have already created in earlier lessons:
 
 - Metadata for our samples (a dataframe): `meta`
@@ -52,7 +53,7 @@ One way to visualize results would be to simply plot the expression data for a h
 
 #### **Using DESeq2 `plotCounts()` to plot expression of a single gene**
 
-To pick out a specific gene of interest to plot, for example Mov10, we can use the `plotCounts()` from DESeq2. `plotCounts()` is a function that allows us to plot the normalized counts for a single gene across all samples.
+To pick out a specific gene of interest to plot, for example MOV10, we can use the `plotCounts()` from DESeq2. `plotCounts()` is a function that allows us to plot the normalized counts for a single gene across all samples.
 
 ```{r}
 
@@ -64,11 +65,6 @@ plotCounts(dds,
 sampletype = as.factor(mov10_meta$sampletype)
 
 library(RColorBrewer)
-
-display.brewer.all()
-
-col = brewer.pal(8,"Dark2")
-palette(col)
 
 plotCounts(dds, gene="MOV10", 
            intgroup="sampletype",
@@ -135,7 +131,7 @@ top20_sigOE_norm <- normalized_counts %>%
         filter(gene %in% top20_sigOE_genes)
 ```
 
-Now that we have the normalized counts for each of the top 20 genes for all 8 samples, to plot using `ggplot()`, we need to `pivot_longer` top20_sigOE_norm from a wide format to a long format so the counts for all samples will be in a single column to allow us to give ggplot the one column with the values we want it to plot.
+Now that we have the normalized counts for each of the top 20 genes for all 8 samples, to plot using `ggplot()`, we need to `pivot_longer` top20_sigOE_norm from a wide format to a long format so the counts for all samples will be in a single column to allow us to give ggplot the one column with the values we want it to plot:
 
 **Current data format (wide):**
 Your data has one row per gene and separate columns for each sample (like Sample1, Sample2, Sample3, etc.). This is convenient for looking at, but ggplot needs the data structured differently.
@@ -181,16 +177,16 @@ head(pivoted_top20_sigOE)
 
 Now, if we want our counts colored by sample group, then we need to combine the metadata information with the melted normalized counts data into the same data frame for input to `ggplot()`:
 
-`inner_join(x,y)` will merge 2 data frames by the colname in x that matches a column name in y in this case `samplename` column.
+`inner_join(x,y)` will merge 2 data frames by the `colname` in x that matches a column name in y in this case `samplename` column.
 ```{r}
 
 pivoted_top20_sigOE <- inner_join(
   mov10_meta, 
-  pivoted_top20_sigOE)
+  pivoted_top20_sigOE) #adds the sampletype column
 ```
 
 
-Now that we have a data frame in a format that can be utilised by ggplot easily, let's plot! 
+Now that we have a data frame in a format that can be utilized by ggplot easily, let's plot! 
 ```{r}
 ## plot using ggplot2
 ggplot(pivoted_top20_sigOE) +
@@ -219,9 +215,11 @@ norm_OEsig <- normalized_counts[,c(1,2:4,7:9)] %>%
       	      data.frame() %>%
       	      column_to_rownames(var = "gene") 
 
+# We've moved the gene column back to the rownames to get a matrix required for pheatmap
+
 ```
 
-Now let’s draw the heatmap using pheatmap. We can also add annotations to the heatmap to indicate the sample type. The `annotation_col` argument in `pheatmap()`requires a data frame with the same row names as the column names of the matrix used to generate the heatmap. 
+Now let’s draw the heatmap using `pheatmap`. We can also add annotations to the heatmap to indicate the sample type. The `annotation_col` argument in `pheatmap()`requires a data frame with the same row names as the column names of the matrix used to generate the heatmap. 
 ```{r}
 ### Annotate our heatmap (optional)
 annotation <- mov10_meta %>% 

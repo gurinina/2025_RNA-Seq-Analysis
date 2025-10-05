@@ -16,19 +16,19 @@ In the next few lessons, we will walk you through an **end-to-end gene-level RNA
 
 **What is the function of FMRP and MOV10**
 
-> **FMRP** is the Fragile X Messenger Ribonucleoprotein. Loss of **FMRP** causes **Fragile X Syndrome (FXS)**, characterized by intellectual disability and autism spectrum disorder. **FMRP** regulates translation by binding to mRNAs and interacting with components of the microRNA pathway.
+> **FMRP** is the Fragile X Messenger Ribonucleoprotein. Loss of **FMRP** causes **Fragile X Syndrome (FXS)**, characterized by intellectual disability and autism spectrum disorder. **FMRP** regulates translation of a diverse and functionally important set of genes that are crucial for brain development, synaptic function, and neuronal plasticity by binding to their mRNAs and interacting with components of the microRNA (miRNA) pathway.
 
-> **MOV10** usually facilitates translation suppression through the miRNA pathway. **MOV10-FMRP** interactions can either enhance this suppression or, when the **MOV10-FMRP** complex binds in proximity to **microRNA response elements (MREs)**, can sterically block **AGO2** access and translation is no longer suppressed.
+> **MOV10** usually facilitates translation suppression through the miRNA pathway. **MOV10-FMRP** interactions can either enhance this suppression or, when the **MOV10-FMRP** complex binds in proximity to **miRNA response elements (MREs)**, can sterically block **AGO2** access and translation is no longer suppressed.
 
 ![Alt text](img/model_mov10.png){ width=400 }
 
-Model for **MOV10-FMRP** Cooperation in microRNA-Mediated Translation Regulation
+Model for **MOV10-FMRP** Cooperation in miRNA-Mediated Translation Regulation
 
-Top: **MOV10** helicase unwinds G-rich structures in 3′ UTRs, exposing **microRNA response elements (MREs)** for **AGO2/RNA-induced silencing complex (RISC)** binding and gene silencing by translational repression.
+Top: **MOV10** helicase unwinds G-rich structures in 3′ UTRs, exposing **miRNA response elements (MREs)** for **AGO2/RNA-induced silencing complex (RISC)** binding and gene silencing by translational repression.
 
 Middle: **FMRP** recruits **MOV10** to remodel RNA structure, facilitating **AGO2/RISC** access to **MREs** and translational repression.
 
-Bottom: **FMRP-MOV10** complex binds in proximity to **MREs**, sterically blocking **AGO2/RISC** access and preventing microRNA-mediated suppression of translation.
+Bottom: **FMRP-MOV10** complex binds in proximity to **MREs**, sterically blocking **AGO2/RISC** access and preventing miRNA-mediated suppression of translation.
 
 ### Review of the dataset
 
@@ -118,7 +118,7 @@ colnames(data)
 
 ```
 
-You'll notice the colnames of the data are the sample names, and the rownames of the metadata are the sample names. This is important as we will be merging the metadata with the data based on the sample names.
+You'll notice the `colnames` of the data are the sample names, and the `rownames` of the metadata are the sample names except in a different order. This is important as we will be merging the metadata with the data based on the sample names.
 
 ## Differential gene expression analysis overview
 
@@ -178,23 +178,24 @@ Count data is often modeled using the **binomial distribution**, which models th
 
 
 ![Alt text](img/poisson-distribution-formula.png){ width=300 }
+
 Where:
 
 - λ = the average number of "successes"
 - x = the specific number you're asking about 
 - P(X = x) = probability of getting exactly that many events
 
-With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
+With RNA-seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
 
 To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
-`apply(X, MARGIN, FUN)` applies a function to matrix margins, where:
+To calculate the mean and variance of our data, we will use the `apply` function. The `apply` function allows you to apply a function to the margins (rows or columns) of a matrix. The syntax for `apply` is as follows: 
 
-X = matrix
-MARGIN = 1 (rows) or 2 (columns)
-FUN = function to apply
+`apply(X, MARGIN, FUN)`
 
-We will use `MARGIN = 1` to to calculate mean and variance for each gene (row) across the **Mov10 overexpression** replicates. We will then create a data frame with the mean and variance of the counts for each gene.
+where `X` is a matrix, `MARGIN` is the margin of the matrix to apply the function to (1 = rows, 2 = columns), and `FUN` is the function to apply. 
+
+We will use `MARGIN = 1` to apply the mean and variance of the counts for each row (gene) across the **Mov10 overexpression** replicates. We will then create a data frame with the mean and variance of the counts for each gene.
 ```{r}
 
 # calculate the mean and variance of the counts for each gene

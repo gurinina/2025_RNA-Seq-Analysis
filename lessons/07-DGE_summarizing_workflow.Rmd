@@ -1,18 +1,10 @@
 # Summary of DGE workflow
 
-**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as <lastname>_07-DGE_summarizing_workflow.Rmd. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +10
+**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as '<lastname>_07-DGE_summarizing_workflow.Rmd'. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. Don't forget to read the data in first. points = +6
 
 ```{r, message = FALSE}
 ## Setup
 library(DESeq2)
-```
-
-#### Loading Mov10 data
-```{r}
-
-data <- read.delim("data/Mov10_full_counts.txt", row.names = 1)
-
-meta <- read.delim("data/Mov10_full_meta.txt", row.names = 1)
 ```
 
 We have detailed the various steps in a differential expression analysis workflow, providing theory with example code. To provide a more succinct reference for the code needed to run a DGE analysis, we have summarized the steps in an analysis below:

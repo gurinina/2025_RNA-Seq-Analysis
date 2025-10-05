@@ -5,7 +5,7 @@ editor_options:
 ---
 # Codebook
 
-32 total points
+34 total points
 
 
 ```{r, include = FALSE}
@@ -18,7 +18,7 @@ source("scripts/setup.R")
 
 ### Setting up
 
-#### Loading libraries; technically we don't need to load all of these libraries because they are in the file setup.R which is sourced in the first .Rmd of the module. However, it's good practice to load them all at the beginning of your script.
+#### Loading libraries; it's good practice to load them all at the beginning of your script.
 ```{r, message = FALSE}
 
 library(tidyverse)
@@ -61,7 +61,7 @@ data[1:4,1:4]
 
 ```
 
-You’ll notice that the colnames of the data and the rownames of meta are the same except that they are in a different order. This is important later as we will be merging the metadata with the count data based on these sample names.
+You’ll notice that the `colnames` of the data and the `rownames` of meta are the same except that they are in a different order. This is important later as we will be merging the metadata with the count data based on these sample names.
 
 ### DGE analysis workflow
 
@@ -89,6 +89,7 @@ These images illustrate some common features of RNA-seq count data, including a 
 #### Modeling count data
 
 Count data is often modeled using the **binomial distribution**, which models the probability of success/failure outcomes over fixed trials (like counting heads in 10 coin tosses).
+
 **When dealing with very large numbers of cases but very small probabilities of events (like lottery tickets), the Poisson distribution is more appropriate.**
 
 ![Alt text](img/poisson-distribution-formula.png){ width=300 }
@@ -99,7 +100,7 @@ Where:
 - x = the specific number you're asking about 
 - P(X = x) = probability of getting exactly that many events
 
-With RNA-Seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
+With RNA-seq data, **we have millions of reads sequenced, but the probability of any single read mapping to a specific gene is extremely low**. Thus, it would be an appropriate situation to use the Poisson distribution. However, a unique property of this distribution is that the mean == variance. Realistically, with RNA-seq data there is always some biological variation present across the replicates (within a sample class). Genes with larger average expression levels will tend to have larger observed variances across replicates.
 
 To test if our data meets this Poisson criteria, we'll plot **mean versus variance** for the **Mov10 overexpression** replicates using the apply function:
 
@@ -327,12 +328,11 @@ rld_mat <- assay(rld)    ## assay() is function from the "SummarizedExperiment" 
 ```
 
 Then we need to compute the pairwise correlation values for samples. We can do this using the `cor()` function:
-
 ```{r}
 ### Compute pairwise correlation values
 rld_cor <- cor(rld_mat)    ## cor() is a base R function
 
-head(rld_cor)   ## check the output of cor(), make note of the rownames and colnames
+head(rld_cor)   ## check the output of cor(), make note of the `rownames` and `colnames`
 ```
 
 And now to plot the correlation values as a heatmap:
@@ -358,10 +358,9 @@ heat.colors <- brewer.pal(9, "Blues")
 
 pheatmap(rld_cor, 
              color = heat.colors, 
-             border_color = "black", 
-             fontsize = 10, 
+             border_color = "black",
              fontsize_row = 12, 
-             fontsize_col = 12,
+             fontsize_col = 10,
              show_rownames = TRUE,
              show_colnames = TRUE)
 
@@ -375,23 +374,31 @@ Identify what each of the added arguments is contributing to the plot.
 
 **.Rmd file = 04_DGE_DESeq2_analysis.Rmd**
 
-### Set the Design Formula
 
-The main purpose of the **design formula** in DESeq2 is to specify the factors that are influencing gene expression so that their effects can be **accounted for** or **controlled** during the analysis. This allows DESeq2 to isolate the effect of the variable you're primarily interested in while adjusting for other known sources of variation. The design formula should have all of the factors in your metadata that account for major sources of variation in your data. The last factor entered in the formula should be the condition of interest.
+## Running DESeq2
 
-For example:
-```{r}
-design(dds)
-```
-This shows that **sampletype** is the condition of interest and as such is the only covariate. DESeq2 will test for differential expression between the two sample types, adjusting for any other variation.
+Prior to performing the differential expression analysis, it is a good idea to know what **sources of variation** are present in your data, either by exploration during the QC and/or prior knowledge. Once you know the major sources of variation, you can control for them in the statistical model by including them in your **design formula**. 
+
+### Design formula
+
+A design formula tells the statistical software the known sources of variation to control for, as well as, the factor of interest to test for during differential expression testing. For example, if you know that sex is a significant source of variation in your data, then sex should be included in your model. **The design formula should have all of the factors in your metadata that account for major sources of variation in your data.** The last factor entered in the formula should be the condition of interest.
+
+For example, suppose you have the following metadata:
+
+![Alt text](img/meta_example.png){ width=300 }
+
+If you want to examine the expression differences between treatments, and you know that major sources of variation include `sex` and `age`, then your design formula would be:
+
+`design <- ~ sex + age + treatment`
+
+The tilde (`~`) should always proceed your factors and tells DESeq2 to model the counts using the following formula. Note the **factors included in the design formula need to match the column names in the metadata**. 
 
 **Exercise** points = +3
 
 1. Suppose you wanted to study the expression differences between the two age groups in the metadata shown above, and major sources of variation were `sex` and `treatment`, how would the design formula be written?
 
 ```{r, eval = FALSE}
-
-# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last
+# the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last.
 
 
 # Your code here
@@ -429,21 +436,57 @@ dds <- DESeq(dds)
 
 By re-assigning the result to back to the same variable name (`dds`), we update our `DESeqDataSet` object, which will now contain the results of each step in the analysis, effectively filling in the `slots` of our `DESeqDataSet` object.
 
+
 ### DESeq2 differential gene expression analysis workflow
 
 Everything from normalization to linear modeling was carried out by the use of a single function!
 
 With the 2 lines of code above, we just completed the workflow for the differential gene expression analysis with DESeq2. The steps in the analysis are output below:
 
+![Alt text](img/deseq_obj2.png)
+
+**Everything from normalization to linear modeling was carried out by the use of a single function!** This function will print out a message for the various steps it performs: 
+
+```
+estimating size factors
+estimating dispersions
+gene-wise dispersion estimates
+mean-dispersion relationship
+final dispersion estimates
+fitting model and testing
+``` 
+
+> **NOTE:** There are individual functions available in DESeq2 that would allow us to carry out each step in the workflow in a step-wise manner, rather than a single call. We demonstrated one example when generating size factors to create a normalized matrix. By calling `DESeq()` the individual functions for each step are run for you.
+
+## DESeq2 differential gene expression analysis workflow
+
+With the 2 lines of code above, we just completed the workflow for the differential gene expression analysis with DESeq2. The steps in the analysis are output below:
+
 ![Alt text](img/deseq2_workflow_separate.png){ width=200 }
 
-#### Step 1: Estimate size factors
+We will be taking a detailed look at each of these steps to better understand how DESeq2 is performing the statistical analysis and what metrics we should examine to explore the quality of our analysis.
 
-MOV10 DE analysis: examining the size factors
+### Step 1: Estimate size factors
+
+The first step in the differential expression analysis is to estimate the size factors, which is exactly what we already did to normalize the raw counts. 
+
+![Alt text](img/deseq2_workflow_separate_sf.png){ width=200 }
+
+DESeq2 will automatically estimate the size factors when performing the differential expression analysis. However, if you have already generated the size factors using `estimateSizeFactors()`, as we did earlier, then DESeq2 will use these values.
+
+#### MOV10 DE analysis: examining the size factors
+
+Let's take a quick look at size factor values we have for each sample:
+
 ```{r}
 ## Check the size factors
 sizeFactors(dds)
+
 ```
+
+These numbers should be identical to those we generated initially when we had run the function `estimateSizeFactors(dds)`. 
+
+**Exercise** points = +2
 
 Take a look at the total number of reads for each sample:
 ```{r}
@@ -454,6 +497,16 @@ colSums(counts(dds, normalized = FALSE))
 **How do the numbers correlate with the size factor?**
 
 - Ans: 
+
+Now take a look at the total depth after normalization using:
+```{r}
+## Total number of normalized counts per sample
+colSums(counts(dds, normalized=T))
+```
+
+**How do the normalized values across samples compare with the total counts taken for each sample?**
+
+- Ans
 
 ### MOV10 Differential Expression Analysis: Exploring Dispersion Estimates
 
@@ -476,127 +529,23 @@ plotDispEsts(dds)
 
 **.Rmd file = 05_DGE_DESeq2_analysis2.Rmd**
 
-### Step-by-Step Process:
-
-1. **Define the Design Matrix \( X_j \):**
-The design matrix \( X \) includes the covariates (experimental conditions) for each sample. Each row of the matrix corresponds to a sample, and each column corresponds to a covariate (e.g., intercept, control, treatment). This matrix is generated using the **`model.matrix()`** function in R.
-
-```{r}
-X <- model.matrix(~ sampletype, data = meta)
-
-# OR
-
-X <- model.matrix(design(dds), data = colData(dds))
-
-```
-
-2. **Link Mean Expression to the Design Matrix:**
-The expected mean expression for **gene \( i \)** in **sample \( j \)** is modeled as:
-
-$$
-\log_2(\mu_{ij}) = \beta_i X_j
-$$
-
-Or equivalently:
-
-$$
-\mu_{ij} = 2^{\beta_i X_j}
-$$
-
-Here:
-
-- \( X_j \) is the row of the design matrix for sample \( j \) (it contains the covariates for that sample)
-
-- \( \beta_i \) is the vector of log2 fold changes (beta coefficients) for gene \( i \).
-
-3. **Estimate the Beta Coefficients:**
-"DESeq2 estimates the **beta coefficients** by fitting a **negative binomial GLM** to the data using **Maximum Likelihood Estimation (MLE)**. DESeq2 substitutes the mean (\( \mu_{ij} \)) with \( 2^{\beta_i X_j} \) in the negative binomial model, using MLE to predict expected counts based on experimental covariates and estimate gene expression changes while controlling for design factors.
-
-The model is fit using the **`DESeq()`** function in R, which carries out the entire estimation process:
-
-```{r}
-dds <- DESeq(dds)
-```
-
-4. **Extract the Beta Coefficients:**
-Once the model is fitted, the estimated beta coefficients (log2 fold changes) for each gene can be extracted using the **`coef()`** function:
-
-```{r}
-beta_coefficients <- coef(dds)
-```
-
-This gives a matrix of estimated beta coefficients, where each row corresponds to a gene and each column corresponds to a covariate in the design matrix.
-
-### Example:
-For example, if the design matrix includes an intercept (control) and two conditions (MOV10 knockdown and MOV10 overexpression), the beta coefficients \( \beta_i \) for gene \( i \) would represent:
-
-- \( \beta_{i1} \): the log2 fold change for the control group (intercept)
-
-- \( \beta_{i2} \): the log2 fold change for the MOV10 knockdown group
-
-- \( \beta_{i3} \): the log2 fold change for the MOV10 overexpression group.
-
-### Calculation:
-To calculate the fitted (expected) log2 counts for **gene \( i \)** in **sample \( j \)**, you can take the **dot product** of the row of the design matrix \( X_j \) for that sample and the beta coefficients \( \beta_i \) for that gene:
-
-$$
-\log_2(\mu_{ij}) = \beta_i X_j = \beta_{i1} X_{j1} + \beta_{i2} X_{j2}  + \dots + \beta_{iP} X_{jP}
-$$
-
-Where:
-
-- \( P \) is the number of covariates in the design matrix
-
-The expected mean \( \mu_{ij} \) on the original count scale is obtained by exponentiating the log2-scale fitted values:
-
-$$
-\mu_{ij} = 2^{\beta_i X_j}
-$$
-
-This gives a matrix of estimated beta coefficients, where each row corresponds to a gene and each column corresponds to a covariate in the design matrix.
-
-### Example:
-For example, if the design matrix includes an intercept (control) and two conditions (MOV10 knockdown and MOV10 overexpression), the beta coefficients \( \beta_i \) for gene \( i \) would represent:
-
-- \( \beta_{i1} \): the log2 fold change for the control group (intercept)
-
-- \( \beta_{i2} \): the log2 fold change for the MOV10 knockdown group
-
-- \( \beta_{i3} \): the log2 fold change for the MOV10 overexpression group.
-
-### Calculation:
-To calculate the fitted (expected) log2 counts for **gene \( i \)** in **sample \( j \)**, you can take the **dot product** of the row of the design matrix \( X_j \) for that sample and the beta coefficients \( \beta_i \) for that gene:
-
-
-
 **Exercise** points = +1
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
+```{r, results = "asis", echo = FALSE}
 
-- Ans:
+# Your code here
+```
 
+#### MOV10 DE analysis: contrasts and Wald tests
 
-### Matrix Multiplication Form:
-If you want to calculate the fitted values for all genes and samples at once, you can express the model as a **matrix multiplication**:
+We have three sample classes so we can make three possible pairwise comparisons:
 
-$$
-\log_2(\mu) = \beta X^T
-$$
+1. Control vs. Mov10 overexpression
+2. Control vs. Mov10 knockdown
+3. Mov10 knockdown vs. Mov10 overexpression
 
-This computes the expected log2 counts for all genes across all samples.
-
-In R, you can calculate the fitted log2 counts for all genes and samples using:
-
-```{r}
-
-X <- model.matrix(~ sampletype, colData(dds))
-
-log2_fitted <- beta_coefficients %*% t(X)
-``` 
-
-This step multiplies the beta coefficients matrix by the transpose of the design matrix to compute the fitted log2 counts.
-
-STOP Tues Oct 22
+**We are really only interested in #1 and #2 from above**. Using the design formula we provided `~ sampletype`, indicating that this is our main factor of interest.
 
 ## MOV10 Differential Expression Analysis:
 
@@ -604,7 +553,7 @@ Control versus Overexpression
 
 **Building the Results Table**
 
-To build the results table, we use the `results()` function. You can specify the `contrast` to be tested using the contrast argument. In this example, we’ll save the unshrunken and shrunken results of **Control vs. Mov10 overexpression** to different variables. 
+To build our results table we will use the `results()` function. To tell DESeq2 which groups we wish to compare, we supply the contrasts we would like to make using the`contrast` argument.  In this example, we’ll save the unshrunken and shrunken results of **Control vs. Mov10 overexpression** to different variables.
 ```{r}
 # define contrasts
 contrast_oe <- c("sampletype", 
@@ -633,7 +582,12 @@ A **MA plot** visualizes the relationship between the **mean expression** (on th
 
 When **shrinkage** is applied, as in DESeq2, large log2 fold change estimates for genes with low counts or high variability are pulled toward more moderate values, reducing the noise in the plot. This helps focus attention on the more reliable fold changes and makes the plot cleaner, especially for low-expression genes that tend to have more variable LFC estimates without shrinkage.
 
-This plot is also a great way to illustrate the effect of LFC shrinkage. DESeq2 provides a simple function to generate an MA plot.
+This plot is also a great way to illustrate the effect of LFC shrinkage. 
+
+Lots of shrinkage = noisy data or many lowly expressed genes
+Minimal shrinkage = high quality, well-powered dataset
+
+DESeq2 provides a simple function to generate an MA plot. 
 
 **Shrunken & Unshrunken Results:**
 ```{r}
@@ -651,7 +605,7 @@ abline(v = 10,col="red",lwd = 2)
 
 ```
 
-**MOV10 DE Analysis: Exploring the Results**
+**MOV10 DE Analysis: results exploration**
 
 The results table in `DESeq2` looks similar to a data.frame and can be treated like one for accessing or subsetting data. However, it is stored as a `DESeqResults` object, which is important to keep in mind when working with visualization tools.
 ```{r}
@@ -669,57 +623,13 @@ head(res_tableOE)
 names(res_tableOE)
 ```
 
-### MOV10 DE Analysis: **Control vs. Knockdown**
-
-After examining the overexpression results, let's move on to the comparison between **Control vs. Knockdown**. We’ll use contrasts in the `results()` function to extract the results table and store it in the `res_tableKD` variable. You can also use `coef` to specify the contrast directly in the `lfcShrink()` function.
-```{r}
-
-# define contrast
-contrast_kd <-  c("sampletype", 
-                  "MOV10_knockdown",
-                  "control")
-
-# extract results table
-res_tableKD_unshrunken <- results(dds, 
-                                  contrast = contrast_kd)
-                               
-
-resultsNames(dds)
-
-
-# use the `coef` argument to specify the contrast directly
-res_tableKD <- lfcShrink(dds, coef = 2, 
-                         res = res_tableKD_unshrunken)
-
-## Save results for future use
-saveRDS(res_tableKD, file = "data/res_tableKD.RDS")
-
-```
-
-
-## Summarizing Results
-
-To summarize the results, DESeq2 offers the `summary()` function, which conveniently reports the number of genes that are significantly differentially expressed at a specified threshold (`default FDR < 0.05`). Note that, even though the output refers to p-values, it actually summarizes the results using **adjusted p-values (padj/FDR)**.
-
-Let’s start by summarizing the results for the OE vs. control comparison:
-```{r}
-## Summarize results
-summary(res_tableOE)
-```
-
-In addition to reporting the number of up- and down-regulated genes at the default significance threshold, this function also provides information on:
-
-- **Number of genes tested** (genes with non-zero total read count)
-- **Number of genes excluded** from multiple test correction due to low mean counts
+Now, we can filter the table to retain only the genes that meet the significance and fold change criteria:
 
 ### Extracting Significant Differentially Expressed Genes
 
 In some cases, using only the FDR threshold doesn’t sufficiently reduce the number of significant genes, making it difficult to extract biologically meaningful results. To increase stringency, we can apply an additional fold change threshold.
 
-Although the summary() function doesn't include an argument for fold change thresholds, we can define our own criteria.
-
 Let’s start by setting the thresholds for both adjusted p-value (FDR < 0.05) and log2 fold change (|log2FC| > 0.58, corresponding to a 1.5-fold change):
-
 ```{r}
 ### Set thresholds
 padj.cutoff <- 0.05
@@ -748,25 +658,52 @@ saveRDS(sigOE,"data/sigOE.RDS")
 
 ```
 
-**Exercise** points = +2 
 
-How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? Does this reduce the number of significant genes compared to using only the FDR threshold?
+**Exercise** points = +2
+
+How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? 
 ```{r}
-
 # Your code here
-
 ```
 
-  
 **Does this reduce our results?** 
 ```{r}
-
 # Your code here
-
 ```
 
 
-### MOV10 Knockdown Analysis: Control vs. Knockdown
+### MOV10 DE Analysis: **Control vs. Knockdown**
+
+After examining the overexpression results, let's move on to the comparison between **Control vs. Knockdown**. We’ll use contrasts in the `results()` function to extract the results table and store it in the `res_tableKD` variable.
+```{r}
+
+# define contrast
+contrast_kd <-  c("sampletype", 
+                  "MOV10_knockdown", 
+                  "control")
+
+# extract results table
+res_tableKD_unshrunken <- results(dds, 
+                                  contrast = contrast_kd)
+
+resultsNames(dds)
+
+
+# extract results table
+res_tableKD_unshrunken <- results(dds, 
+                                  contrast = contrast_kd)
+
+resultsNames(dds)
+
+# shrink log2 fold changes
+res_tableKD <- lfcShrink(dds = dds, 
+               coef = "sampletype_MOV10_knockdown_vs_control", 
+               res = res_tableKD_unshrunken)
+
+## Save results for future use
+saveRDS(res_tableKD, file = "data/res_tableKD.RDS")
+
+```
 
 Next, let’s perform the same analysis for the **Control vs. Mov10 knockdown** comparison. We’ll use the same thresholds for adjusted p-value (FDR < 0.05) and log2 fold change (|log2FC| > 0.58).
 ```{r}
@@ -784,12 +721,16 @@ sigKD <- res_tableKD_tb %>%
 saveRDS(sigKD,"data/sigKD.RDS")
 ```
 
+
 **Exercise** points = +1
 
 How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
-```{r}
+```{r, results = "asis", echo = FALSE}
 # Your code here
 ```
+
+With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.
+
 
 ## Visualizing RNA-seq results
 
@@ -839,7 +780,7 @@ One way to visualize results would be to simply plot the expression data for a h
 
 #### **Using DESeq2 `plotCounts()` to plot expression of a single gene**
 
-To pick out a specific gene of interest to plot, for example Mov10, we can use the `plotCounts()` from DESeq2. `plotCounts()` is a function that allows us to plot the normalized counts for a single gene across all samples.
+To pick out a specific gene of interest to plot, for example MOV10, we can use the `plotCounts()` from DESeq2. `plotCounts()` is a function that allows us to plot the normalized counts for a single gene across all samples.
 
 ```{r}
 
@@ -849,13 +790,6 @@ plotCounts(dds,
 
 # We can also color the points by sample type
 sampletype = as.factor(mov10_meta$sampletype)
-
-library(RColorBrewer)
-
-display.brewer.all()
-
-col = brewer.pal(8,"Dark2")
-palette(col)
 
 plotCounts(dds, gene="MOV10", 
            intgroup="sampletype",
@@ -928,7 +862,7 @@ The `pivot_longer()` function in the **tidyr** package will perform this operati
 ```{r}
 # Pivot the data frame
 pivoted_top20_sigOE <- top20_sigOE_norm %>%
-  pivot_longer(colnames(top20_sigOE_norm)[2:9], 
+  pivot_longer(colnames(top20_sigOE_norm)[2:9], # 1 is gene
                names_to = "samplename", 
                values_to = "normalized_counts")
 
@@ -1079,6 +1013,8 @@ ggplot(res_tableOE_tb, aes(x = log2FoldChange,
 
 **.Rmd file = 07-DGE_summarizing_workflow.Rmd**
 
+**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as '<lastname>_07-DGE_summarizing_workflow.Rmd'. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +6
+
 ```{r, message = FALSE}
 ## Setup
 library(DESeq2)
@@ -1186,8 +1122,6 @@ sig_res <- dplyr::filter(res_df,
 sessionInfo()
 ```
 
-**Exercise/Homework:** First save a copy of **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as <lastname>_07-DGE_summarizing_workflow.Rmd. Then modify the file to analyze the MOV dataset, starting with Mov10_full_counts.txt in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +6
-
 ## Functional analysis of RNA-seq data
 
 **.Rmd file = 08-GO_enrichment_analysis.Rmd**
@@ -1250,7 +1184,7 @@ ego <- enrichGO(gene = sigOE_genes,
  maxGSSize = 300,
  ont = "BP",
  pAdjustMethod = "BH",
- qvalueCutoff = 0.05,
+ qvalueCutoff = 0.01,   # slightly stringent FDR cutoff
  readable = TRUE)
 
 ```
@@ -1278,12 +1212,12 @@ names(gene_lists) <- term_ids
 Using the gene lists associated with each GO term, we can create edges between terms based on the shared genes.
 ```{r}
 
+
 # Load GO data for semantic similarity calculation
-go_data <- GOSemSim::godata(OrgDb = "org.Hs.eg.db", 
+# GO terms and their relationships (the ontology graph structure)
+go_data <- GOSemSim::godata(annoDb = "org.Hs.eg.db", 
                             ont = "BP", 
-                            keytype = "SYMBOL",
-                            computeIC = TRUE)
-            
+                            keytype = "SYMBOL")
 
 # Compute semantic similarity
 similarity_matrix <- GOSemSim::mgoSim(term_ids, term_ids, 
@@ -1300,26 +1234,26 @@ edges <- data.frame(from = rep(term_ids,
 # Filter out edges with zero similarity or self-loops
 edges <- subset(edges, similarity > 0 & from != to)
 
-edges <- edges %>% 
-  dplyr::filter(similarity >= 0.5)
+edges <- edges %>% filter(similarity >= 0.8)
 
 
 # Convert term IDs to names
 edges$to <- Term(edges$to)
 edges$from <- Term(edges$from)
 
-head(edges)
+dim(edges)
 
 ```
 
 Now we can create a network plot to visualize the relationships between the enriched GO terms based on their semantic similarity.
 ```{r}
+
 # Create an igraph object from the edges data frame
 g <- graph_from_data_frame(edges, directed = FALSE)
 
 # Visualize the graph using ggraph
-ggraph(g, layout = 'fr') +  # Fruchterman-Reingold layout
-  geom_edge_link(aes(edge_alpha = 0.5)) +  # Edges with some transparency
+ggraph(g, layout = 'kk') +  # Kamada-Kawai layout
+  geom_edge_link(aes(width = similarity), alpha = 0.5) +  # Edges with some transparency
   geom_node_point(size = 5, color = "blue") +  # Nodes sized uniformly
   geom_node_text(aes(label = name), repel = TRUE, size = 3) +  # Node labels
   theme_void() +  # Clean theme without axes
@@ -1327,7 +1261,7 @@ ggraph(g, layout = 'fr') +  # Fruchterman-Reingold layout
 
 ```
 
-Edges based can also be defined by Jaccard similarity; defined as the size of the intersection each pair of GO terms divided by the size of their union 
+Edges can also be defined by Jaccard similarity between GO terms; defined as the size of the intersection each pair of GO terms divided by the size of their union. 
 ```{r}
 
 # Define a function to compute Jaccard similarity
@@ -1348,23 +1282,30 @@ edges <- data.frame(from = character(), to = character(),
                                    similarity = similarity))
   }}}
 
+
 edges <- edges %>% 
-  dplyr::filter(similarity >= 0.5)
+  dplyr::filter(similarity >= 0.8)
 
 # Convert term IDs to names
 edges$to <- Term(edges$to)
 edges$from <- Term(edges$from)
 
+dim(edges)
+
+edges$edge_color <- ifelse(edges$similarity == 1, "red", "gray")
+
 ```
 
 Now we can create a network plot to visualize the relationships between the enriched GO terms based on the Jaccard similarity of their gene lists.
 ```{r}
+
 # Create a graph from the edges
 g <- graph_from_data_frame(edges, directed = FALSE)
 
 # Visualize the graph using ggraph
-ggraph(g, layout = 'fr') +  # Fruchterman-Reingold layout
-  geom_edge_link(aes(edge_alpha = 0.5)) +  # Edges with some transparency
+ggraph(g, layout = 'kk') + 
+  geom_edge_link(aes(alpha = similarity, width = similarity, color = edge_color)) + 
+  scale_edge_color_identity() +
   geom_node_point(size = 5, 
                   color = "blue") + 
   geom_node_text(aes(label = name), 
@@ -1372,6 +1313,7 @@ ggraph(g, layout = 'fr') +  # Fruchterman-Reingold layout
                  size = 3) +  # Node labels
   theme_void() +  # Clean theme without axes
   labs(title = "GO Terms Jaccard Overlap Network") 
+
 
 ```
 
@@ -1391,28 +1333,33 @@ ego_filtered@result <- ego@result[1:50, ]  # Take only top 50 results
 # Then create pairwise similarity
 pwt_filtered <- pairwise_termsim(ego_filtered, method = "JC")
 
-# Now emapplot should work better
+# Now create network plot
 emapplot(
   pwt_filtered,
-  showCategory = 20,
+  showCategory = 50,
   node_label = "category",
   layout = "mds"
 ) +
   theme(legend.position = "none")
 
-cnetplot(pwt_filtered, showCategory = 15,
+
+```
+To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.
+
+**cnetplot**: Visualizes connections between genes and top GO terms, highlighting shared pathways.This plot is particularly useful for hypothesis generation in identifying genes that may be important to several of the most affected processes.
+```{r}
+
+cnetplot(pwt_filtered, showCategory = 3,
          categorySize = "pvalue",
          colorEdge = TRUE) +
   theme(legend.position = "none")
 
 ```
-To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.
+
 
 The **`ssplot()`** function generates a spatial map of enriched terms, where each node represents a gene set and the distance between nodes reflects the similarity between gene sets. This plot is useful for identifying clusters of related terms and overall trends in the enrichment results.
 ```{r}
 
-
-# Try without the problematic arguments:
 ssplot(pwt, showCategory = 50, node_label = "category") +
   theme(legend.position = "none")
 
@@ -1421,29 +1368,25 @@ ssplot(pwt, showCategory = 50, node_label = "group") +
 
 
 ```
-If you are wanting a general overview of enrichment results and trends, `ssplot()` is more useful. If you want detailed information on the pairwise similarity between enrichment terms and to explore specific **networks of functional relationships**, `emapplot()` is more informative.
+To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.
+
+For a general overview of enrichment results and trends, use `ssplot()`. For detailed exploration of pairwise similarities between enrichment terms and their functional relationship networks, use `emapplot()`.
+
 
 **cnetplot**: Visualizes connections between genes and top GO terms, highlighting shared pathways.This plot is particularly useful for hypothesis generation in identifying genes that may be important to several of the most affected processes.
 ```{r}
 
-## Extract the foldchanges
-OE_foldchanges <- sigOE$log2FoldChange
-
-names(OE_foldchanges) <- sigOE$gene
-
-## cnetplot for the top 5 categories
-cnetplot(ego,
-  categorySize="padj",
-  node_label = "all",
-  showCategory = 5,
-  foldChange = OE_foldchanges,
-  vertex.label.font = 6)
+cnetplot(pwt_filtered, showCategory = 3,
+         categorySize = "pvalue",
+         colorEdge = TRUE) +
+  theme(legend.position = "none")
 
 ```
 
-### GSEA Using clusterProfiler and fgsea
 
-Prepare fold changes, sort by expression, and run GSEA with `gseGO()` for clusterProfiler or `fgseaSimple()` for `fgsea`.
+### GSEA Using 'clusterProfiler' `gseGO'
+
+Prepare fold changes, sort by expression, and run GSEA with `gseGO()` from `clusterProfiler`  
 ```{r}
 ## Extract the foldchanges
 foldchanges <- res_tableOE_tb$log2FoldChange
@@ -1455,24 +1398,23 @@ names(foldchanges) <- res_tableOE_tb$gene
 foldchanges <- sort(foldchanges, decreasing = TRUE)
 ```
 
-
-We can explore the enrichment of BP Gene Ontology terms using gene set enrichment analysis (GSEA) using gene sets associated with BP Gene Ontology terms
+We can use GSEA to test whether genes in specific biological processes tend to be up- or down-regulated together in our experiment:
 ```{r}
+
 gseaGO <- clusterProfiler::gseGO(
   geneList = foldchanges,
   ont = "BP",
   keyType = "SYMBOL",
-  eps = 0,
   minGSSize = 20,
   maxGSSize = 300,
+  eps = 0,
   pAdjustMethod = "BH",
-  pvalueCutoff = 0.05,
+  pvalueCutoff = 0.01,
   verbose = TRUE,
-  OrgDb = "org.Hs.eg.db",
-  by = "fgsea"
+  OrgDb = org.Hs.eg.db,
+  by = "fgsea"         # fast gene set enrichment analysis
 )
 
-gseaGO_results <- data.frame(gseaGO)
 
 ```
 
@@ -1482,12 +1424,19 @@ gseaGO_results <- data.frame(gseaGO)
 Visualize GSEA results with `dotplot()` for significant categories and `gseaplot2()` for gene set ranks.
 
 ```{r}
-dotplot(gseaGO, showCategory = 30)
+dotplot(gseaGO, showCategory = 20)
+```
+
+
+```{r}
+
 gseaplot2(gseaGO, geneSetID = 1:4)
 ```
 
 The emapplot clusters the 50 most significant (by padj) GO terms to visualize relationships between terms.
 ```{r}
+
+
 
 gseaGO_filtered <- gseaGO
 gseaGO_filtered@result <- gseaGO@result[1:50, ]  # Top 50 by p.adjust
@@ -1499,113 +1448,186 @@ pwt <- pairwise_termsim(
   semData = NULL
 )
 
-# Use safer emapplot parameters
-emapplot(pwt, showCategory = 20,     # Reduced from 30
-         node_label = "category",    # Changed from "all" 
-         layout = "mds") + 
-         theme(legend.position = "none")
+
+emapplot(pwt, showCategory = 50,     
+         node_label = "category")    
+    
+treeplot(pwt)
+
 
 ```
 
-### GSEA using fgsea
-GO annotations are updated regularly, and the GO terms associated with genes can change over time. This can lead to inconsistencies in the results of GO enrichment analyses when using different versions of the GO annotations. To address this issue, the `GOenrichment` package provides `hGOBP.gmt` a recently downloaded version of `BP` GO annotations. This file is a list of GO terms and their associated genes, which is used as input for the enrichment analysis. 
 
-To run GSEA using the `fgsea` package, we need to load the gene sets from the `hGOBP.gmt` file and the gene-level statistics from the `foldchanges` vector. We can then run the GSEA analysis using the `fgseaSimple` function.
+We are going to compare GO enrichment `enricher` to running the GO enrichment function `runGORESP`. 
+
+Let's first load the `GOenrichment` package:
 ```{r}
 
-# Let's look at the hGOBP.gmt file
-hGOBP.gmt[1]
+# Uncomment the following if you haven't yet installed GOenrichment.
 
-fgseaRes <-  fgsea::fgseaSimple(pathways = hGOBP.gmt, 
-                                stats = foldchanges, 
-                                nperm = 1000, maxSize = 300, 
-                                minSize = 20)
+# devtools::install_github("gurinina/GOenrichment")
 
-fgsea <- data.frame(fgseaRes,stringsAsFactors = F)
-
-w = which(fgsea$ES > 0)
-
-fposgsea <- fgsea[w,]
-
-fposgsea <- fposgsea %>% arrange(padj)
-
-```
-The `fgseaSimple` function returns a list of enriched gene sets and the enrichment score (ES).
-
-We are going to compare these results to running the GO enrichment function `runGORESP`. 
-
-Let's first load the `GOenrichment` package and check the available functions:
-```{r}
-
-ls("package:GOenrichment")
-
+library(GOenrichment)
 ```
 
 ### `GOenrichment` Package Analysis
 
-`runGORESP` uses over-representation analysis to identify enriched GO terms and returns two `data.frames`; of enriched GO terms (nodes) and GO term relationships (edges). 
+`runGORESP` uses over-representation analysis to identify enriched GO terms and returns two `data.frames`; of enriched GO terms (nodes) and GO term relationships (edges). We first need to get the GO annotations and specifically 'Biological Process' (BP).
 
-`compSCORE`evaluates a matrix of fitness scores to identify the `querySet` with scores above a specified significance threshold.
-
-We'll use a significance cutoff of 0.58, corresponding to a 1.5x change in expression.
+1. Generate clean GO Biological Process gene sets with gene symbols
 ```{r}
-args(runGORESP)
 
-# ?runGORESP
+# install.packages("msigdbr") uncomment to install
+library(msigdbr)
+library(GOenrichment)
 
-# Define the query set
-matx <- cbind(foldchanges,foldchanges)
+# Using msigdbr ensures standardized, up-to-date gene sets
+go_bp <- msigdbr(species = "Homo sapiens", collection = "C5", subcollection = "GO:BP")
 
-scoreMat = compSCORE(matx, coln = 1, sig =  0.58)
+# Let's look at the format of go_bp
+names(go_bp)
+head(go_bp[,c("gene_symbol", "gs_id")])
 
-head(scoreMat)
+# Convert to named list format
+hGOBP.gmt <- split(go_bp$gene_symbol, go_bp$gs_name)
+hGOBP.gmt[1:2]
+# Clean up term names (remove GOBP_ prefix and replace underscores)
+names(hGOBP.gmt) <- gsub("^GOBP_", "", names(hGOBP.gmt))
+names(hGOBP.gmt) <- gsub("_", " ", names(hGOBP.gmt))
+```
 
-hresp = runGORESP(fdrThresh = 0.2, scoreMat = scoreMat,
-  bp_input = hGOBP.gmt, go_input = NULL, minSetSize = 20,
-  maxSetSize = 300)
+Create GO ID (go_input argument) for `runGORESP`: assigns GO IDs to GO terms
+```{r}
 
-names(hresp$edgeMat)
-names(hresp$enrichInfo)
+go_mapping <- go_bp[!duplicated(go_bp$gs_name), c("gs_name", "gs_id")]
 
-head(hresp$enrichInfo[,c(2,3,4,5,10)])
+
+# Let's look at the format of go_bp
+head(go_bp[,c("gs_name", "gs_id")])
+
+names(go_mapping) <- c("term", "GOID")
+
+# Cleanup GO terms
+go_mapping$term <- gsub("^GOBP_", "", go_mapping$term)
+go_mapping$term <- gsub("_", " ", go_mapping$term)
+
+head(go_mapping)
+```
+
+
+2. `enricher` uses over-representation analysis to identify enriched GO terms.
+Prepare data for enricher:
+Create TERM2GENE data frame (term = GO term, gene = gene symbol) for the GO library
+```{r}
+
+term2gene <- go_bp[, c("gs_name", "gene_symbol")]
+head(term2gene)
+names(term2gene) <- c("term", "gene")
+
+# Cleanup GO terms
+term2gene$term <- gsub("^GOBP_", "", term2gene$term)
+term2gene$term <- gsub("_", " ", term2gene$term)
+
+head(term2gene)
+```
+
+3. Run `enricher` analysis:
+```{r}
+# Optimal parameters for robust analysis
+enricher_result <- enricher(
+    gene = sigOE_genes,
+    TERM2GENE = term2gene,
+    pvalueCutoff = 1,
+    qvalueCutoff = 0.0001,        # Stringent FDR threshold
+    minGSSize = 20,               # Robust minimum size
+    maxGSSize = 300
+)
 
 ```
 
-Let's check the overlap between the enriched terms found using `runGORESP` and those found using `fgseaSimple` as they used the same GO term libraries:
+4. Prepare data for runGORESP
+Create `scoreMat`: data frame with gene, score, and index columns
 ```{r}
 
-w = which(fposgsea$padj <= 0.2)
-
-lens <- length(intersect(fposgsea$pathway[w],hresp$enrichInfo$term))
-
-length(w)
-
-dim(hresp$enrichInfo)
-
-percent_overlap <- lens/nrow(hresp$enrichInfo)*100
-
-percent_overlap
+all_genes <- unique(term2gene$gene)
+scoreMat <- data.frame(
+    gene = all_genes,
+    score = runif(length(all_genes)),      # Random scores
+    index = ifelse(all_genes %in% sigOE_genes, 1, 0),  # 1 = gene of interest
+    stringsAsFactors = FALSE
+)
 ```
 
-80%, that's very good because we are using two different GO enrichment methods, over-representation analysis and GSEA.
+5. Run `runGORESP` analysis:
+```{r}
 
-The `visNetwork` function allows us to create interactive network visualizations where enriched GO terms are nodes and the relationships between terms are edges.
+goresp_result <- runGORESP(
+    scoreMat = scoreMat,
+    bp_input = hGOBP.gmt,                  # Gene sets as named list
+    go_input = go_mapping,                 # GO term to ID mapping
+    fdrThresh = 0.0001,                    # FDR threshold (same as enricher)
+    minSetSize = 20,                       # Same as enricher minGSSize
+    maxSetSize = 300                       # Same as enricher maxGSSize
+)
 
-The equivalent function in the `GOenrichment` package is `runNetwork`:
+names(goresp_result$edgeMat)
+names(goresp_result$enrichInfo)
+
+head(goresp_result$enrichInfo[,c(2,3,4,5,10)])
+
+```
+
+6. Display top results from both methods
+```{r}
+
+cat("\n=== Top enricher results ===\n")
+print(head(enricher_result[, c("Description", "Count", "pvalue", "qvalue")]))
+
+cat("\n=== Top runGORESP results ===\n")
+print(head(goresp_result$enrichInfo[, c("term", "nOverlap", "P", "FDR")]))
+
+print(dim(enricher_result))
+print(dim(goresp_result$enrichInfo))
+
+```
+
+7. Let's check the overlap between the enriched terms found using `runGORESP` and those found using `enricher` as they used the same GO term libraries:
+```{r}
+
+overlap_terms <- intersect(enricher_result$ID, goresp_result$enrichInfo$term)
+cat("Overlapping terms:", length(overlap_terms), "\n")
+cat("Overlap percentage:", round(100 * length(overlap_terms) / max(nrow(enricher_result), nrow(goresp_result$enrichInfo)), 1), "%\n")
+```
+
+
+Percent overlap close to 90%, that's very good because we are using two different GO enrichment methods.
+
+**Key differences between methods**
+- Both use hypergeometric testing with Benjamini-Hochberg FDR correction
+- enricher: Standard clusterProfiler workflow
+- runGORESP: Adds gene set clustering and network visualization features
+- Expected difference: 5-15% due to minor implementation differences
+- Core significant results are nearly identical
+
+We can visualize the results of the runGORESP analysis using the `visNetwork` package. This package allows us to create interactive network visualizations.
 
 We use the`visSetup` function to prepare the data for network visualization. We then run the `runNetwork` function to generate the interactive network plot.
-```{r, echo=FALSE, results='asis'}
 
-vis = visSetup(hresp$enrichInfo,hresp$edgeMat)
-GOenrichment::runNetwork(vis$nodes, vis$edges, main = "MOV10 Overexpression GO Network")
+```{r}
+
+vis = visSetup(goresp_result$enrichInfo,goresp_result$edgeMat)
+GOenrichment::runNetwork(vis$nodes, vis$edges, main = "MOV10 OE GO Enrichment Network")
 
 ```
+
 
 This network analysis is based on [Cytoscape](https://cytoscape.org/), an open source bioinformatics software platform for visualizing molecular interaction networks. out of all the GO packages.
 
 **Exercise** points = +4
 
-1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the res_tableKD_tb$log2FoldChange and cbind to build an input matrix. Use a significance threshold of 0.58 and an FDR threshold of 0.2. Save the results in a variable called `kresp`.
+1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the `res_tableKD` and use a padj cutoff of 0.05. Use a significance FDR threshold of 0.0001. Save the results in a variable called `kresp`. 
+To perform the over-representation analysis, we need a list of background genes and a list of significant genes:
+
 
 ```{r}
 
@@ -1619,4 +1641,6 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 # Your code here
 ```
+
+
 **Homework: fill in the missing code for the DGE_analysis_exercises.Rmd in the exercises folder.** points = +30.

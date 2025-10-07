@@ -3,7 +3,7 @@ output: html_document
 editor_options:
   chunk_output_type: console
 ---
-# Functional analysis of RNAseq data
+# Functional analysis of RNA-seq data
 
 ### Ontology and GO Terms
 
@@ -11,6 +11,15 @@ editor_options:
 An ontology is a classification of things that are detectable or directly observable and the relationships between those things. 
 
 The **Gene Ontology (GO)** project provides an ontology of defined terms representing gene product properties. These terms are connected to each other via formally defined relationships, allowing for consistent annotation and analysis of gene functions across different species and research areas.
+
+**GO term hierarchy**
+Some gene products are well-researched, with vast quantities of data available regarding their biological processes and functions. However, other gene products have very little data available about their roles in the cell.
+
+For example, the protein, "p53", would contain a wealth of information on it's roles in the cell, whereas another protein might only be known as a "membrane-bound protein" with no other information available.
+
+The GO ontologies were developed to describe and query biological knowledge with differing levels of information available. To do this, GO ontologies are loosely hierarchical, ranging from general, 'parent', terms to more specific, 'child' terms. The GO ontologies are "loosely" hierarchical since 'child' terms can have multiple 'parent' terms.
+
+Some genes with less information may only be associated with general 'parent' terms or no terms at all, while other genes with a lot of information be associated with many terms.
 
 ### GO Terms (Gene Ontology Terms)
 
@@ -26,7 +35,7 @@ The GO terms describe three aspects of gene products:
 
 ### GO Enrichment Methods
 
-GO enrichment methods help interpret differentially expressed gene lists from RNA-Seq data and include the following:
+GO enrichment methods help interpret differentially expressed gene lists from RNA-seq data and include the following:
 
 1. **Overrepresentation Analysis (ORA)**:
 - ORA assesses whether specific GO terms are over-represented in a gene list compared to the background set of genes (e.g., all genes in the genome). Over-represented GO terms indicate biological functions or processes that are significantly associated with the genes of interest. 
@@ -38,38 +47,85 @@ GO enrichment methods help interpret differentially expressed gene lists from RN
 ![Alt text](img/go_proportions_table3.png){ width=600 }`
 
 - **Hypergeometric Test**: 
+
 The hypergeometric test in GO enrichment analysis is used to determine whether a set of genes is enriched for specific GO terms compared to the background set of genes. The test calculates the probability of observing the overlap between the query gene set and the gene set associated with a particular GO term, given the total number of genes in the dataset and the number of genes in the background set.
 
-We're asking: given random sampling, how likely is it to see this many or more genes from our GO term?
+
+metric Test Analogy
+The jar contains:
+
+🔴 Red balls = genes that belong to a specific GO term
+⚫ Black balls = genes that do NOT belong to that GO term
+Total balls in jar = all genes in your background (universe)
+
+You draw from the jar:
+
+You draw a handful of balls = your significant genes (e.g., padj < 0.05)
+
+**The hypergeometric test asks:**
+"If I randomly drew this many balls from the jar, what's the probability I'd get at least this many red balls just by chance?"
+
+So, it’s like drawing colored balls from a jar:
+
+The jar = all genes tested (the “background”).
+
+The red balls = genes that belong to a specific GO term.
+
+You “draw” the genes that are significant in your analysis.
+
+The test checks how surprising it is that so many of your significant genes are red.
+
+If the probability of getting that many red balls (GO term genes) by chance is very low, then the GO term is overrepresented — meaning your experiment is likely enriched for that biological process.
+
+**Note for the curious:**
+The hypergeometric test is based on counting combinations — the number of ways to 
+draw q or more “successes” (genes with a given GO term) in k draws from a total of 
+N genes, of which m belong to that GO term.
 
 The formula for the cumulative probability of observing **at least q** successes (the upper-tail probability) in a sample of size \( k \) from a population with \( m \) successes and \( N - m \) failures is:
+
 $$
 P(X \geq q) = \sum_{i=q}^{k} \frac{\binom{m}{i} \binom{N - m}{k - i}}{\binom{N}{k}}
 $$
 
-Where:
 
-**`q`**: The **number of genes in your list of interest that are annotated with a specific GO term** (e.g., genes in your differential expression results that are associated with "cell cycle regulation").
+**Where:**
 
-**`m`**: The **total number of genes in the background set (e.g., all genes in the genome) that are annotated with the specific GO term** (e.g., all genes associated with "cell cycle regulation" in the entire dataset or genome).
+- **`N`**: The **total number of genes in the background set** (e.g., all genes in the genome).
 
-**`N`**: The **total number of genes in the background set.**
+- **`m`**: The **total number of genes in the background annotated with a specific GO term** (e.g., all genes associated with "cell cycle regulation").
 
-**`k`**: The **total number of genes in your gene list of interest** 
+- **`k`**: The **total number of genes in your gene list of interest** (e.g., your differentially expressed genes).
 
-### Example
+- **`q`**: The **number of genes in your list that are annotated with that specific GO term** (the observed overlap).
+
+### Example how to do this in R
+
+Suppose your background has \( N = 20,000 \). Out of these, \( m = 500 \) genes are associated with "cell cycle regulation." You have \( k = 1000 \)  differentially expressed genes, and \( q = 50 \) of them are associated with "cell cycle regulation."
+
+## Perform the hypergeometric test: P(X >= q)
+
+In R, the phyper() function computes the probability of observing this much overlap (or more) between our gene list and a GO term by chance.
+
 Suppose your background population has \( N = 20,000 \) genes (e.g., the entire genome). Out of these, \( m = 500 \) genes are associated with a specific GO term (e.g., "cell cycle regulation"). You have a list of \( k = 1000 \) genes of interest. In this list, \( q = 50 \) genes are associated with the "cell cycle regulation" GO term.
+
+A small p-value indicates that observing 50 or more genes with this GO term is unlikely by chance alone, suggesting genuine enrichment.
+
+**Question:** Is 50 more than we'd expect by chance?
 ```{r}
 # Define parameters
-N <- 20000         # Total genes in the background (population)
-m <- 500           # Total genes associated with the GO term in the background
-k <- 1000          # Sample size (genes in your list)
-q <- 50            # Observed number of successes (overlap with GO term)
+N <- 20000         # Total genes in the background
+m <- 500           # Genes with the GO term in background
+k <- 1000          # Your gene list size (e.g., DE genes)
+q <- 50            # Observed overlap with GO term
 
-# Perform the hypergeometric test (upper-tail probability) P(X >= q)
+# Perform the hypergeometric test: P(X >= q)
+# Note: We use q-1 because phyper calculates P(X > q-1) = P(X >= q)
 p_value <- phyper(q - 1, m, N - m, k, lower.tail = FALSE)
 p_value
 ```
+
+A small p-value indicates that observing 50 or more genes with this GO term is unlikely by chance alone, suggesting genuine enrichment.
 
 2. **Gene Set Enrichment Analysis (GSEA)**: 
 Instead of only considering genes above a certain threshold (e.g., differentially expressed genes), GSEA looks at the **entire ranked list of genes** (e.g., ranked by their expression levels) and checks whether genes associated with a certain GO term are **statistically over-represented at the top or bottom of a ranked gene list, indicating coordinated changes in gene expression**.
@@ -81,6 +137,8 @@ Genes are ranked based on a metric that reflects their differential expression, 
    
 - **Enrichment Score (ES)**: 
 GSEA calculates an **Enrichment Score (ES)** for each gene set by walking down the ranked list, increasing the score when a gene belongs to the set and decreasing it otherwise. A positive ES suggests upregulation, while a negative ES suggests downregulation of the gene set.
+
+The hypothesis of GSEA is that although large changes in individual genes can have significant effects on pathways (and will be detected via ORA methods), weaker but coordinated changes in sets of functionally related genes (i.e., pathways) can also have significant effects. Thus, rather than setting an arbitrary threshold to identify 'significant genes', all genes are considered in the analysis. The gene-level statistics from the dataset are aggregated to generate a single pathway-level statistic and statistical significance of each pathway is reported. This type of analysis can be particularly helpful if the differential expression analysis only outputs a small list of significant DE genes.
    
 - **Example:**
 The GSEA enrichment plot provides a graphical view of the enrichment score for a gene set:
@@ -95,6 +153,10 @@ The GSEA enrichment plot provides a graphical view of the enrichment score for a
 - The bottom portion of the plot shows the value of the ranking metric (such as log2FoldChange) as you move down the list of ranked genes. 
 
 **ORA vs. GSEA**
+
+**When to use each:**
+- Use **ORA** when you have a clear significance threshold (e.g., padj < 0.05) and want to test specific gene lists
+- Use **GSEA** when you want to detect subtle but coordinated changes across a pathway, even if individual genes aren't significantly DE
 
 ORA → Uses only significant genes (binary: in/out)
 
@@ -164,6 +226,11 @@ ego <- enrichGO(gene = sigOE_genes,
  qvalueCutoff = 0.01,   # slightly stringent FDR cutoff
  readable = TRUE)
 
+```
+
+```{r}
+## Dotplot 
+dotplot(ego, showCategory=20)
 ```
 
 We can extract the gene lists associated with each enriched GO term from the `ego` enrichResult object to create edges between terms based on shared genes.
@@ -312,7 +379,10 @@ ggraph(g, layout = 'kk') +
 
 ```
 
-The resulting network plots shows the relationships between the enriched GO terms based on either Semantic or Jaccard similarity of their gene lists. 
+The resulting network plots shows the relationships between the enriched GO terms based on Jaccard similarity of their gene lists. 
+
+It is clear that Jaccard similarity is more stringent than Semantic similarity.
+
 
 ### Visualizing Enrichment Results
 
@@ -338,7 +408,10 @@ emapplot(
 
 
 ```
-To save any of these figures if they become too cluttered, click on the Export button in the RStudio Plots tab and Save as PDF. In the pop-up window, change the PDF size to 24 x 32 to give a figure of appropriate size for the text labels.
+
+```{r}
+ssplot(pwt_filtered)
+```
 
 For a general overview of enrichment results and trends, use `ssplot()`. For detailed exploration of pairwise similarities between enrichment terms and their functional relationship networks, use `emapplot()`.
 
@@ -417,6 +490,8 @@ pwt <- pairwise_termsim(
 
 emapplot(pwt, showCategory = 50,     
          node_label = "category")    
+
+ssplot(pwt)
     
 treeplot(pwt)
 
@@ -437,6 +512,8 @@ library(GOenrichment)
 
 ### `GOenrichment` Package Analysis
 
+We're going to run this analysis using TWO different packages. Why? In research, you often want to verify important results using independent methods. We'll see that both give us similar answers (~90% overlap), which builds confidence. They differ slightly because of minor implementation details, which is normal and expected.
+
 `runGORESP` uses over-representation analysis to identify enriched GO terms and returns two `data.frames`; of enriched GO terms (nodes) and GO term relationships (edges). We first need to get the GO annotations and specifically 'Biological Process' (BP).
 
 1. Generate clean GO Biological Process gene sets with gene symbols
@@ -444,8 +521,6 @@ library(GOenrichment)
 
 # install.packages("msigdbr") uncomment to install
 library(msigdbr)
-library(GOenrichment)
-
 # Using msigdbr ensures standardized, up-to-date gene sets
 go_bp <- msigdbr(species = "Homo sapiens", collection = "C5", subcollection = "GO:BP")
 
@@ -567,7 +642,7 @@ cat("Overlap percentage:", round(100 * length(overlap_terms) / max(nrow(enricher
 ```
 
 
-Percent overlap close to 90%, that's very good because we are using two different GO enrichment methods.
+Percent overlap is close to 90% that is very good.
 
 **Key differences between methods**
 - Both use hypergeometric testing with Benjamini-Hochberg FDR correction
@@ -591,11 +666,10 @@ GOenrichment::runNetwork(vis$nodes, vis$edges, main = "MOV10 OE GO Enrichment Ne
 This network analysis is based on [Cytoscape](https://cytoscape.org/), an open source bioinformatics software platform for visualizing molecular interaction networks. out of all the GO packages.
 
 **Exercise** points = +4
+1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using `res_tableKD` with a padj cutoff of 0.05. Use a significance FDR threshold of 0.0001. Save the results in a variable called `kresp`.
 
-1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using the `res_tableKD` and use a padj cutoff of 0.05. Use a significance FDR threshold of 0.0001. Save the results in a variable called `kresp`. 
-To perform the over-representation analysis, we need a list of background genes and a list of significant genes:
+2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the visualization setup in a variable called `kvis`.
 
-2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the results in a variable called `kvis`.
 
 ### Other tools and resources
 

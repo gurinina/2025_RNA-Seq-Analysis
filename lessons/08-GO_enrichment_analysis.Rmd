@@ -51,27 +51,24 @@ GO enrichment methods help interpret differentially expressed gene lists from RN
 The hypergeometric test in GO enrichment analysis is used to determine whether a set of genes is enriched for specific GO terms compared to the background set of genes. The test calculates the probability of observing the overlap between the query gene set and the gene set associated with a particular GO term, given the total number of genes in the dataset and the number of genes in the background set.
 
 
-metric Test Analogy
+Test Analogy
 The jar contains:
 
-🔴 Red balls = genes that belong to a specific GO term
-⚫ Black balls = genes that do NOT belong to that GO term
-Total balls in jar = all genes in your background (universe)
 
-You draw from the jar:
-
-You draw a handful of balls = your significant genes (e.g., padj < 0.05)
 
 **The hypergeometric test asks:**
 "If I randomly drew this many balls from the jar, what's the probability I'd get at least this many red balls just by chance?"
 
 So, it’s like drawing colored balls from a jar:
 
-The jar = all genes tested (the “background”).
+🔴 Red balls = genes that belong to a specific GO term
+⚫ Black balls = genes that do NOT belong to that GO term
 
-The red balls = genes that belong to a specific GO term.
+Total balls in jar = all genes in your background (universe)
 
-You “draw” the genes that are significant in your analysis.
+You draw from the jar:
+
+You draw a handful of balls = your significant genes (e.g., padj < 0.05)
 
 The test checks how surprising it is that so many of your significant genes are red.
 
@@ -98,10 +95,6 @@ $$
 - **`k`**: The **total number of genes in your gene list of interest** (e.g., your differentially expressed genes).
 
 - **`q`**: The **number of genes in your list that are annotated with that specific GO term** (the observed overlap).
-
-### Example how to do this in R
-
-Suppose your background has \( N = 20,000 \). Out of these, \( m = 500 \) genes are associated with "cell cycle regulation." You have \( k = 1000 \)  differentially expressed genes, and \( q = 50 \) of them are associated with "cell cycle regulation."
 
 ## Perform the hypergeometric test: P(X >= q)
 
@@ -519,8 +512,9 @@ We're going to run this analysis using TWO different packages. Why? In research,
 1. Generate clean GO Biological Process gene sets with gene symbols
 ```{r}
 
-# install.packages("msigdbr") uncomment to install
+# install.packages("msigdbr") # uncomment to install
 library(msigdbr)
+
 # Using msigdbr ensures standardized, up-to-date gene sets
 go_bp <- msigdbr(species = "Homo sapiens", collection = "C5", subcollection = "GO:BP")
 
@@ -670,6 +664,13 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the visualization setup in a variable called `kvis`.
 
+**Step 1: Load and prepare the knockdown data**")
+
+**Step 2: Prepare the score matrix for runGORESP**
+
+**Step 3: Run GO enrichment analysis with runGORESP**
+
+**Step 4: Create interactive network visualization**
 
 ### Other tools and resources
 

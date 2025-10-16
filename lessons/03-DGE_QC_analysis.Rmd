@@ -21,12 +21,17 @@ To explore the similarity of our samples, we will be performing sample-level QC 
 
 ![Alt text](img/sample_qc.png){ width=700 }
 
-When using these unsupervised clustering methods, DESeq2 uses a **regularized log transform** (rlog) of the normalized counts for sample-level QC as it moderates the variance across the mean, improving the clustering.
+When using these unsupervised clustering methods, DESeq2 uses a regularized log transform (rlog) of the normalized counts for sample-level QC as it moderates the variance across the mean, improving the clustering.
 
 **What it does:**
 - Converts counts to log2 scale (makes highly and lowly expressed genes more comparable)
+
 - Stabilizes variance across expression levels (prevents highly variable genes from dominating)
+
 - Results in data where all genes contribute more equally to PCA and clustering
+
+**Why this matters:**
+Without transformation, highly expressed genes would dominate the PCA and clustering simply because they have larger count values, masking biologically meaningful patterns from other genes.
 
 **When to use it:**
 Use rlog-transformed data for sample-level quality control like PCA plots, heatmaps, and sample clustering. Don't use it for differential expression analysis - that uses the original count data.
@@ -127,22 +132,21 @@ DESeq2 estimates separate coefficients (β₁, β₂, β₃) for each factor, th
 **Key Point:**
 You're not making strain/sex disappear - you're statistically controlling for them so you can get a cleaner estimate of the treatment effect.
 
-**Exercise** points = +5
+**Exercise** points = +3
 
-The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
+Now let's practice interpreting a PCA plot. In a typical RNA-seq experiment, you'll have multiple samples (different treatments, replicates, etc.) and thousands of genes. After PCA calculates the principal component scores, we plot the samples (not genes) in this new coordinate system.
 
-![Alt text](img/PCA_example3.png){ width=600 }
+Below is a practice dataset with 4 treatment groups (Control and 3 drugs) with 3 biological replicates each (12 samples total). Each point represents one sample, positioned based on its PC1 and PC2 scores.
 
+![Alt text](img/simplePCAplot.png){ width=600 }
+Analysis Questions
 
-**Determine the sources explaining the variation represented by PC1 and PC2.** 
+**1. What are the main sources of variation in this dataset (PC1 and PC2)?**
 
-**Do the sample groups separate well?**
+**2: Do the sample groups and replicates cluster appropriately?**
 
-**Do the replicates cluster together for each sample group?**
+**3.  What concerns should be addressed before proceeding with analysis?**
 
-**Are there any outliers in the data?**
-
-**Should we have any other concerns regarding the samples in the dataset?**
 
 ### Hierarchical Clustering Heatmap
 
@@ -164,25 +168,25 @@ DESeq2 performs this filtering automatically, so we don't need to do additional 
 
 Now that we have a good understanding of the QC steps normally employed for RNA-seq, let's implement them for the Mov10 dataset we are going to be working with.
 
-### Transform normalized counts using the rlog transformation
+**Transform normalized counts using the rlog transformation**
+Before creating PCA plots and other visualizations, we need to transform our normalized counts using the regularized log transformation (rlog).
 
-**To improve the distances/clustering for the PCA and hierarchical clustering visualization methods**, we need to apply the **regularized log transformation (rlog)** transformation to the normalized counts. **rlog** is used for visualizations in RNA-seq data analysis, particularly with tools like DESeq2, because it stabilizes the variance across different levels of gene expression, making it easier to interpret patterns in the data.
+**Why transform the data?**
+Raw RNA-seq count data has a problem: genes with low expression show high variability (noise), while highly expressed genes show less variability. This means highly expressed genes would dominate any clustering or PCA analysis.
+The rlog transformation solves this by:
 
-**Example of Variance Stabilization**
-Raw RNA-Seq count data has different levels of variability:
+Converting counts to log2 scale (makes genes more comparable)
+Stabilizing variance across all expression levels (so all genes contribute more equally)
 
-Without stabilization: Lowly expressed genes show high variability between samples (often due to noise), and highly expressed genes show less variability.
-With stabilization (e.g., rlog or vst): Variance across genes is more evenly distributed, which makes the data easier to work with in analyses like clustering or PCA.
+The result: Data that's appropriate for visualization and quality control, where patterns reflect biological differences rather than technical noise from expression level differences.
 
-> The rlog transformation of the normalized counts is only necessary for these visualization methods during this quality assessment. 
-
-```{r}
 ### Transform counts for data visualization
+```{r}
 rld <- rlog(dds, blind=TRUE)
 ```
-The `blind=TRUE` argument results in a transformation unbiased to sample condition information. When performing quality assessment, it is important to include this option. The [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#blind-dispersion-estimation) has more details.
+The blind=TRUE argument means the transformation doesn't use sample group information, which is important for unbiased quality assessment.
 
-The `rlog` function returns a `DESeqTransform` object, another type of DESeq-specific object. The reason you don't just get a matrix of transformed values is because all of the parameters (i.e. size factors) that went into computing the rlog transform are stored in that object. We use this object to plot the PCA and heirarchical clustering figures for quality assessment.
+Note: Use rlog-transformed data only for visualizations (PCA, heatmaps, clustering). For differential expression analysis, DESeq2 uses the original count data.
 
 ### Principal components analysis (PCA)
 
@@ -250,3 +254,4 @@ pheatmap(rld_cor,
 ```
 
 Identify what each of the added arguments is contributing to the plot.
+

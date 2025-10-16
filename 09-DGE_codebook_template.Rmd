@@ -136,6 +136,8 @@ By plotting the *mean versus the variance* of our data we can easily see that th
 
 The **Negative Binomial (NB)** model fits RNA-seq data well because it handles cases where **variance > mean**.
 
+The steps in the DESeq2 workflow are outlin
+
 ## Count normalization
 
 **.Rmd file = 02-DGE_count_normalization.Rmd**
@@ -156,6 +158,8 @@ PD1 <- t(PD1)
 
 # Size factors for each sample
 size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
+
+PD1
 
 ```
 
@@ -517,7 +521,7 @@ Now, let's explore the dispersion estimates for the MOV10 dataset:
 plotDispEsts(dds)
 ```
 
-**Since we have a small sample size, for many genes we see quite a bit of shrinkage. 
+You should see genes scattered around a decreasing curve, with dispersion decreasing as mean expression increases. Since we have a small sample size, many genes show shrinkage toward the fitted trend (red line), which is expected and beneficial for the analysis.
 
 **Exercise** points = +1
 

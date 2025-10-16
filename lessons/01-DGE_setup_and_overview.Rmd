@@ -46,7 +46,7 @@ Bottom: **FMRP-MOV10** complex binds in proximity to **MREs**, sterically blocki
 
 The aim of the RNA-seq part of the study was to identify **MOV10** target genes and determine which overlap with **FMRP** targets, suggesting regulation by the **MOV10-FMRP** complex. Our analysis will include:
 
-- Differential gene expression analysis (**MOV10** KD vs. OE vs. control)
+- Differential gene expression analysis (**MOV10** KD vs. control, **MOV10** OE vs. control)
 - Identifying direct **MOV10** targets (genes with opposite responses to KD vs. OE)
 - Functional enrichment of **MOV10**-responsive genes
 
@@ -86,7 +86,7 @@ library(ggrepel)
 
 ### Loading data
 
-To load the data into our current environment, we will be using the `read.table` function. We need to provide the path to each file and also specify arguments to let R know that we have a header (`header = T`) and the first column is our row names (`row.names = 1`). 
+To load the data into our current environment, we will be using the `read.table` function. We need to provide the path to each file and also specify arguments to let R know that we have a header (`header = T`) and the first column is our row names (`row.names = 1`) and the `sep = "\t"` for tab. 
 
 ```{r}
 ## Load in data
@@ -243,6 +243,7 @@ To model counts appropriately when performing a differential expression analysis
 **For this tutorial, we will be using [DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8) for the DE analysis, and the analysis steps with DESeq2 are shown in the flowchart below**. DESeq2 first normalizes the count data to account for differences in library sizes and RNA composition between samples. Then, we will use the normalized counts to make some plots for QC at the gene and sample level. The final step is to use the appropriate functions from the DESeq2 package to perform the differential expression analysis. 
 
 ![Alt text](img/deseq_workflow_full_2018.png){ width=500 }
+
 We will go in-depth into each of these steps in the following lessons, but additional details and helpful suggestions regarding DESeq2 can be found in the [DESeq2 vignette](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). As you go through this workflow and questions arise, you can reference the vignette from within RStudio:
 
 ```{r, eval=FALSE}

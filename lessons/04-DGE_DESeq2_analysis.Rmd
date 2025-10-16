@@ -128,11 +128,19 @@ Now take a look at the total depth after normalization using:
 colSums(counts(dds, normalized=T))
 ```
 
-**How do the nnormalized values across samples compare with the total counts taken for each sample?**
+**How do the normalized values across samples compare with the total counts taken for each sample?**
 
 ### Step 2: Estimate gene-wise dispersion
 
-DESeq2 estimates dispersion for each gene - a measure of how much gene expression varies between biological replicates.
+DESeq2 estimates dispersion for each gene - a measure of how much gene expression varies between biological replicates. DESeq2's dispersion parameter is specifically designed for this. It tells you after accounting for the mean-variance relationship in count data, how variable is this gene? High dispersion genes are legitimately noisy (biologically or technically), regardless of expression level.
+
+Models variance as: 
+
+$$\text{Var}(Y_{ij}) = \mu_{ij} + \alpha_i \mu_{ij}^2$$
+
+OR
+
+$$\alpha = \frac{\text{Var}(Y) - \mu}{\mu^2}$$
 
 ![Alt text](img/deseq2_workflow_separate_dis.png){ width=200 }
 

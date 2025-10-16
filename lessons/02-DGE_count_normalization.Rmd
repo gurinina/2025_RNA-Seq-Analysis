@@ -197,7 +197,6 @@ size_factors <- c(1.32, 0.70, 1.04, 1.27, 1.11, 0.85)
 
 ```
 
-
 ## Count normalization of Mov10
 
 Now that we know the theory of count normalization, we will normalize the counts for the Mov10 dataset using DESeq2. This requires a few steps:
@@ -229,6 +228,7 @@ all(colnames(data) == rownames(meta))
 **Exercise** points = +2
 
 Suppose we had the same sample names in the `colnames` of the counts matrix and the `rownames` of the metadata file, but they were in a different order. Write the line(s) of code required to create a new matrix with columns ordered such that they were identical to the row names of the metadata.
+
 ### 2. Create DESeq2 object
 
 Bioconductor software packages often define and use a custom class within R for storing data (input data, intermediate data and also result data). These custom data structures are similar to `lists` in that they can contain multiple different data types/structures within them. But, unlike lists they have pre-specified `data slots`, which hold specific types/classes of data. The data stored in these pre-specified slots can be accessed by using specific package-defined functions.

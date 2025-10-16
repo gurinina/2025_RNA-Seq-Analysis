@@ -36,6 +36,7 @@ The tilde (`~`) should always proceed your factors and tells DESeq2 to model the
 # the default behavior of `results` is to return the comparison of the last group in the design formula, so your condition of interest should come last.
 ```
 
+
 2. Based on our Mov10 metadata dataframe, which factors could we include in our design formula?
 
 3. What would you do if you wanted to include a factor in your design formula that is not in your metadata?
@@ -151,7 +152,7 @@ $$\alpha = \frac{\text{Var}(Y) - \mu}{\mu^2}$$
 - **High-expression genes** tend to be more consistent between replicates (**lower dispersion**)
 
 **Why this matters:**
-With only a few replicates per group, individual gene dispersion estimates can be noisy and unreliable. DESeq2 improves these estimates by using information from all genes, assuming that genes with similar expression levels should have similar variability using a statistical method called maximum likelihood estimation (MLE).  In other words, **given the count values of the replicates, the most likely estimate of dispersion is calculated**. 
+With only a few replicates per group, individual gene dispersion estimates can be noisy and unreliable. DESeq2 improves these estimates by using information from all genes, assuming that genes with similar expression levels should have similar variability using a statistical method called maximum likelihood estimation (MLE). In other words, **given the count values of the replicates, the most likely estimate of dispersion is calculated**. 
 
 ### Step 3: Fit Curve to Gene-wise Dispersion Estimates
 After estimating gene-wise dispersions, DESeq2 fits a smooth curve of dispersion vs. mean expression across all genes.

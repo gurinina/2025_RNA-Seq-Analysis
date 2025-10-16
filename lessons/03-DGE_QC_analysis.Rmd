@@ -147,7 +147,6 @@ Analysis Questions
 
 **3.  What concerns should be addressed before proceeding with analysis?**
 
-
 ### Hierarchical Clustering Heatmap
 
 Similar to PCA, hierarchical clustering is another, complementary method for identifying strong patterns in a dataset and potential outliers. The heatmap displays **the correlation of gene expression for all pairwise combinations of samples** in the dataset. Since the majority of genes are not differentially expressed, samples generally have high correlations with each other (values higher than 0.80). Samples below 0.80 may indicate an outlier in your data and/or sample contamination.  
@@ -231,7 +230,7 @@ Overall, we observe pretty high correlations across the board ( > 0.999) suggest
 
 **Exercise** points = +6
 
-The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Try adding the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
+The pheatmap function has a number of different arguments that we can alter from default values to enhance the aesthetics of the plot. Add the arguments `color`, `border_color`, `fontsize_row`, `fontsize_col`, `show_rownames` and `show_colnames` to your pheatmap. How does your plot change (plot shown below)? Take a look through the help pages (?pheatmap) and identify what each of the added arguments is contributing to the plot.
 
 The library RColorBrewer provides different palettes for plotting. We can display all of the palettes using:
 ```{r, fig.width=8, fig.height=8, echo=FALSE}

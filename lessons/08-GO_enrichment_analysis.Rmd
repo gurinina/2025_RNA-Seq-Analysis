@@ -25,7 +25,7 @@ Some genes with less information may only be associated with general 'parent' te
 
 The GO terms describe three aspects of gene products:
 
-- **Biological Process**: Refers to the biological objectives achieved by gene products, such as “cell division” or “response to stress.”
+- **Biological Process**: Refers to the biological objectives achieved by gene products, such as “cell division” or “response to stress.” Inferred from Direct Assay (IDA)
 
 ![Alt text](img/go_heirarchy.jpg)
 
@@ -62,6 +62,7 @@ The jar contains:
 So, it’s like drawing colored balls from a jar:
 
 🔴 Red balls = genes that belong to a specific GO term
+
 ⚫ Black balls = genes that do NOT belong to that GO term
 
 Total balls in jar = all genes in your background (universe)
@@ -149,7 +150,7 @@ The GSEA enrichment plot provides a graphical view of the enrichment score for a
 
 **When to use each:**
 - Use **ORA** when you have a clear significance threshold (e.g., padj < 0.05) and want to test specific gene lists
-- Use **GSEA** when you want to detect subtle but coordinated changes across a pathway, even if individual genes aren't significantly DE
+- Use **GSEA** when you want to detect subtle but coordinated changes across a pathway, even if individual genes aren't significantly DE.
 
 ORA → Uses only significant genes (binary: in/out)
 
@@ -664,13 +665,26 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the visualization setup in a variable called `kvis`.
 
-**Step 1: Load and prepare the knockdown data**")
+**Step 1: Load and prepare the knockdown data**
+```{r}
+# Your code here
+```
+Step 2: Prepare the score matrix for runGORESP
 
-**Step 2: Prepare the score matrix for runGORESP**
+```{r}
+# Your code here
+```
 
-**Step 3: Run GO enrichment analysis with runGORESP**
+Step 3: Run GO enrichment analysis with runGORESP
 
-**Step 4: Create interactive network visualization**
+```{r}
+# Your code here
+```
+Step 4: Create interactive network visualization
+
+```{r}
+# Your code here
+```
 
 ### Other tools and resources
 

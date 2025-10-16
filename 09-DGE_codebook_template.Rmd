@@ -795,6 +795,7 @@ plotCounts(dds,
 # We can also color the points by sample type
 sampletype = as.factor(mov10_meta$sampletype)
 
+# add some color
 plotCounts(dds, gene="MOV10", 
            intgroup="sampletype",
            col = as.numeric(sampletype),
@@ -1017,7 +1018,7 @@ ggplot(res_tableOE_tb, aes(x = log2FoldChange,
 
 **.Rmd file = 07-DGE_summarizing_workflow.Rmd**
 
-**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as '<lastname>_07-DGE_summarizing_workflow.Rmd'. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +6
+**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as '<lastname>_07-DGE_summarizing_workflow.Rmd'. Then modify the file to analyze the MOV10 dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. points = +6
 
 ```{r, message = FALSE}
 ## Setup

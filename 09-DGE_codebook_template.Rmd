@@ -1134,21 +1134,23 @@ sessionInfo()
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-# devtools::install_github("gurinina/GOenrichment", force = TRUE)
+devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
-## Load required libraries
-library(org.Hs.eg.db)#
-library(clusterProfiler)#
-library(tidyverse)
-library(enrichplot)#
-library(fgsea) #
+BiocManager::install("org.Hs.eg.db", force = TRUE)
+
+library(org.Hs.eg.db)
+library(clusterProfiler)
+library(tidyverse)      # loads tidyr automatically - NO need for library(tidyr)
+library(enrichplot)     
+library(tidydr)         # YES - add this explicitly for ssplot()
+library(fgsea) 
 library(igraph)
 library(ggraph)
 library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
-library(tidydr)
+
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.

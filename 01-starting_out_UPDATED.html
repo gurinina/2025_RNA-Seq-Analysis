@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="dcterms.date" content="2025-09-01" />
+  <title>Starting out with R and RStudio</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Starting out with R and RStudio</h1>
+<p class="date">2025-09-01</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#getting-started-with-r-and-rstudio"
+id="toc-getting-started-with-r-and-rstudio">Getting Started with R and
+RStudio</a>
+<ul>
+<li><a href="#a-beginners-guide-for-first-year-graduate-students"
+id="toc-a-beginners-guide-for-first-year-graduate-students">A Beginner’s
+Guide for First-Year Graduate Students</a></li>
+<li><a href="#what-youre-installing-and-why"
+id="toc-what-youre-installing-and-why">What You’re Installing and
+Why</a></li>
+<li><a href="#step-1-install-r" id="toc-step-1-install-r">Step 1:
+Install R</a></li>
+<li><a href="#step-2-install-additional-tools-macos-only"
+id="toc-step-2-install-additional-tools-macos-only">Step 2: Install
+Additional Tools (macOS Only)</a></li>
+<li><a href="#step-3-install-git" id="toc-step-3-install-git">Step 3:
+Install Git</a></li>
+<li><a href="#step-4-install-rstudio"
+id="toc-step-4-install-rstudio">Step 4: Install RStudio</a></li>
+<li><a href="#step-5-test-your-installation"
+id="toc-step-5-test-your-installation">Step 5: Test Your
+Installation</a></li>
+<li><a href="#step-6-download-course-materials"
+id="toc-step-6-download-course-materials">Step 6: Download Course
+Materials</a></li>
+<li><a href="#step-7-install-required-r-packages"
+id="toc-step-7-install-required-r-packages">Step 7: Install Required R
+Packages</a></li>
+</ul></li>
+<li><a href="#install-biocmanager-first-manages-bioinformatics-packages"
+id="toc-install-biocmanager-first-manages-bioinformatics-packages">Install
+BiocManager first (manages bioinformatics packages)</a></li>
+<li><a href="#install-devtools-for-github-packages"
+id="toc-install-devtools-for-github-packages">Install devtools (for
+GitHub packages)</a></li>
+<li><a href="#install-all-required-packages"
+id="toc-install-all-required-packages">Install ALL required
+packages</a></li>
+<li><a href="#this-will-take-15-30-minutes---be-patient"
+id="toc-this-will-take-15-30-minutes---be-patient">This will take 15-30
+minutes - BE PATIENT!</a></li>
+<li><a href="#install-the-custom-goenrichment-package"
+id="toc-install-the-custom-goenrichment-package">Install the custom
+GOenrichment package</a></li>
+<li><a
+href="#install-tinytex-for-pdf-rendering-optional-but-recommended"
+id="toc-install-tinytex-for-pdf-rendering-optional-but-recommended">Install
+tinytex for PDF rendering (optional but recommended)</a>
+<ul>
+<li><a href="#step-8-verify-everything-works"
+id="toc-step-8-verify-everything-works">Step 8: Verify Everything
+Works</a></li>
+</ul></li>
+<li><a href="#if-no-error-messages-appear-youre-ready"
+id="toc-if-no-error-messages-appear-youre-ready">If no error messages
+appear, you’re ready!</a></li>
+</ul>
+</nav>
+<p><code>{r setup, include=FALSE} knitr::opts_chunk$set(echo = TRUE)</code></p>
+<h1 id="getting-started-with-r-and-rstudio">Getting Started with R and
+RStudio</h1>
+<h2 id="a-beginners-guide-for-first-year-graduate-students">A Beginner’s
+Guide for First-Year Graduate Students</h2>
+<h2 id="what-youre-installing-and-why">What You’re Installing and
+Why</h2>
+<p>Before we start, here’s what each tool does:</p>
+<ul>
+<li><strong>R</strong>: The programming language that does the actual
+data analysis</li>
+<li><strong>RStudio</strong>: A user-friendly interface that makes R
+easier to use (like Microsoft Word for documents)</li>
+<li><strong>Git</strong>: Software that helps you download and sync
+course materials</li>
+<li><strong>Additional tools</strong>: Help R work with different types
+of data and create documents</li>
+</ul>
+<p><strong>Important</strong>: Install everything in the order listed
+below. Each step builds on the previous one.</p>
+<h2 id="step-1-install-r">Step 1: Install R</h2>
+<p>R is the programming language. Install this first!</p>
+<h3 id="for-windows">For Windows:</h3>
+<ol type="1">
+<li>Go to <a href="https://cran.r-project.org/bin/windows/">R Project
+website</a></li>
+<li>Click “base” then “Download R for Windows”</li>
+<li>Run the downloaded file and follow the installation prompts</li>
+</ol>
+<h3 id="for-macos">For macOS:</h3>
+<p><strong>These instructions work for ALL Macs (Intel and Apple
+Silicon):</strong></p>
+<ol type="1">
+<li>Go to <a href="https://cran.r-project.org/bin/macosx/">R Project
+website</a></li>
+<li>Download the <strong>Intel (x86_64)</strong> version (yes, even for
+newer Macs with M1/M2/M3 chips)</li>
+<li>Run the downloaded <code>.pkg</code> file and follow the
+installation prompts</li>
+</ol>
+<h2 id="step-2-install-additional-tools-macos-only">Step 2: Install
+Additional Tools (macOS Only)</h2>
+<p>Windows users can skip to Step 3. Mac users need these tools for R to
+work properly:</p>
+<h3 id="install-required-system-tools">Install Required System
+Tools:</h3>
+<p>Open <strong>Terminal</strong> (found in Applications → Utilities)
+and paste each command one at a time:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code></pre></div>
+<p>Click “Install” when prompted and wait for it to finish (this may
+take 10-15 minutes).</p>
+<h3 id="install-graphics-support">Install Graphics Support:</h3>
+<ol type="1">
+<li>Go to <a href="https://www.xquartz.org">XQuartz.org</a></li>
+<li>Download and install XQuartz</li>
+<li><strong>Log out and log back in</strong> to your Mac after
+installation</li>
+</ol>
+<h3 id="install-fortran-compiler">Install Fortran Compiler:</h3>
+<ol type="1">
+<li>Go to <a href="https://mac.r-project.org/tools/">R Tools for
+macOS</a></li>
+<li>Download <strong>gfortran-12.2-universal.pkg</strong></li>
+<li>Install it by double-clicking the downloaded file</li>
+</ol>
+<h3 id="add-fortran-to-your-system-path">Add Fortran to Your System
+Path:</h3>
+<p>In Terminal, paste these commands:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&#39;export PATH=&quot;/opt/gfortran/bin:/usr/local/bin:$PATH&quot;&#39;</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&#39;export PATH=&quot;/opt/gfortran/bin:/usr/local/bin:$PATH&quot;&#39;</span> <span class="op">&gt;&gt;</span> ~/.bash_profile</span></code></pre></div>
+<p>Quit terminal and restart. In terminal, type:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gfortran</span> <span class="at">--version</span></span></code></pre></div>
+<p>It should say GNU Fortran (GCC) 12.2.0. You’re all set.</p>
+<h2 id="step-3-install-git">Step 3: Install Git</h2>
+<p>Git helps you download and sync course materials.</p>
+<h3 id="for-windows-1">For Windows:</h3>
+<ol type="1">
+<li>Go to <a
+href="https://git-scm.com/download/win">git-scm.com</a></li>
+<li>Download Git for Windows</li>
+<li>Run the installer using all default settings (just keep clicking
+“Next”)</li>
+</ol>
+<h3 id="for-macos-1">For macOS:</h3>
+<p>If you completed Step 2, Git is already installed! To verify, open
+Terminal and type:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span></code></pre></div>
+<p>You should see version information.</p>
+<h3 id="configure-git-all-users">Configure Git (All Users):</h3>
+<p>Open <strong>Terminal</strong> (Mac) or <strong>Git Bash</strong>
+(Windows) and run these commands with your information:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">&quot;Your Full Name&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">&quot;your.email@university.edu&quot;</span></span></code></pre></div>
+<h2 id="step-4-install-rstudio">Step 4: Install RStudio</h2>
+<p>RStudio is the user-friendly interface for R.</p>
+<ol type="1">
+<li>Go to <a
+href="https://www.rstudio.com/products/rstudio/download/">RStudio.com</a></li>
+<li>Download <strong>RStudio Desktop</strong> (the free version)</li>
+<li>Install it like any other program</li>
+</ol>
+<h3 id="for-mac-users-with-apple-silicon-m1m2m3">For Mac Users with
+Apple Silicon (M1/M2/M3):</h3>
+<p>After installing RStudio:</p>
+<ol type="1">
+<li>In Finder, go to <strong>Applications</strong></li>
+<li>Right-click on <strong>RStudio.app</strong></li>
+<li>Select <strong>Get Info</strong></li>
+<li>Check the box <strong>“Open using Rosetta”</strong></li>
+</ol>
+<h2 id="step-5-test-your-installation">Step 5: Test Your
+Installation</h2>
+<p>Let’s make sure everything works:</p>
+<h3 id="test-rstudio-and-r">Test RStudio and R:</h3>
+<ol type="1">
+<li><strong>Open RStudio</strong> (not R - always use RStudio)</li>
+<li>You should see 4 panels:
+<ul>
+<li><strong>Console</strong> (bottom left) - this is where you type R
+commands</li>
+<li><strong>Environment</strong> (top right) - shows your data</li>
+<li><strong>Files/Plots</strong> (bottom right) - shows files and
+graphs</li>
+<li><strong>Script</strong> (top left) - for writing longer code</li>
+</ul></li>
+<li><strong>Click in the Console</strong> (the bottom left panel where
+you see <code>&gt;</code>)</li>
+<li>Type this and press Enter:</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div>
+<p>You should see <code>[1] 4</code></p>
+<h3 id="test-git-connection">Test Git Connection:</h3>
+<ol type="1">
+<li>In RStudio, go to <strong>File → New Project → Version
+Control</strong></li>
+<li>You should see <strong>“Git”</strong> as an option</li>
+<li>If you see it, great! If not, restart RStudio and try again</li>
+</ol>
+<h2 id="step-6-download-course-materials">Step 6: Download Course
+Materials</h2>
+<p>Now let’s get the main course files:</p>
+<ol type="1">
+<li>In RStudio, go to <strong>File → New Project → Version Control →
+Git</strong></li>
+<li>In the “Repository URL” field, paste:</li>
+</ol>
+<pre><code>https://github.com/gurinina/2025_IntroR_and_RStudio</code></pre>
+<ol start="3" type="1">
+<li>Choose where to save the project on your computer</li>
+<li>Click <strong>“Create Project”</strong></li>
+</ol>
+<p>RStudio will download all course materials. This may take a few
+minutes.</p>
+<h3 id="additional-repositories">Additional Repositories:</h3>
+<p>As the course progresses, you may need to clone additional
+repositories for specific modules. Your instructor will provide those
+URLs when needed.</p>
+<p><strong>Tips:</strong> - To <strong>update</strong> materials later
+in the term, open the project and click the <strong>Pull</strong> button
+in the <strong>Git</strong> tab - To <strong>switch</strong> between
+projects later: RStudio → <em>File → Open Project…</em> and select the
+corresponding <code>.Rproj</code> file</p>
+<h3 id="understanding-the-git-pane">Understanding the Git Pane:</h3>
+<p>When you open your course project in RStudio, you should see a tab
+labeled <strong>Git</strong> in the upper-right panel (next to
+<em>Environment</em> and <em>History</em>). This is where you can:</p>
+<ul>
+<li><strong>See changes</strong> you’ve made to files (they’ll appear in
+the list)</li>
+<li><strong>Revert changes</strong> if you made an edit you don’t want
+to keep</li>
+<li><strong>Pull</strong> to update your local copy with the newest
+course materials from GitHub</li>
+<li><strong>Push</strong> to send your own changes to GitHub (<em>not
+applicable in this course — you won’t be pushing</em>)</li>
+</ul>
+<p>For this course, you will mainly use the <strong>Pull</strong> button
+(blue down-arrow icon) to update your files when the instructor posts
+new material.</p>
+<h3 id="important-git-best-practices-for-students"><strong>IMPORTANT:
+Git Best Practices for Students</strong></h3>
+<p>To avoid problems when updating course materials, follow these
+rules:</p>
+<h4 id="safe-things-to-do">✅ <strong>Safe Things to Do:</strong></h4>
+<ul>
+<li><strong>Create new files</strong> for your notes and practice
+work</li>
+<li><strong>Rename template files</strong> before editing them (like
+<code>codebook_yourname.Rmd</code>)</li>
+<li><strong>Make new folders</strong> like <code>my_notes/</code> or
+<code>homework/</code> for your work</li>
+<li><strong>Copy lesson files</strong> to a new name before modifying
+them</li>
+</ul>
+<h4 id="things-that-cause-git-conflicts">⛔ <strong>Things That Cause
+Git Conflicts:</strong></h4>
+<ul>
+<li><strong>Don’t edit the original lesson <code>.Rmd</code> files
+directly</strong></li>
+<li><strong>Don’t modify existing file names in the lessons
+folder</strong></li>
+<li><strong>Don’t save your work in the main lesson
+directories</strong></li>
+</ul>
+<h4 id="golden-rule"><strong>Golden Rule:</strong></h4>
+<blockquote>
+<p><strong>Never edit the original lesson files directly. Always create
+new files for your notes and practice. This way you can always Pull the
+latest updates without problems!</strong></p>
+</blockquote>
+<p><strong>For the codebook</strong>: Copy
+<code>17-introR_codebook_template.Rmd</code> and rename it to
+<strong><code>&lt;lastname&gt;_17-introR_codebook.Rmd</code></strong>
+(replace “lastname” with your actual last name). This file includes
+homework questions and space for your notes.</p>
+<h4 id="suggested-workflow"><strong>Suggested Workflow:</strong></h4>
+<pre><code>2025_IntroR_and_RStudio/
+├── lessons/               # DON&#39;T TOUCH - instructor files  
+├── img/                   # DON&#39;T TOUCH - course images
+├── _book/                 # DON&#39;T TOUCH - bookdown output
+├── 17-introR_codebook_template.Rmd # DON&#39;T EDIT - copy/rename instead
+├── (other course files)   # DON&#39;T TOUCH - various course materials
+├── student_notes/             # YOUR FOLDER for notes
+│   ├── &lt;lastname&gt;_17-introR_codebook.Rmd
+│   ├── practice.R
+│   └── other_notes.Rmd</code></pre>
+<h2 id="step-7-install-required-r-packages">Step 7: Install Required R
+Packages</h2>
+<p>R packages are like apps that add extra features. We need several for
+this course.</p>
+<p><strong>⚠️ IMPORTANT:</strong> This step takes 15-30 minutes. Do not
+skip any part of it!</p>
+<h3 id="important-locate-the-console-first">Important: Locate the
+Console First</h3>
+<p>Before running any code, you need to find the
+<strong>Console</strong> in RStudio:</p>
+<ol type="1">
+<li><strong>Open RStudio</strong></li>
+<li><strong>Look at the bottom left panel</strong> - this is the
+Console</li>
+<li><strong>You’ll see a <code>&gt;</code> symbol</strong> - this is
+where you type R commands</li>
+<li><strong>Click in this area</strong> to make sure your cursor is
+active in the Console</li>
+</ol>
+<h3 id="copy-and-paste-this-code-into-the-console">COPY AND PASTE THIS
+CODE INTO THE CONSOLE:</h3>
+<p><strong>Click in the Console (bottom left panel with the
+<code>&gt;</code> symbol) and paste this entire block of
+code:</strong></p>
+<p>```{r eval=FALSE} # Set CRAN mirror (tells R where to download
+packages) options(repos = c(CRAN = “https://cloud.r-project.org/”))</p>
+<h1
+id="install-biocmanager-first-manages-bioinformatics-packages">Install
+BiocManager first (manages bioinformatics packages)</h1>
+<p>if (!requireNamespace(“BiocManager”, quietly = TRUE)) {
+install.packages(“BiocManager”) }</p>
+<h1 id="install-devtools-for-github-packages">Install devtools (for
+GitHub packages)</h1>
+<p>if (!requireNamespace(“devtools”, quietly = TRUE)) {
+install.packages(“devtools”) }</p>
+<h1 id="install-all-required-packages">Install ALL required
+packages</h1>
+<h1 id="this-will-take-15-30-minutes---be-patient">This will take 15-30
+minutes - BE PATIENT!</h1>
+<p>cat(“=== Starting package installation ===”) cat(“This may take 15-30
+minutes. Please be patient…”)</p>
+<p>BiocManager::install(c( # Core Bioconductor packages “org.Hs.eg.db”,
+# Human genome annotations “clusterProfiler”, # Gene enrichment analysis
+“DESeq2”, # Differential expression analysis “apeglm”, # DESeq2
+shrinkage estimator “enrichplot”, # Enrichment visualization “fgsea”, #
+Fast GSEA “GO.db”, # Gene Ontology database “GOSemSim”, # GO semantic
+similarity</p>
+<pre><code># Tidyverse ecosystem (includes tidyr automatically)
+&quot;tidyverse&quot;,         # Data manipulation suite
+&quot;tidydr&quot;,            # CRITICAL: Needed for enrichplot visualizations
+
+# Visualization packages
+&quot;ggraph&quot;,            # Network/graph visualization
+&quot;ggrepel&quot;,           # Label repulsion for ggplot2
+&quot;ggridges&quot;,          # Ridge plots
+&quot;ggthemes&quot;,          # Extra ggplot2 themes
+&quot;pheatmap&quot;,          # Pretty heatmaps
+&quot;patchwork&quot;,         # Combine plots
+&quot;gplots&quot;,            # Various plotting functions
+&quot;RColorBrewer&quot;,      # Color palettes
+&quot;colorspace&quot;,        # Color manipulation
+&quot;scales&quot;,            # Scale functions
+
+# Network analysis
+&quot;igraph&quot;,            # Network analysis
+&quot;visNetwork&quot;,        # Interactive network visualization
+
+# Document creation
+&quot;knitr&quot;,             # Dynamic reports
+&quot;rmarkdown&quot;,         # R Markdown documents
+&quot;bookdown&quot;,          # Books and long documents
+&quot;details&quot;,           # Collapsible details in HTML
+&quot;fansi&quot;,             # Terminal formatting
+&quot;rsconnect&quot;          # Publishing platform</code></pre>
+<p>), dependencies = TRUE, update = FALSE, ask = FALSE)</p>
+<p>cat(“=== Installing course-specific package from GitHub ===”)</p>
+<h1 id="install-the-custom-goenrichment-package">Install the custom
+GOenrichment package</h1>
+<p>devtools::install_github(“gurinina/GOenrichment”, force = TRUE,
+dependencies = TRUE, upgrade = “never”)</p>
+<p>cat(“=== Optional: Installing TinyTeX for PDF generation ===”)</p>
+<h1
+id="install-tinytex-for-pdf-rendering-optional-but-recommended">Install
+tinytex for PDF rendering (optional but recommended)</h1>
+<p>if (!requireNamespace(“tinytex”, quietly = TRUE)) {
+install.packages(“tinytex”) }</p>
+<p>if (!tinytex::is_tinytex()) { tinytex::install_tinytex(force = TRUE)
+}</p>
+<p>cat(“=== Installation complete! ===”) cat(“Now run the verification
+code below.”)</p>
+<pre><code>
+### After Pasting the Code:
+1. **Press Enter** to run all the commands
+2. **Be patient!** This process takes 15-30 minutes and downloads many packages
+3. **Don&#39;t worry about the scrolling text** - this is normal
+4. **If prompted to install from source**, type `n` and press Enter
+5. **If asked to restart R**, type `y` and press Enter
+
+### VERIFY Installation Success:
+
+After installation completes, **copy and paste this verification code** into the Console:
+
+```{r eval=FALSE}
+cat(&quot;\n=== Verifying Package Installation ===\n\n&quot;)
+
+# List of all required packages
+required_packages &lt;- c(
+    &quot;org.Hs.eg.db&quot;, &quot;clusterProfiler&quot;, &quot;tidyverse&quot;, &quot;tidydr&quot;,
+    &quot;enrichplot&quot;, &quot;fgsea&quot;, &quot;igraph&quot;, &quot;ggraph&quot;, &quot;visNetwork&quot;,
+    &quot;GO.db&quot;, &quot;GOSemSim&quot;, &quot;GOenrichment&quot;, &quot;DESeq2&quot;, &quot;apeglm&quot;,
+    &quot;pheatmap&quot;, &quot;patchwork&quot;
+)
+
+# Check each package
+failed_packages &lt;- c()
+success_count &lt;- 0
+
+for (pkg in required_packages) {
+    result &lt;- tryCatch({
+        suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+        cat(&quot;✓&quot;, pkg, &quot;\n&quot;)
+        success_count &lt;- success_count + 1
+        TRUE
+    }, error = function(e) {
+        cat(&quot;✗&quot;, pkg, &quot;- FAILED\n&quot;)
+        failed_packages &lt;&lt;- c(failed_packages, pkg)
+        FALSE
+    })
+}
+
+# Summary
+cat(&quot;\n=== VERIFICATION SUMMARY ===\n&quot;)
+cat(&quot;Successful:&quot;, success_count, &quot;/&quot;, length(required_packages), &quot;\n&quot;)
+
+if (length(failed_packages) == 0) {
+    cat(&quot;\n🎉 SUCCESS! All packages installed correctly!\n&quot;)
+} else {
+    cat(&quot;\n⚠️  Some packages failed:\n&quot;)
+    cat(paste(&quot;  -&quot;, failed_packages, collapse = &quot;\n&quot;), &quot;\n&quot;)
+    cat(&quot;\nTry reinstalling failed packages:\n&quot;)
+    for (pkg in failed_packages) {
+        cat(&quot;BiocManager::install(&#39;&quot;, pkg, &quot;&#39;, force = TRUE)\n&quot;, sep = &quot;&quot;)
+    }
+}</code></pre>
+<h3 id="common-installation-issues">Common Installation Issues:</h3>
+<p><strong>Issue: “tidydr” or other packages missing later</strong>
+<code>{r eval=FALSE} install.packages("tidydr")</code></p>
+<p><strong>Issue: GOenrichment won’t install</strong></p>
+<p>You need development tools: - <strong>Windows</strong>: Install <a
+href="https://cran.r-project.org/bin/windows/Rtools/">Rtools</a> -
+<strong>Mac</strong>: Open Terminal and run:
+<code>xcode-select --install</code> - <strong>Linux</strong>: Run:
+<code>sudo apt-get install r-base-dev</code></p>
+<p>Then try again:
+<code>devtools::install_github("gurinina/GOenrichment", force = TRUE)</code></p>
+<p><strong>Issue: “00Lock” file error</strong></p>
+<p>If installation fails with a lock file error: 1. Find the library
+path: run <code>.libPaths()</code> in Console 2. Navigate to that folder
+and delete any “00LOCK” folders 3. Restart R and rerun the
+installation</p>
+<h2 id="step-8-verify-everything-works">Step 8: Verify Everything
+Works</h2>
+<p>Let’s test that all packages installed correctly.</p>
+<h3 id="copy-and-paste-this-test-code-into-the-console">COPY AND PASTE
+THIS TEST CODE INTO THE CONSOLE:</h3>
+<p><strong>Again, click in the Console (bottom left panel) and paste
+this code:</strong></p>
+<p>```{r eval=FALSE} # Check if key packages work library(ggplot2)
+library(dplyr) library(DESeq2)</p>
+<h1 id="if-no-error-messages-appear-youre-ready">If no error messages
+appear, you’re ready!</h1>
+<p>cat(“Success! All packages are working.”)</p>
+<pre><code>
+**If you see &quot;Success! All packages are working.&quot; then everything is installed correctly!**
+
+
+## What Success Looks Like
+
+✅ **RStudio opens without errors**  
+✅ **You can type `2 + 2` in the Console and get `[1] 4`**  
+✅ **You have a folder with course materials from the main repository**  
+✅ **The test code runs without errors and shows &quot;Success!&quot;**
+
+## Common Problems and Solutions
+
+### &quot;Package not found&quot; errors:
+- Make sure you&#39;re typing in the **Console** (bottom left panel)
+- Try restarting RStudio and running the code again
+- Make sure you pasted the CRAN mirror line: `options(repos = c(CRAN = &quot;https://cloud.r-project.org/&quot;))`
+
+### &quot;Command not found&quot; in Terminal:
+- Close and reopen Terminal
+- Try restarting your computer
+
+### RStudio can&#39;t find Git:
+- Make sure you installed Git before RStudio
+- Restart RStudio completely (quit and reopen)
+
+### Installation seems stuck:
+- Be patient! Package installation can take 15-30 minutes
+- As long as you see text appearing, it&#39;s working
+
+### &quot;trying to use CRAN without setting a mirror&quot; error:
+- Make sure you ran the first line: `options(repos = c(CRAN = &quot;https://cloud.r-project.org/&quot;))`
+- Restart RStudio and try again
+
+## Getting Help
+
+**If something doesn&#39;t work:**
+
+1. Try restarting RStudio
+2. Try restarting your computer  
+3. Ask a classmate or instructor
+4. Email the instructor with:
+   - What step you&#39;re on
+   - What error message you see (copy and paste it)
+   - A screenshot if helpful
+
+**Remember**: Software installation can be tricky, even for experienced users. Don&#39;t worry if you need help - this is completely normal!
+
+## Next Steps
+
+Once everything is installed:
+
+1. **Explore RStudio** - click around and see what&#39;s in each panel
+2. **Try the built-in R tutorial**: In the Console, type:
+```{r eval=FALSE}
+install.packages(&quot;swirl&quot;)
+library(swirl)
+swirl()</code></pre>
+<ol start="3" type="1">
+<li><strong>Read the course materials</strong> you downloaded</li>
+<li><strong>Don’t panic!</strong> Learning R takes time, and everyone
+starts as a beginner</li>
+</ol>
+<p>Welcome to R! You’re ready to start your data analysis</p>
+</body>
+</html>

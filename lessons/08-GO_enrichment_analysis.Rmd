@@ -165,11 +165,16 @@ GSEA → Enrichment score
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-## Load required libraries
+# uncomment and run if you get an error of missing libraries.
+# devtools::install_github("gurinina/GOenrichment", force = TRUE)
+
+# BiocManager::install("org.Hs.eg.db", force = TRUE)
+
 library(org.Hs.eg.db)
 library(clusterProfiler)
-library(tidyverse)
-library(enrichplot)
+library(tidyverse)      # loads tidyr automatically - NO need for library(tidyr)
+library(enrichplot)     
+library(tidydr)         # YES - add this explicitly for ssplot()
 library(fgsea) 
 library(igraph)
 library(ggraph)
@@ -177,7 +182,6 @@ library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
-library(tidyr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -404,7 +408,7 @@ emapplot(
 ```
 
 ```{r}
-ssplot(pwt_filtered)
+# ssplot(pwt_filtered)
 ```
 
 For a general overview of enrichment results and trends, use `ssplot()`. For detailed exploration of pairwise similarities between enrichment terms and their functional relationship networks, use `emapplot()`.

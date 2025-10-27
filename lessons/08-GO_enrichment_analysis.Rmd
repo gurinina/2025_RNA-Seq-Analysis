@@ -165,11 +165,12 @@ GSEA → Enrichment score
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-# uncomment and run if you get an error of missing libraries.
-# devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
-# BiocManager::install("org.Hs.eg.db", force = TRUE)
+devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
+BiocManager::install("org.Hs.eg.db", force = TRUE)
+
+## Load required libraries
 library(org.Hs.eg.db)
 library(clusterProfiler)
 library(tidyverse)      # loads tidyr automatically - NO need for library(tidyr)
@@ -182,6 +183,7 @@ library(visNetwork)
 library(GO.db)
 library(GOSemSim)
 library(GOenrichment)
+
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -489,9 +491,9 @@ pwt <- pairwise_termsim(
 emapplot(pwt, showCategory = 50,     
          node_label = "category")    
 
-ssplot(pwt)
-    
-treeplot(pwt)
+# ssplot(pwt)
+#     
+# treeplot(pwt)
 
 
 ```

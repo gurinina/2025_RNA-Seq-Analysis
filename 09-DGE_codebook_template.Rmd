@@ -1134,9 +1134,9 @@ sessionInfo()
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-devtools::install_github("gurinina/GOenrichment", force = TRUE)
+# devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
-BiocManager::install("org.Hs.eg.db", force = TRUE)
+# BiocManager::install("org.Hs.eg.db", force = TRUE)
 
 library(org.Hs.eg.db)
 library(clusterProfiler)

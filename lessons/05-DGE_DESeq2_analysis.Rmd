@@ -328,6 +328,8 @@ How many genes are differentially expressed in the **Overexpression vs. Control*
 
 **Does this reduce our results?**
 
+STOPPED HERE
+
 ### MOV10 DE Analysis: **Control vs. Knockdown**
 
 After examining the overexpression results, let's move on to the comparison between **Control vs. Knockdown**. We’ll use contrasts in the `results()` function to extract the results table and store it in the `res_tableKD` variable.
@@ -337,13 +339,6 @@ After examining the overexpression results, let's move on to the comparison betw
 contrast_kd <-  c("sampletype", 
                   "MOV10_knockdown", 
                   "control")
-
-# extract results table
-res_tableKD_unshrunken <- results(dds, 
-                                  contrast = contrast_kd)
-
-resultsNames(dds)
-
 
 # extract results table
 res_tableKD_unshrunken <- results(dds, 

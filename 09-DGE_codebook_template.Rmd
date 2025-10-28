@@ -692,13 +692,6 @@ res_tableKD_unshrunken <- results(dds,
 
 resultsNames(dds)
 
-
-# extract results table
-res_tableKD_unshrunken <- results(dds, 
-                                  contrast = contrast_kd)
-
-resultsNames(dds)
-
 # shrink log2 fold changes
 res_tableKD <- lfcShrink(dds = dds, 
                coef = "sampletype_MOV10_knockdown_vs_control", 

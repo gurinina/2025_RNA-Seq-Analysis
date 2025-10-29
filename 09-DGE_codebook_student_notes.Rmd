@@ -692,6 +692,13 @@ res_tableKD_unshrunken <- results(dds,
 
 resultsNames(dds)
 
+
+# extract results table
+res_tableKD_unshrunken <- results(dds, 
+                                  contrast = contrast_kd)
+
+resultsNames(dds)
+
 # shrink log2 fold changes
 res_tableKD <- lfcShrink(dds = dds, 
                coef = "sampletype_MOV10_knockdown_vs_control", 
@@ -756,17 +763,16 @@ Let’s create tibble objects from the meta and normalized_counts data frames be
 meta <- read.table("data/Mov10_full_meta.txt", 
                    header=T, row.names=1)
 
-# Read in the metadata
-meta <- read.table("../data/Mov10_full_meta.txt", 
-                   header=T, row.names=1)
 # Create a tibble for meta data
 mov10_meta <- meta %>% 
   rownames_to_column(var="samplename") %>% 
   as_tibble()
         
 # read in the normalized counts
-normalized_counts <- read.delim("../data/normalized_counts.txt", row.names=1)
+normalized_counts <- read.delim("data/normalized_counts.txt", row.names=1)
+
 all(mov10_meta$samplename == colnames(normalized_counts))
+
 # Create a tibble for normalized_counts
 normalized_counts <- normalized_counts %>% 
   data.frame() %>%
@@ -949,7 +955,7 @@ pheatmap(norm_OEsig,
 
 ### Volcano plots
 
-A commonly used plot in RNA-seq analysis is the **volcano plot**, where the log transformed adjusted p-values are plotted on the y-axis and log2 fold change values on the x-axis. 
+A commonly used plot in RNA-seq analysis is the **volcano plot**. in which you have the log transformed adjusted p-values plotted on the y-axis and log2 fold change values on the x-axis. 
 
 To generate a volcano plot, we first need to have a column in our results data indicating whether or not the gene is considered differentially expressed based on p-adjusted values.
 ```{r}
@@ -1127,21 +1133,20 @@ sessionInfo()
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
-
-# Uncomment the following if you haven't yet installed `org.Hs.eg.db`
-# 
-# BiocManager::install("org.Hs.eg.db", force = TRUE)
+# devtools::install_github("gurinina/GOenrichment", force = TRUE)
 
 ## Load required libraries
-library(org.Hs.eg.db)
-library(clusterProfiler)
+library(org.Hs.eg.db)#
+library(clusterProfiler)#
 library(tidyverse)
-library(enrichplot)
-library(fgsea) 
+library(enrichplot)#
+library(fgsea) #
 library(igraph)
 library(ggraph)
 library(visNetwork)
 library(GO.db)
+library(GOSemSim)
+library(GOenrichment)
 library(tidydr)
 ```
 
@@ -1359,11 +1364,11 @@ cnetplot(pwt_filtered, showCategory = 3,
 The **`ssplot()`** function generates a spatial map of enriched terms, where each node represents a gene set and the distance between nodes reflects the similarity between gene sets. This plot is useful for identifying clusters of related terms and overall trends in the enrichment results.
 ```{r}
 
-# ssplot(pwt, showCategory = 50, node_label = "category") +
-#   theme(legend.position = "none")
-# 
-# ssplot(pwt, showCategory = 50, node_label = "group") +
-#   theme(legend.position = "none")
+ssplot(pwt, showCategory = 50, node_label = "category") +
+  theme(legend.position = "none")
+
+ssplot(pwt, showCategory = 50, node_label = "group") +
+  theme(legend.position = "none")
 
 
 ```
@@ -1476,7 +1481,7 @@ library(GOenrichment)
 1. Generate clean GO Biological Process gene sets with gene symbols
 ```{r}
 
-# install.packages("msigdbr") uncomment to install -- you don't have it
+# install.packages("msigdbr") uncomment to install
 library(msigdbr)
 library(GOenrichment)
 

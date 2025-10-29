@@ -5,6 +5,7 @@ output:
     config:
       code_folding: show
 book_filename: "2025_RNA-Seq-Analysis"
+output_dir: "docs"   
 new_session: no
 rmd_files:
   - index.Rmd

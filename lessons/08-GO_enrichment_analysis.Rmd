@@ -166,9 +166,9 @@ GSEA → Enrichment score
 ```{r, message=FALSE}
 
 
-devtools::install_github("gurinina/GOenrichment", force = TRUE)
+# Uncomment the following if you haven't yet installed `org.Hs.eg.db`.
 
-BiocManager::install("org.Hs.eg.db", force = TRUE)
+# BiocManager::install("org.Hs.eg.db", force = TRUE)
 
 ## Load required libraries
 library(org.Hs.eg.db)
@@ -182,7 +182,7 @@ library(ggraph)
 library(visNetwork)
 library(GO.db)
 library(GOSemSim)
-library(GOenrichment)
+
 
 ```
 
@@ -503,7 +503,7 @@ We are going to compare ORA `enricher` to running the ORA `runGORESP`.
 Let's first load the `GOenrichment` package:
 ```{r}
 
-# Uncomment the following if you haven't yet installed GOenrichment.
+# Uncomment the following if you haven't yet installed `GOenrichment`.
 
 # devtools::install_github("gurinina/GOenrichment")
 

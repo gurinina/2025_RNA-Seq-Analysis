@@ -147,6 +147,7 @@ Analysis Questions
 
 **3.  What concerns should be addressed before proceeding with analysis?**
 
+
 ### Hierarchical Clustering Heatmap
 
 Similar to PCA, hierarchical clustering is another, complementary method for identifying strong patterns in a dataset and potential outliers. The heatmap displays **the correlation of gene expression for all pairwise combinations of samples** in the dataset. Since the majority of genes are not differentially expressed, samples generally have high correlations with each other (values higher than 0.80). Samples below 0.80 may indicate an outlier in your data and/or sample contamination.  

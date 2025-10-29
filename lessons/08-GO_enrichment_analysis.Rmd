@@ -5,6 +5,35 @@ editor_options:
 ---
 # Functional analysis of RNA-seq data
 
+## Understanding Gene Ontology (GO) Enrichment
+
+When you perform an RNA-Seq experiment, you often end up with a list of genes that are **up- or down-regulated** in your condition of interest (for example, after MOV10 knockdown).  
+On their own, these gene lists can be hard to interpret — we want to know *what biological processes these genes are involved in.*
+
+### What is the Gene Ontology?
+
+The **Gene Ontology (GO)** provides a structured vocabulary that describes gene functions in three categories:
+
+| Category | Meaning | Example |
+|-----------|----------|----------|
+| **Biological Process (BP)** | The biological goal the gene contributes to | *cell cycle*, *DNA repair* |
+| **Molecular Function (MF)** | The activity of the gene product | *ATP binding*, *enzyme activity* |
+| **Cellular Component (CC)** | Where the gene product acts in the cell | *nucleus*, *mitochondrion* |
+
+Each GO term connects to one or more genes. These connections come from the work of many scientists who have experimentally tested or observed gene functions. Each gene-GO association includes an **evidence code** (like IDA for direct assay, IMP for mutant phenotype) indicating how the relationship was established—you'll see these codes in enrichment results.
+
+---
+
+### What is GO Enrichment Analysis?
+
+**GO enrichment analysis** asks whether certain GO terms occur **more often in your list of genes than expected by chance**.
+
+For example, if 10% of all genes in the genome are involved in “DNA repair,” but 30% of your up-regulated genes are, that process is *enriched*.  
+Statistical tests such as the *hypergeometric test* or *Fisher’s exact test* are used to determine whether this enrichment is significant.
+
+In essence, GO enrichment helps you summarize large gene lists into meaningful biological patterns.
+
+
 ### Ontology and GO Terms
 
 **Ontology**: 
@@ -51,15 +80,16 @@ GO enrichment methods help interpret differentially expressed gene lists from RN
 The hypergeometric test in GO enrichment analysis is used to determine whether a set of genes is enriched for specific GO terms compared to the background set of genes. The test calculates the probability of observing the overlap between the query gene set and the gene set associated with a particular GO term, given the total number of genes in the dataset and the number of genes in the background set.
 
 
-Test Analogy
-The jar contains:
+Test Analogy: The jar contains: 
 
+🔴 Red balls
 
+⚫ Black balls 
 
 **The hypergeometric test asks:**
 "If I randomly drew this many balls from the jar, what's the probability I'd get at least this many red balls just by chance?"
 
-So, it’s like drawing colored balls from a jar:
+So, it’s like drawing colored balls from a jar where:
 
 🔴 Red balls = genes that belong to a specific GO term
 
@@ -76,8 +106,12 @@ The test checks how surprising it is that so many of your significant genes are 
 If the probability of getting that many red balls (GO term genes) by chance is very low, then the GO term is overrepresented — meaning your experiment is likely enriched for that biological process.
 
 **Note for the curious:**
+
+<details>
+<summary>Click to see the mathematical formula</summary>
+
 The hypergeometric test is based on counting combinations — the number of ways to 
-draw q or more “successes” (genes with a given GO term) in k draws from a total of 
+draw q or more "successes" (genes with a given GO term) in k draws from a total of 
 N genes, of which m belong to that GO term.
 
 The formula for the cumulative probability of observing **at least q** successes (the upper-tail probability) in a sample of size \( k \) from a population with \( m \) successes and \( N - m \) failures is:
@@ -86,16 +120,14 @@ $$
 P(X \geq q) = \sum_{i=q}^{k} \frac{\binom{m}{i} \binom{N - m}{k - i}}{\binom{N}{k}}
 $$
 
-
 **Where:**
 
 - **`N`**: The **total number of genes in the background set** (e.g., all genes in the genome).
+- **`m`**: The **total number of genes in the background annotated with a specific GO term**.
+- **`k`**: The **total number of genes in your gene list of interest**.
+- **`q`**: The **number of genes in your list that are annotated with that specific GO term**.
 
-- **`m`**: The **total number of genes in the background annotated with a specific GO term** (e.g., all genes associated with "cell cycle regulation").
-
-- **`k`**: The **total number of genes in your gene list of interest** (e.g., your differentially expressed genes).
-
-- **`q`**: The **number of genes in your list that are annotated with that specific GO term** (the observed overlap).
+</details>
 
 ## Perform the hypergeometric test: P(X >= q)
 
@@ -122,68 +154,46 @@ p_value
 A small p-value indicates that observing 50 or more genes with this GO term is unlikely by chance alone, suggesting genuine enrichment.
 
 2. **Gene Set Enrichment Analysis (GSEA)**: 
-Instead of only considering genes above a certain threshold (e.g., differentially expressed genes), GSEA looks at the **entire ranked list of genes** (e.g., ranked by their expression levels) and checks whether genes associated with a certain GO term are **statistically over-represented at the top or bottom of a ranked gene list, indicating coordinated changes in gene expression**.
 
-Here’s how GSEA works:
-   
-- **Gene Ranking**:
-Genes are ranked based on a metric that reflects their differential expression, such as log2FoldChange.
-   
-- **Enrichment Score (ES)**: 
-GSEA calculates an **Enrichment Score (ES)** for each gene set by walking down the ranked list, increasing the score when a gene belongs to the set and decreasing it otherwise. A positive ES suggests upregulation, while a negative ES suggests downregulation of the gene set.
-
-The hypothesis of GSEA is that although large changes in individual genes can have significant effects on pathways (and will be detected via ORA methods), weaker but coordinated changes in sets of functionally related genes (i.e., pathways) can also have significant effects. Thus, rather than setting an arbitrary threshold to identify 'significant genes', all genes are considered in the analysis. The gene-level statistics from the dataset are aggregated to generate a single pathway-level statistic and statistical significance of each pathway is reported. This type of analysis can be particularly helpful if the differential expression analysis only outputs a small list of significant DE genes.
-   
-- **Example:**
-The GSEA enrichment plot provides a graphical view of the enrichment score for a gene set:
-
-![Alt text](img/GSEA.jpg)
-- The top portion of the plot shows the running ES for the gene set as the analysis walks down the ranked list. The score at the peak of the plot (the score furthest from 0.0) is the ES for the gene set. 
-
-- The middle portion of the plot shows where the members of the gene set appear in the ranked list of genes.
-
-- The leading edge subset of a gene set is the subset of members that contribute most to the ES. 
-
-- The bottom portion of the plot shows the value of the ranking metric (such as log2FoldChange) as you move down the list of ranked genes. 
-
-**ORA vs. GSEA**
+GSEA uses the **entire ranked list of genes** (ranked by log2FoldChange or similar metric) rather than just significant ones. It checks whether genes in a pathway tend to cluster at the top or bottom of your ranked list, indicating coordinated expression changes.
 
 **When to use each:**
-- Use **ORA** when you have a clear significance threshold (e.g., padj < 0.05) and want to test specific gene lists
-- Use **GSEA** when you want to detect subtle but coordinated changes across a pathway, even if individual genes aren't significantly DE.
+- **ORA**: When you have clear significant genes (padj < 0.05)
+- **GSEA**: When you want to detect subtle coordinated changes across many genes
 
-ORA → Uses only significant genes (binary: in/out)
-
-ORA → Hypergeometric test
-
-GSEA → Uses all genes ranked by expression change
-
-GSEA → Enrichment score
+For this course, we'll focus on **Over-representation Analysis (ORA)** which is more commonly used and straightforward to interpret.
 
 ![Alt text](img/ORAvsGSEA.png)
+
+
+---
+
+## Over-Representation Analysis (ORA)
+
+We'll explore ORA using two different R packages that use the same underlying statistical method (hypergeometric test) but offer different visualization capabilities.
 
 ### Over-representation Analysis (ORA) using `clusterProfiler`
 ```{r, message=FALSE}
 
 
-# Uncomment the following if you haven't yet installed `org.Hs.eg.db`.
-
+# Uncomment the following if you haven't yet installed either `GOenrichment` or `org.Hs.eg.db`
+# devtools::install_github("gurinina/GOenrichment", force = TRUE)
+# 
 # BiocManager::install("org.Hs.eg.db", force = TRUE)
 
 ## Load required libraries
 library(org.Hs.eg.db)
 library(clusterProfiler)
-library(tidyverse)      # loads tidyr automatically - NO need for library(tidyr)
-library(enrichplot)     
-library(tidydr)         # YES - add this explicitly for ssplot()
+library(tidyverse)
+library(enrichplot)
 library(fgsea) 
 library(igraph)
 library(ggraph)
 library(visNetwork)
 library(GO.db)
 library(GOSemSim)
-
-
+library(GOenrichment)
+library(tidydr)
 ```
 
 #### Running clusterProfiler: we first need to load the results of the differential expression analysis.
@@ -233,171 +243,30 @@ ego <- enrichGO(gene = sigOE_genes,
 dotplot(ego, showCategory=20)
 ```
 
-We can extract the gene lists associated with each enriched GO term from the `ego` enrichResult object to create edges between terms based on shared genes.
-```{r}
-# Extract the result as a data frame
-ego_df <- as.data.frame(ego)
+### Visualizing GO Enrichment Results
 
-names(ego_df)
-head(ego_df)
+After identifying enriched GO terms with `enrichGO()`, we can visualize the relationships between them using several complementary plots from clusterProfiler.
 
-# GO term IDs 
-term_ids <- ego_df$ID  
+#### Network Plot with emapplot()
 
-# Split gene lists by "/" and assign term IDs as names
-gene_lists <- strsplit(ego_df$geneID, "/") 
+The `emapplot()` function creates a network where:
+- **Nodes** represent GO terms
+- **Edges** connect terms that share genes (calculated using Jaccard similarity)
+- **Clusters** of connected nodes indicate related biological processes
 
-# Assign term IDs as names
-names(gene_lists) <- term_ids  
+This helps identify groups of functionally related processes affected in your experiment.
 
-```
-
-Using the gene lists associated with each GO term, we can create edges between terms based on the shared genes.
-
-`mgoSim()` calculates the semantic similarity of go terms based on their go ancestry terms, for example:
-
-Term A: "DNA replication"
-  Ancestors: DNA metabolic process → nucleic acid process → cellular process
-
-Term B: "DNA repair"  
-  Ancestors: DNA metabolic process → nucleic acid process → cellular process
-
-Shared ancestry: Both have "DNA metabolic process" as close ancestor
-→ High similarity
 ```{r}
 
-# Load GO data for semantic similarity calculation
-# GO terms and their relationships (the ontology graph structure)
-go_data <- GOSemSim::godata(annoDb = "org.Hs.eg.db", 
-                            ont = "BP", 
-                            keytype = "SYMBOL")
-
-# Compute semantic similarity
-similarity_matrix <- GOSemSim::mgoSim(term_ids, term_ids, 
-                     semData = go_data, 
-                     measure = "Wang", combine = NULL)
-
-# Convert similarity matrix to edges
-edges <- data.frame(from = rep(term_ids, 
-                    each = length(term_ids)),
-                    to = rep(term_ids, 
-                    times = length(term_ids)),
-                    similarity = as.vector(similarity_matrix))
-
-# Filter out edges with zero similarity or self-loops
-edges <- subset(edges, similarity > 0 & from != to)
-
-edges <- edges %>% filter(similarity >= 0.8)
-
-
-# Convert term IDs to names
-edges$to <- Term(edges$to)
-edges$from <- Term(edges$from)
-
-dim(edges)
-
-```
-
-Now we can create a network plot to visualize the relationships between the enriched GO terms based on their semantic similarity.
-```{r}
-
-# Create an igraph object from the edges data frame
-g <- graph_from_data_frame(edges, directed = FALSE)
-
-# Visualize the graph using ggraph
-ggraph(g, layout = 'kk') +  # Kamada-Kawai layout
-  geom_edge_link(aes(width = similarity), alpha = 0.5) +  # Edges with some transparency
-  geom_node_point(size = 5, color = "blue") +  # Nodes sized uniformly
-  geom_node_text(aes(label = name), repel = TRUE, size = 3) +  # Node labels
-  theme_void() +  # Clean theme without axes
-  labs(title = "GO Terms Semantic Similarity Network")  # Title for the plot
-```
-
-
-Edges can also be defined by Jaccard similarity between GO terms; defined as the size of the intersection each pair of GO terms divided by the size of their union.  
-```{r}
-
-# Define a function to compute Jaccard similarity
-jaccard_index <- function(genes1, genes2) {
-length(intersect(genes1, genes2)) / length(union(genes1, genes2))
-}
-
-# Create an empty data frame to store edges
-edges <- data.frame(from = character(), to = character(), 
-                    similarity = numeric())
-  # Compute Jaccard similarity for each pair of terms
-  for (i in 1:(length(term_ids) - 1)) {
-  for (j in (i + 1):length(term_ids)) {
-  similarity <- jaccard_index(gene_lists[[i]], gene_lists[[j]])
-  if (similarity > 0) {  # Only keep edges with some overlap
-  edges <- rbind(edges, data.frame(from = term_ids[i], 
-                                   to = term_ids[j], 
-                                   similarity = similarity))
-  }}}
-
-edges <- edges %>% 
-  dplyr::filter(similarity >= 0.8)
-
-# Convert term IDs to names
-edges$to <- Term(edges$to)
-edges$from <- Term(edges$from)
-
-dim(edges)
-
-edges$edge_color <- ifelse(edges$similarity == 1, "red", "gray")
-
-```
-
-Now we can create a network plot to visualize the relationships between the enriched GO terms based on the Jaccard similarity of their gene lists. Jaccard similarity is stricter than mgoSim.
-
-Jaccard Requirements:
-
-Direct gene overlap between GO terms
-Must share actual genes to get high similarity
-No similarity if terms don't share genes, even if biologically related
-
-mgoSim (Semantic) is More Permissive:
-
-Considers biological relationships in GO hierarchy
-Can be similar even without shared genes
-Uses pathway knowledge and term relationships
-```{r}
-# Create a graph from the edges
-g <- graph_from_data_frame(edges, directed = FALSE)
-
-# Visualize the graph using ggraph
-ggraph(g, layout = 'kk') + 
-  geom_edge_link(aes(alpha = similarity, width = similarity, color = edge_color)) + 
-  scale_edge_color_identity() +
-  geom_node_point(size = 5, 
-                  color = "blue") + 
-  geom_node_text(aes(label = name), 
-                 repel = TRUE, 
-                 size = 3) +  # Node labels
-  theme_void() +  # Clean theme without axes
-  labs(title = "GO Terms Jaccard Overlap Network") 
-
-```
-
-The resulting network plots shows the relationships between the enriched GO terms based on Jaccard similarity of their gene lists. 
-
-It is clear that Jaccard similarity is more stringent than Semantic similarity.
-
-
-### Visualizing Enrichment Results
-
-**Network Plot**:
-The `emapplot()` function generates a network plot where each node represents an enriched gene set, and edges between nodes indicate the similarity or overlap between those gene sets. 
-```{r}
-
-# Filter to top significant results first
+# Filter to top 50 most significant results for clearer visualization
 ego_filtered <- ego
 ego_filtered@result <- ego@result[1:50, ]  # Take only top 50 results
 
-# Then create pairwise similarity
+# Calculate pairwise term similarity based on gene overlap
+# "JC" = Jaccard coefficient (size of intersection / size of union)
 pwt_filtered <- pairwise_termsim(ego_filtered, method = "JC")
 
-# Now create network plot
+# Create network plot
 emapplot(
   pwt_filtered,
   showCategory = 50,
@@ -406,16 +275,27 @@ emapplot(
 ) +
   theme(legend.position = "none")
 
-
 ```
+
+**What to look for in the network:**
+- **Clusters** of connected nodes = related biological processes
+- **Isolated nodes** = unique processes  
+- **Edge thickness** = strength of gene overlap between terms
+
+#### Overview with ssplot()
+
+The `ssplot()` provides a simplified overview of the most significant terms and their relationships:
 
 ```{r}
-# ssplot(pwt_filtered)
+ssplot(pwt_filtered)
 ```
 
-For a general overview of enrichment results and trends, use `ssplot()`. For detailed exploration of pairwise similarities between enrichment terms and their functional relationship networks, use `emapplot()`.
+This plot gives you a cleaner, high-level view of term relationships compared to the detailed network above.
 
-**cnetplot**: Visualizes connections between genes and top GO terms, highlighting shared pathways.This plot is particularly useful for hypothesis generation in identifying genes that may be important to several of the most affected processes.
+#### Gene-Concept Network with cnetplot()
+
+The `cnetplot()` shows which **specific genes** belong to which GO terms. This is useful for identifying genes that may be key regulators involved in multiple biological processes:
+
 ```{r}
 
 cnetplot(pwt_filtered, showCategory = 3,
@@ -425,90 +305,18 @@ cnetplot(pwt_filtered, showCategory = 3,
 
 ```
 
-### GSEA Using 'clusterProfiler' `gseGO'
+**Interpretation:** In this plot:
+- **Large circles** = GO terms (size shows significance)
+- **Small circles** = genes
+- **Lines** connect genes to their GO terms
+- Genes connected to multiple terms are potential hub genes affecting several processes
 
-Prepare fold changes, sort by expression, and run GSEA with `gseGO()` from `clusterProfiler`  
-```{r}
-## Extract the foldchanges
-foldchanges <- res_tableOE_tb$log2FoldChange
-
-## Name each fold change with the gene name
-names(foldchanges) <- res_tableOE_tb$gene
-
-## Sort fold changes in decreasing order
-foldchanges <- sort(foldchanges, decreasing = TRUE)
-```
-
-We can use GSEA to test whether genes in specific biological processes tend to be up- or down-regulated together in our experiment:
-```{r}
-
-gseaGO <- clusterProfiler::gseGO(
-  geneList = foldchanges,
-  ont = "BP",
-  keyType = "SYMBOL",
-  minGSSize = 20,
-  maxGSSize = 300,
-  eps = 0,
-  pAdjustMethod = "BH",
-  pvalueCutoff = 0.01,
-  verbose = TRUE,
-  OrgDb = org.Hs.eg.db,
-  by = "fgsea"         # fast gene set enrichment analysis
-)
+---
 
 
-```
+### Comparing ORA Methods: enricher vs runGORESP
 
-
-### Visualizing GSEA Results
-
-Visualize GSEA results with `dotplot()` for significant categories and `gseaplot2()` for gene set ranks.
-
-```{r}
-dotplot(gseaGO, showCategory = 20)
-```
-
-
-```{r}
-
-gseaplot2(gseaGO, geneSetID = 1:4)
-```
-
-The emapplot clusters the 50 most significant (by padj) GO terms to visualize relationships between terms.
-```{r}
-
-gseaGO_filtered <- gseaGO
-gseaGO_filtered@result <- gseaGO@result[1:50, ]  # Top 50 by p.adjust
-
-# Create pairwise similarity 
-pwt <- pairwise_termsim(
-  gseaGO_filtered,
-  method = "JC",
-  semData = NULL
-)
-
-
-emapplot(pwt, showCategory = 50,     
-         node_label = "category")    
-
-# ssplot(pwt)
-#     
-# treeplot(pwt)
-
-
-```
-
-We are going to compare ORA `enricher` to running the ORA `runGORESP`. 
-
-Let's first load the `GOenrichment` package:
-```{r}
-
-# Uncomment the following if you haven't yet installed `GOenrichment`.
-
-# devtools::install_github("gurinina/GOenrichment")
-
-library(GOenrichment)
-```
+Now that we've seen ORA with clusterProfiler's `enrichGO()`, let's use another package called `GOenrichment` that performs the same hypergeometric test but adds interactive network visualization using `visNetwork`.
 
 ### `GOenrichment` Package Analysis
 
@@ -592,13 +400,24 @@ enricher_result <- enricher(
 Create `scoreMat`: data frame with gene, score, and index columns
 ```{r}
 
+# Filter to only include genes that have GO annotations
 all_genes <- unique(term2gene$gene)
+sigOE_genes <- sigOE_genes[sigOE_genes %in% all_genes]
+
+
+# Now create scoreMat with the filtered gene lists
 scoreMat <- data.frame(
     gene = all_genes,
     score = runif(length(all_genes)),      # Random scores
     index = ifelse(all_genes %in% sigOE_genes, 1, 0),  # 1 = gene of interest
     stringsAsFactors = FALSE
 )
+
+head(scoreMat)
+dim(scoreMat)
+length(all_genes)
+length(sigOE_genes)
+table(scoreMat$index)
 ```
 
 5. Run `runGORESP` analysis:
@@ -617,6 +436,11 @@ names(goresp_result$edgeMat)
 names(goresp_result$enrichInfo)
 
 head(goresp_result$enrichInfo[,c(2,3,4,5,10)])
+
+
+dim(goresp_result$edgeMat)
+dim(goresp_result$enrichInfo)
+
 
 ```
 
@@ -639,7 +463,8 @@ print(dim(goresp_result$enrichInfo))
 
 overlap_terms <- intersect(enricher_result$ID, goresp_result$enrichInfo$term)
 cat("Overlapping terms:", length(overlap_terms), "\n")
-cat("Overlap percentage:", round(100 * length(overlap_terms) / max(nrow(enricher_result), nrow(goresp_result$enrichInfo)), 1), "%\n")
+cat("Overlap percentage:", round(100 * length(overlap_terms) / 
+                           max(nrow(enricher_result), nrow(goresp_result$enrichInfo)), 1), "%\n")
 ```
 
 
@@ -664,33 +489,181 @@ GOenrichment::runNetwork(vis$nodes, vis$edges, main = "MOV10 OE GO Enrichment Ne
 ```
 
 
-This network analysis is based on [Cytoscape](https://cytoscape.org/), an open source bioinformatics software platform for visualizing molecular interaction networks. out of all the GO packages.
+This network analysis is based on [Cytoscape](https://cytoscape.org/), an open source bioinformatics software platform for visualizing molecular interaction networks from Gary Bader at the University of Toronto.
 
 **Exercise** points = +4
 1. Perform a GO enrichment analysis using the `runGORESP` function from the `GOenrichment` package using `res_tableKD` with a padj cutoff of 0.05. Use a significance FDR threshold of 0.0001. Save the results in a variable called `kresp`.
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the visualization setup in a variable called `kvis`.
 
+<details>
+<summary><strong>Solution</strong></summary>
+
 **Step 1: Load and prepare the knockdown data**
 ```{r}
-# Your code here
+# Load the knockdown differential expression results
+res_tableKD <- readRDS("data/res_tableKD.RDS")
+
+# Convert to tibble and filter out genes with NA log2FoldChange
+res_tableKD_tb <- res_tableKD %>% 
+  data.frame() %>% 
+  rownames_to_column(var = "gene") %>% 
+  dplyr::filter(!is.na(log2FoldChange)) %>% 
+  as_tibble()
+
+# Identify significant genes using padj < 0.05
+sigKD <- dplyr::filter(res_tableKD_tb, padj < 0.05)
+
+# Extract significant gene names
+sigKD_genes <- sigKD$gene
+
+# Check how many significant genes we have
+cat("Number of significant genes:", length(sigKD_genes), "\n")
 ```
 Step 2: Prepare the score matrix for runGORESP
 
 ```{r}
-# Your code here
+# Get all genes from the GO gene sets (already created earlier)
+all_genes <- unique(go_bp$gene_symbol)
+
+# Create score matrix
+# The 'index' column marks which genes are significant (1) vs background (0)
+scoreMat_kd <- data.frame(
+    gene = all_genes,
+    score = runif(length(all_genes)),      # Random scores (not used for ORA)
+    index = ifelse(all_genes %in% sigKD_genes, 1, 0),  # 1 = significant gene
+    stringsAsFactors = FALSE
+)
+
+# Check the score matrix
+head(scoreMat_kd)
+cat("Total genes in score matrix:", nrow(scoreMat_kd), "\n")
+cat("Significant genes marked:", sum(scoreMat_kd$index), "\n")
 ```
 
 Step 3: Run GO enrichment analysis with runGORESP
 
 ```{r}
-# Your code here
+# Run runGORESP with FDR threshold of 0.0001
+kresp <- runGORESP(
+    scoreMat = scoreMat_kd,
+    bp_input = hGOBP.gmt,                  # GO gene sets (created earlier)
+    go_input = go_mapping,                 # GO term to ID mapping (created earlier)
+    fdrThresh = 0.0001,                    # Stringent FDR threshold
+    minSetSize = 20,                       # Minimum genes in a GO term
+    maxSetSize = 300                       # Maximum genes in a GO term
+)
+
+# Examine the results
+cat("Number of enriched GO terms:", nrow(kresp$enrichInfo), "\n")
+
+# View top enriched terms
+head(kresp$enrichInfo[, c("term", "nOverlap", "P", "FDR")])
 ```
 Step 4: Create interactive network visualization
 
 ```{r}
-# Your code here
+# Prepare visualization data
+kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
+
+# Generate interactive network
+runNetwork(kvis$nodes, kvis$edges, main = "MOV10 KD GO Enrichment Network")
 ```
+</details>
+
+---
+
+## Gene Set Enrichment Analysis (GSEA) - Optional
+
+**Note:** This section is optional. GSEA uses all ranked genes rather than just significant ones. We'll focus on ORA in this course, but GSEA is shown here for reference.
+
+### GSEA Using 'clusterProfiler' `gseGO'
+
+Prepare fold changes, sort by expression, and run GSEA with `gseGO()` from `clusterProfiler`  
+```{r}
+## Extract the foldchanges
+foldchanges <- res_tableOE_tb$log2FoldChange
+
+## Name each fold change with the gene name
+names(foldchanges) <- res_tableOE_tb$gene
+
+## Sort fold changes in decreasing order
+foldchanges <- sort(foldchanges, decreasing = TRUE)
+```
+
+We can use GSEA to test whether genes in specific biological processes tend to be up- or down-regulated together in our experiment:
+```{r}
+
+gseaGO <- clusterProfiler::gseGO(
+  geneList = foldchanges,
+  ont = "BP",
+  keyType = "SYMBOL",
+  minGSSize = 20,
+  maxGSSize = 300,
+  eps = 0,
+  pAdjustMethod = "BH",
+  pvalueCutoff = 0.01,
+  verbose = TRUE,
+  OrgDb = org.Hs.eg.db,
+  by = "fgsea"         # fast gene set enrichment analysis
+)
+
+
+```
+
+
+### Visualizing GSEA Results
+
+Visualize GSEA results with `dotplot()` for significant categories and `gseaplot2()` for gene set ranks.
+
+```{r}
+dotplot(gseaGO, showCategory = 20)
+```
+
+
+```{r}
+
+gseaplot2(gseaGO, geneSetID = 1:4)
+```
+
+The emapplot clusters the 50 most significant (by padj) GO terms to visualize relationships between terms.
+```{r}
+
+gseaGO_filtered <- gseaGO
+gseaGO_filtered@result <- gseaGO@result[1:50, ]  # Top 50 by p.adjust
+
+# Create pairwise similarity 
+pwt <- pairwise_termsim(
+  gseaGO_filtered,
+  method = "JC",
+  semData = NULL
+)
+
+
+emapplot(pwt, showCategory = 50,     
+         node_label = "category")    
+
+ssplot(pwt)
+    
+treeplot(pwt)
+
+
+```
+
+We are going to compare ORA `enricher` to running the ORA `runGORESP`. 
+
+Let's first load the `GOenrichment` package:
+```{r}
+
+# Uncomment the following if you haven't yet installed GOenrichment.
+
+# devtools::install_github("gurinina/GOenrichment")
+
+library(GOenrichment)
+```
+
+
+---
 
 ### Other tools and resources
 

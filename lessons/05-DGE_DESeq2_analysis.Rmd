@@ -11,6 +11,7 @@ The final step in the DESeq2 workflow is fitting the Negative Binomial model for
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
 
+
 DESeq2 fits the Negative Binomial model to the normalized count data for each gene, taking into account the size factors and dispersion estimates calculated earlier. The model estimates **beta coefficients** for each experimental condition -- these are the statistical parameters that represent the **log2 fold changes** for each experimental condition compared to the baseline. For example, if your experiment compares MOV10 overexpression vs. control, DESeq2 calculates a **beta coefficient** that tells you how much gene expression changed due to the MOV10 overexpression (on the log2 scale). 
 
 However, these initial log2 fold change estimates can be **unreliable** for genes with low counts or high dispersion. These genes have high uncertainty in their fold change estimates (large lfcSE), which can lead to **inflated fold changes** that may not be biologically meaningful.
@@ -99,7 +100,9 @@ saveRDS(res_tableOE, file = "data/res_tableOE.RDS")
 This calculates fold changes as: **MOV10_overexpression / control**
 
 **Interpreting the results:**
+
 - **Positive log2FC** → gene is upregulated in MOV10_overexpression (higher expression than control)
+
 - **Negative log2FC** → gene is downregulated in MOV10_overexpression (lower expression than control)
 
 For example, log2FC = -2 means the gene has 4-fold lower expression in MOV10_overexpression compared to control.
@@ -174,11 +177,15 @@ $$\text{lfcSE} = \sqrt{\text{Var}(\log_2 FC)}$$
 ### Example:
 
 **Gene A:**
+
 - log2FC = 2.5
+
 - lfcSE = 0.2 ← Small error, confident estimate
 
 **Gene B:**  
+
 - log2FC = 2.5
+
 - lfcSE = 1.8 ← Large error, uncertain estimate
 
 Both genes show the same fold change, but we trust Gene A's estimate much more.
@@ -202,8 +209,11 @@ $$W = \frac{\text{log2FC}}{\text{lfcSE}}$$
 DESeq2 converts it to a p-value using the **standard normal distribution**.
 
 **The logic:**
+
 - If the null hypothesis is true (no real fold change), the Wald statistic should be close to 0
+
 - Large |W| values are unlikely under the null hypothesis
+
 - The p-value tells us: "How unlikely is a value this extreme?"
 
 **Hypothesis testing using the Wald test**
@@ -265,11 +275,14 @@ Where:
 **Example of BH adjustment:**
 
 Testing 20,000 genes:
+
 - Gene A: p = 0.00001, rank = 1 → padj = 0.00001 × (20000/1) = 0.2
+
 - Gene B: p = 0.0001, rank = 50 → padj = 0.0001 × (20000/50) = 0.04
+
 - Gene C: p = 0.001, rank = 500 → padj = 0.001 × (20000/500) = 0.04
 
-Notice how the adjustment gets smaller for genes with better ranks!
+**Notice how the adjustment gets smaller for genes with better ranks!**
 
 **The intuition:** Genes with very small p-values (high ranks) get smaller adjustments, while genes with moderate p-values get larger penalties because you're testing so many genes.
 
@@ -300,7 +313,7 @@ Let’s start by setting the thresholds for both adjusted p-value (FDR < 0.05) a
 ```{r}
 ### Set thresholds
 padj.cutoff <- 0.05
-lfc.cutoff <- 0.58 # log 1.5 fold change
+lfc.cutoff <- 0.58 # log2 (2^0.58 = 1.5 fold change)
 ```
 
 Next, we’ll convert the results table to a tibble for easier subsetting:
@@ -330,8 +343,10 @@ saveRDS(sigOE,"data/sigOE.RDS")
 How many genes are differentially expressed in the **Overexpression vs. Control** comparison based on the criteria we just defined? 
 
 
+
 **Does this reduce our results?**
 How many genes are differentially expressed in the Overexpression vs. Control comparison based on our criteria, and what percentage is this of all genes tested?
+
 
 STOPPED HERE
 
@@ -382,7 +397,6 @@ saveRDS(sigKD,"data/sigKD.RDS")
 
 
 How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
-
 
 
 With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.

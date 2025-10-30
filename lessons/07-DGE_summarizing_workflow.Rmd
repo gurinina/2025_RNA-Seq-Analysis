@@ -1,6 +1,6 @@
 # Summary of DGE workflow
 
-**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as '<lastname>_07-DGE_summarizing_workflow.Rmd'. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a heatmap and a volcano plot**. Don't forget to read the data in first. points = +6
+**Homework:** First save a copy of this file **`lessons/07-DGE_summarizing_workflow.Rmd`** in your student_notes folder as **``<lastname>_07-DGE_summarizing_workflow.Rmd`. Then modify the file to analyze the MOV dataset, starting with `Mov10_full_counts.txt` and `Mov10_full_meta.txt` in your data folder. Compare the "MOV10_knockdown" to the "control". Include a **heatmap** and a **volcano plot**. Don't forget to read the data in first. points = +6
 
 ```{r, message = FALSE}
 ## Setup
@@ -40,7 +40,7 @@ rld_cor <- cor(rld_mat)
 pheatmap(rld_cor)
 ```
 
-### 3. Run DESeq2 and normalize counts. Write the normalized counts to a file using write.table: ponts = +2
+### 3. Run DESeq2 and normalize counts. Write the normalized counts to a file using write.table: points = +2
 ```{r, eval = FALSE}
 
 # Run DESeq2 differential expression analysis

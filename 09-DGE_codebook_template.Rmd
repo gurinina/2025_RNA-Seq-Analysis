@@ -873,6 +873,9 @@ Now, if we want our counts colored by sample group, then we need to combine the 
 pivoted_top20_sigOE <- inner_join(
   mov10_meta, 
   pivoted_top20_sigOE)
+
+names(pivoted_top20_sigOE)
+table(pivoted_top20_sigOE$sampletype)
 ```
 
 
@@ -902,10 +905,18 @@ We will plot a heatmap of the `sigOE` genes to visualize their expression across
 
 sigOE = readRDS("data/sigOE.RDS")
 
+names(sigOE)
+
+names(normalized_counts)
+
 norm_OEsig <- normalized_counts[,c(1,2:4,7:9)] %>% 
               filter(gene %in% sigOE$gene) %>% 
       	      data.frame() %>%
       	      column_to_rownames(var = "gene") 
+
+names(norm_OEsig)
+
+head(norm_OEsig)
 
 ```
 
@@ -927,6 +938,8 @@ heat_colors <- brewer.pal(6, "YlOrRd")
 ann_colors = list(
   sampletype = c(control="navy",
   MOV10_overexpression= "green"))
+
+ann_colors
 
 ### Run pheatmap
 pheatmap(norm_OEsig, 
@@ -950,10 +963,18 @@ A commonly used plot in RNA-seq analysis is the **volcano plot**, where the log 
 
 To generate a volcano plot, we first need to have a column in our results data indicating whether or not the gene is considered differentially expressed based on p-adjusted values.
 ```{r}
+
+names(res_tableOE_tb)
 ## create a column for thresh holding in the results table
 res_tableOE_tb <- res_tableOE_tb %>% 
                   mutate(threshold_OE = padj < 0.05 & 
                   abs(log2FoldChange) >= 0.58)
+
+names(res_tableOE_tb)
+
+table(res_tableOE_tb$threshold_OE)
+
+dim(sigOE)
 ```
 
 Now we can start plotting. The `geom_point` object is most applicable, as this is essentially a scatter plot:
@@ -985,13 +1006,15 @@ res_tableOE_tb <- res_tableOE_tb %>%
 res_tableOE_tb$genelabels[1:10] <- res_tableOE_tb$gene[1:10]
 
 head(res_tableOE_tb)
+
+head(res_tableOE_tb$genelabels,20)
 ```
 
 Next, we plot it as before with an additional layer for `geom_text_repel()` wherein we can specify the column of gene labels we just created. 
 
 ```{r}
 ggplot(res_tableOE_tb, aes(x = log2FoldChange, 
-        y = -log10(padj))) +
+        y = -log10(padj))) +                    # take -log10 of padj
         geom_point(aes(colour = threshold_OE)) +
         geom_text_repel(aes(label = genelabels)) +
         ggtitle("Mov10 overexpression") +

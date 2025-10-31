@@ -418,13 +418,17 @@ Minimal shrinkage = high quality, well-powered dataset</p>
 <div id="how-deseq2-determines-significance" class="section level3 hasAnchor" number="5.4.3">
 <h3><span class="header-section-number">5.4.3</span> How DESeq2 determines significance<a href="negative-binomial-model-fitting.html#how-deseq2-determines-significance" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>DESeq2 uses the <strong>Wald test</strong> to ask: “Is the fold change large compared to its uncertainty?”</p>
-<p><strong>The logic:</strong>
-1. Calculate how many “standard errors” away from zero the fold change is: <code>Wald statistic = log2FC / lfcSE</code>
-2. Convert this to a p-value: “How likely is a value this extreme if there’s really no difference?”
-3. Large fold changes with low uncertainty → small p-values → significant</p>
-<p><strong>Example:</strong>
-- Gene A: log2FC = 2, lfcSE = 0.5 → Wald = 4 → very small p-value ✅
-- Gene B: log2FC = 2, lfcSE = 2.0 → Wald = 1 → large p-value ❌</p>
+<p><strong>The logic:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Calculate how many “standard errors” away from zero the fold change is: <code>Wald statistic = log2FC / lfcSE</code></p></li>
+<li><p>Convert this to a p-value: “How likely is a value this extreme if there’s really no difference?”</p></li>
+<li><p>Large fold changes with low uncertainty → small p-values → significant</p></li>
+</ol>
+<p><strong>Example:</strong></p>
+<ul>
+<li><p>Gene A: log2FC = 2, lfcSE = 0.5 → Wald = 4 → very small p-value ✅</p></li>
+<li><p>Gene B: log2FC = 2, lfcSE = 2.0 → Wald = 1 → large p-value ❌</p></li>
+</ul>
 <p>Now let’s look at the results:</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="negative-binomial-model-fitting.html#cb62-1" tabindex="-1"></a><span class="fu">head</span>(res_tableOE)</span></code></pre></div>
 <pre><code>## log2 fold change (MAP): sampletype MOV10_overexpression vs control 

@@ -11,6 +11,7 @@ The final step in the DESeq2 workflow is fitting the Negative Binomial model for
 
 In the DESeq2 workflow, what is the purpose of the design matrix in the context of fitting the Negative Binomial model for each gene?
 
+
 DESeq2 fits the Negative Binomial model to the normalized count data for each gene, taking into account the size factors and dispersion estimates calculated earlier. The model estimates **beta coefficients** for each experimental condition -- these are the statistical parameters that represent the **log2 fold changes** for each experimental condition compared to the baseline. For example, if your experiment compares MOV10 overexpression vs. control, DESeq2 calculates a **beta coefficient** that tells you how much gene expression changed due to the MOV10 overexpression (on the log2 scale). 
 
 However, these initial log2 fold change estimates can be **unreliable** for genes with low counts or high dispersion. These genes have high uncertainty in their fold change estimates (large lfcSE), which can lead to **inflated fold changes** that may not be biologically meaningful.
@@ -269,7 +270,7 @@ How many genes are differentially expressed in the **Overexpression vs. Control*
 
 **Does this reduce our results?**
 How many genes are differentially expressed in the Overexpression vs. Control comparison based on our criteria, and what percentage is this of all genes tested?
-```
+
 
 STOPPED HERE
 
@@ -320,6 +321,5 @@ saveRDS(sigKD,"data/sigKD.RDS")
 
 
 How many genes are differentially expressed in the **Knockdown compared to Control** comparison based on our padj.cutoff & lfc.cutoff?
-
 
 With our subset of significant genes identified, we can now proceed to visualize the results and explore patterns of differential expression.

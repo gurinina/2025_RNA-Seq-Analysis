@@ -108,14 +108,19 @@ For example, log2FC = -2 means the gene has 4-fold lower expression in MOV10_ove
 
 STOPPED HERE
 
-### MA Plot
+**MA Plot**
 
-The MA plot shows the relationship between expression level (mean of normalized counts) and log2 fold change for all genes. This is useful for:
-- Visualizing the effect of LFC shrinkage
-- Identifying the distribution of DE genes across expression levels
-- Quality checking your results
+A **MA plot** visualizes the relationship between the **mean expression** (on the x-axis) and the **log2 fold change** (on the y-axis) for all genes in a dataset. Genes that are significantly differentially expressed are highlighted, while most other genes cluster around zero log2 fold change. 
 
-Significantly DE genes are colored for easy identification.
+When **shrinkage** is applied, as in DESeq2, large log2 fold change estimates for genes with low counts or high variability are pulled toward more moderate values, reducing the noise in the plot. This helps focus attention on the more reliable fold changes and makes the plot cleaner, especially for low-expression genes that tend to have more variable LFC estimates without shrinkage.
+
+This plot is also a great way to illustrate the effect of LFC shrinkage. 
+
+Lots of shrinkage = noisy data or many lowly expressed genes
+Minimal shrinkage = high quality, well-powered dataset
+
+DESeq2 provides a simple function to generate an MA plot. 
+
 
 **Unshrunken results:**
 ```{r}
@@ -153,156 +158,75 @@ mcols(res_tableOE, use.names=TRUE)
 * pvalue:  results Wald test p-value: condition MOV10_overexpression vs control
 * padj:  results BH adjusted p-values
 
-## Understanding lfcSE (Standard Error)
+**lfcSE**: Standard error of the log2FoldChange (uncertainty in the estimate). This is used to calculate the p-value - genes with high uncertainty are less likely to be significant.
 
-The **lfcSE** tells you how confident you should be in the log2 fold change estimate.
+### How DESeq2 determines significance
 
-$$\text{lfcSE} = \sqrt{\text{Var}(\log_2 FC)}$$
-
-**In plain English:** lfcSE measures how much your fold change estimate might vary if you repeated the experiment.
-
-### What makes lfcSE large (= less confident)?
-
-1. **Low expression genes** - Few reads means noisy estimates
-2. **High variability between replicates** - Inconsistent measurements
-3. **Few replicates** - Less data to estimate from
-
-### What makes lfcSE small (= more confident)?
-
-1. **High expression genes** - Many reads means precise estimates
-2. **Consistent replicates** - Reliable measurements
-3. **More replicates** - More data to work with
-
-### Example:
-
-**Gene A:**
-
-- log2FC = 2.5
-
-- lfcSE = 0.2 ← Small error, confident estimate
-
-**Gene B:**  
-
-- log2FC = 2.5
-
-- lfcSE = 1.8 ← Large error, uncertain estimate
-
-Both genes show the same fold change, but we trust Gene A's estimate much more.
-
-### Why does this matter?
-
-DESeq2 uses the Wald test to ask: **"Is the fold change big compared to the uncertainty?"**
-
-$$\text{Wald statistic} = \frac{\text{log2FC}}{\text{lfcSE}}$$
-
-- Gene A: $2.5 / 0.2 = 12.5$ → Large statistic → Small p-value → **Significant**
-- Gene B: $2.5 / 1.8 = 1.4$ → Small statistic → Large p-value → **Not significant**
-
-**Key insight:** A big fold change with high uncertainty may not be significant, while a smaller fold change with low uncertainty can be highly significant.
-
-### From Wald statistic to p-value
-
-Once we calculate the Wald statistic:
-$$W = \frac{\text{log2FC}}{\text{lfcSE}}$$
-
-DESeq2 converts it to a p-value using the **standard normal distribution**.
+DESeq2 uses the **Wald test** to ask: "Is the fold change large compared to its uncertainty?"
 
 **The logic:**
+1. Calculate how many "standard errors" away from zero the fold change is: `Wald statistic = log2FC / lfcSE`
+2. Convert this to a p-value: "How likely is a value this extreme if there's really no difference?"
+3. Large fold changes with low uncertainty → small p-values → significant
 
-- If the null hypothesis is true (no real fold change), the Wald statistic should be close to 0
+**Example:**
+- Gene A: log2FC = 2, lfcSE = 0.5 → Wald = 4 → very small p-value ✅
+- Gene B: log2FC = 2, lfcSE = 2.0 → Wald = 1 → large p-value ❌
 
-- Large |W| values are unlikely under the null hypothesis
-
-- The p-value tells us: "How unlikely is a value this extreme?"
-
-**Hypothesis testing using the Wald test**
-
-The first step in hypothesis testing is to set up a null hypothesis for each gene. In our case, the null hypothesis is that there is no differential expression across the two sample groups (LFC == 0). Notice that we can do this without observing any data, because it is based on a thought experiment. Second, we use a statistical test to determine if based on the observed data, the null hypothesis is true.
-
-With DESeq2, the Wald test is commonly used for hypothesis testing when comparing two groups. A Wald test statistic is computed along with a probability that a test statistic at least as extreme as the observed value were selected at random. This probability is called the p-value of the test. If the p-value is small we reject the null hypothesis and state that there is evidence against the null (i.e. the gene is differentially expressed).
-
-Now let's take a look at what information is stored in the results:
+Now let's look at the results:
 ```{r}
 head(res_tableOE)
 names(res_tableOE)
 ```
 
-In some cases, p-values or adjusted p-values may be set to NA for a gene. This happens in three scenarios:
+### Why are some p-values NA?
 
-1. **Zero counts:** If all samples have zero counts for a gene, its baseMean will be zero, and the log2 fold change, p-value, and adjusted p-value will all be set to NA.
+DESeq2 sets p-values to `NA` in three cases:
 
-2. **Outliers:** If a gene has an extreme count outlier, its p-values will be set to NA. These outliers are detected using Cook’s distance.
+1. **Zero counts:** All samples have zero counts for the gene (can't test what doesn't exist)
+2. **Outliers detected by Cook's distance:** One sample is pulling the results too much (quality control to prevent false positives)
+3. **Low mean counts (independent filtering):** Gene filtered out for having too few reads overall
 
-Cook's Distance
+This is DESeq2 being conservative - better to say "we don't know" than to give you a misleading result.
 
-**What it measures:** How much one sample is "pulling" the results for a gene.
 
-**Why we care:** 
-- Outlier samples can make genes appear significant when they're not
-- Or hide real differences
+### Multiple Test Correction
 
-**What DESeq2 does:**
-- Calculates Cook's distance for every sample and gene
-- If any sample has unusually high influence, sets the gene's p-value to `NA`
-- This is a **quality control measure** to prevent false positives
+**The problem:** When testing 20,000 genes, even if NONE are truly different, we'd expect ~1,000 to have p < 0.05 just by chance!
 
-3. **Low counts:** If a gene is filtered out by independent filtering for having a low mean normalized count, only the adjusted p-value will be set to NA.
+**Example:**
+- You test 20,000 genes
+- Find 3,000 with p < 0.05
+- But ~1,000 are false positives (33% of your "hits"!)
 
-### Multiple test correction
+This is called the **multiple testing problem**.
 
-Note that we have pvalues and p-adjusted values in the output. Which should we use to identify significantly differentially expressed genes?
+### The Solution: Adjusted p-values (padj)
 
-If we used the `p-value` directly from the Wald test with a significance cut-off of p < 0.05, that means there is a 5% chance **that any single significant result** is a false positive. Each p-value is the result of a single test (single gene). The more genes we test, the more we inflate the **overall** false positive rate.
+DESeq2 uses the **Benjamini-Hochberg (BH) method** to control the False Discovery Rate (FDR). 
 
-**This is the multiple testing problem.** For example, if we test 20,000 genes for differential expression, at p < 0.05 we would expect to find 1,000 genes by chance. If we found 3000 genes to be differentially expressed total, roughly one third of our genes are false positives. We would not want to sift through our "significant" genes to identify which ones are true positives.
+**What does padj < 0.05 mean?**
 
-DESeq2 helps reduce the number of genes tested by removing those genes unlikely to be significantly DE prior to testing, such as those with low number of counts and outlier samples (gene-level QC). However, we still need to correct for multiple testing to reduce the number of false positives.
+"Among all genes I call significant, I expect only 5% to be false positives."
 
-**FDR/Benjamini-Hochberg:** The Benjamini-Hochberg (BH) method controls the False Discovery Rate - the expected proportion of false positives among your significant results. 
+**Example:**
 
-**How it works:**
-1. Rank all genes by p-value (smallest to largest)
-2. Adjust each p-value: 
-
-$$\text{padj} = p \times \frac{m}{\text{rank}}$$
-
-Where:
-
-   - *m* = total number of genes tested
-   - *rank* = position in the sorted list (1 for smallest p-value)
-   
-**Example of BH adjustment:**
-
-Testing 20,000 genes:
-
-- Gene A: p = 0.00001, rank = 1 → padj = 0.00001 × (20000/1) = 0.2
-
-- Gene B: p = 0.0001, rank = 50 → padj = 0.0001 × (20000/50) = 0.04
-
-- Gene C: p = 0.001, rank = 500 → padj = 0.001 × (20000/500) = 0.04
-
-**Notice how the adjustment gets smaller for genes with better ranks!**
-
-**The intuition:** Genes with very small p-values (high ranks) get smaller adjustments, while genes with moderate p-values get larger penalties because you're testing so many genes.
-
-DESeq2 implements this automatically - you just need to use `padj` instead of `pvalue`.
-
-In DESeq2, the p-values attained by the Wald test are corrected for multiple testing using the Benjamini and Hochberg method by default. There are options to use other methods in the `results()` function. The p-adjusted values should be used to determine significant genes. The significant genes can be output for visualization and/or functional analysis.
-
-> **So what does FDR < 0.05 mean?** By setting the FDR cutoff to < 0.05, we're saying that the proportion of false positives we expect amongst our differentially expressed genes is 5%. For example, if you call 500 genes as differentially expressed with an FDR cutoff of 0.05, you expect 25 of them to be false positives.
-
-**Example:** Suppose we test 20,000 genes for differential expression.
-
-| Threshold | Genes called significant | Expected false positives |
-|:----------|:------------------------|:------------------------|
-| p < 0.05 (unadjusted) | 3000 | ~1000 (33%) |
+| Threshold | Genes significant | Expected false positives |
+|:----------|:-----------------|:------------------------|
+| p < 0.05 (unadjusted) | 3,000 | ~1,000 (33%) |
 | padj < 0.05 (BH adjusted) | 500 | ~25 (5%) |
 
-**Unadjusted:** 20,000 genes × 0.05 = 1,000 false positives expected just by chance!
+**Much better!** We go from 3,000 genes (many false) to 500 genes (mostly real).
 
-**BH adjusted:** 500 significant genes × 0.05 = 25 false positives expected - much better!
+**The rule:** Always use `padj`, not `pvalue`, to determine significance.
+```{r}
+# Quick check - how many genes at different thresholds?
+sum(res_tableOE$pvalue < 0.05, na.rm = TRUE)  # Unadjusted
+sum(res_tableOE$padj < 0.05, na.rm = TRUE)     # Adjusted - much fewer!
+```
 
-Now, we can filter the table to retain only the genes that meet the significance and fold change criteria.
+Now let's extract the significant genes using both padj and fold change thresholds.
+
 
 ### Extracting Significant Differentially Expressed Genes
 
@@ -312,7 +236,7 @@ Let’s start by setting the thresholds for both adjusted p-value (FDR < 0.05) a
 ```{r}
 ### Set thresholds
 padj.cutoff <- 0.05
-lfc.cutoff <- 0.58 # log2 (2^0.58 = 1.5 fold change)
+lfc.cutoff <- 0.58 # log 1.5 fold change
 ```
 
 Next, we’ll convert the results table to a tibble for easier subsetting:
@@ -336,6 +260,7 @@ sigOE <- res_tableOE_tb %>%
 saveRDS(sigOE,"data/sigOE.RDS")
 
 ```
+
 
 **Exercise** points = +2
 

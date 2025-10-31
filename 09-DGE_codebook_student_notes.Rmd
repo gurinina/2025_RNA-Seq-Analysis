@@ -607,25 +607,95 @@ abline(v = 10,col="red",lwd = 2)
 
 ```
 
-**MOV10 DE Analysis: results exploration**
+### MOV10 DE analysis: results exploration
 
-The results table in `DESeq2` looks similar to a data.frame and can be treated like one for accessing or subsetting data. However, it is stored as a `DESeqResults` object, which is important to keep in mind when working with visualization tools.
+The results table looks very much like a data.frame and in many ways it can be treated like one (i.e when accessing/subsetting data). However, it is important to recognize that it is actually stored in a `DESeqResults` object. When we start visualizing our data, this information will be helpful. 
+
 ```{r}
 class(res_tableOE)
 ```
 
 Let's go through some of the columns in the results table to get a better idea of what we are looking at. To extract information regarding the meaning of each column we can use `mcols()`:
 ```{r}
-mcols(res_tableOE, use.names = T)
+mcols(res_tableOE, use.names=TRUE)
 ```
 
-Now let's take a look at what information is stored in the results:
+
+* baseMean:  intermediate mean of normalized counts for all samples
+* log2FoldChange:  results log2 fold change (MLE): condition MOV10_overexpression vs control
+* lfcSE:  results standard error: condition MOV10_overexpression vs control
+* pvalue:  results Wald test p-value: condition MOV10_overexpression vs control
+* padj:  results BH adjusted p-values
+
+**lfcSE**: Standard error of the log2FoldChange (uncertainty in the estimate). This is used to calculate the p-value - genes with high uncertainty are less likely to be significant.
+
+### How DESeq2 determines significance
+
+DESeq2 uses the **Wald test** to ask: "Is the fold change large compared to its uncertainty?"
+
+**The logic:**
+1. Calculate how many "standard errors" away from zero the fold change is: `Wald statistic = log2FC / lfcSE`
+2. Convert this to a p-value: "How likely is a value this extreme if there's really no difference?"
+3. Large fold changes with low uncertainty → small p-values → significant
+
+**Example:**
+- Gene A: log2FC = 2, lfcSE = 0.5 → Wald = 4 → very small p-value ✅
+- Gene B: log2FC = 2, lfcSE = 2.0 → Wald = 1 → large p-value ❌
+
+Now let's look at the results:
 ```{r}
 head(res_tableOE)
 names(res_tableOE)
 ```
 
-Now, we can filter the table to retain only the genes that meet the significance and fold change criteria:
+### Why are some p-values NA?
+
+DESeq2 sets p-values to `NA` in three cases:
+
+1. **Zero counts:** All samples have zero counts for the gene (can't test what doesn't exist)
+2. **Outliers detected by Cook's distance:** One sample is pulling the results too much (quality control to prevent false positives)
+3. **Low mean counts (independent filtering):** Gene filtered out for having too few reads overall
+
+This is DESeq2 being conservative - better to say "we don't know" than to give you a misleading result.
+
+
+### Multiple Test Correction
+
+**The problem:** When testing 20,000 genes, even if NONE are truly different, we'd expect ~1,000 to have p < 0.05 just by chance!
+
+**Example:**
+- You test 20,000 genes
+- Find 3,000 with p < 0.05
+- But ~1,000 are false positives (33% of your "hits"!)
+
+This is called the **multiple testing problem**.
+
+### The Solution: Adjusted p-values (padj)
+
+DESeq2 uses the **Benjamini-Hochberg (BH) method** to control the False Discovery Rate (FDR). 
+
+**What does padj < 0.05 mean?**
+
+Among all genes I call significant, I expect only 5% to be false positives.
+
+**Example:**
+
+| Threshold | Genes significant | Expected false positives |
+|:----------|:-----------------|:------------------------|
+| p < 0.05 (unadjusted) | 3,000 | ~1,000 (33%) |
+| padj < 0.05 (BH adjusted) | 500 | ~25 (5%) |
+
+**Much better!** We go from 3,000 genes (many false) to 500 genes (mostly real).
+
+**The rule:** Always use `padj`, not `pvalue`, to determine significance.
+```{r}
+# Quick check - how many genes at different thresholds?
+sum(res_tableOE$pvalue < 0.05, na.rm = TRUE)  # Unadjusted
+sum(res_tableOE$padj < 0.05, na.rm = TRUE)     # Adjusted - much fewer!
+```
+
+Now let's extract the significant genes using both padj and fold change thresholds.
+
 
 ### Extracting Significant Differentially Expressed Genes
 

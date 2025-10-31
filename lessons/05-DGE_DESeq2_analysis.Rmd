@@ -166,12 +166,17 @@ mcols(res_tableOE, use.names=TRUE)
 DESeq2 uses the **Wald test** to ask: "Is the fold change large compared to its uncertainty?"
 
 **The logic:**
+
 1. Calculate how many "standard errors" away from zero the fold change is: `Wald statistic = log2FC / lfcSE`
+
 2. Convert this to a p-value: "How likely is a value this extreme if there's really no difference?"
+
 3. Large fold changes with low uncertainty → small p-values → significant
 
 **Example:**
+
 - Gene A: log2FC = 2, lfcSE = 0.5 → Wald = 4 → very small p-value ✅
+
 - Gene B: log2FC = 2, lfcSE = 2.0 → Wald = 1 → large p-value ❌
 
 Now let's look at the results:

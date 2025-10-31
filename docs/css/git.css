@@ -1,0 +1,268 @@
+/* GitBook chapter links - allow text wrapping */
+.book .book-summary .summary .chapter a {
+  white-space: normal;
+  word-wrap: break-word;
+  display: block;
+  padding-left: 1.5em;
+  text-indent: -1em;
+}
+
+/* Table styles */
+th, td {
+  font-size: 12px;
+  border-collapse: collapse;
+  border-width: 3px;
+}
+
+/* List styles */
+.reveal ul,
+.reveal ol {
+  font-size: 12px;
+  color: #000000;
+}
+
+/* Code block styles */
+.pre.sourceCode r Code {
+  background: white !important;
+  color: black !important;
+  border: 3px solid black;
+}
+
+.sourceCode r {
+  background: #D7DDFD !important;
+  color: black !important;
+  border: 3px solid black;
+  margin-bottom: 12px !important;
+}
+
+/* General code block styles */
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 100%;
+  overflow-x: visible !important;
+  font-size: 12px;
+  color: black;
+  background-color: #D7DDFD !important;
+  display: block;
+}
+
+pre, pre:hover {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+@media only screen and (min-width: 992px) {
+  pre { 
+    white-space: pre; 
+  }
+}
+
+/* Code comments */
+pre code .cm-comment {
+  display: block;
+  white-space: pre-wrap;
+  max-width: 80ch;
+  word-wrap: break-word;
+  color: #555;
+  font-style: italic;
+}
+
+/* Inline code */
+p code {
+  white-space: inherit;
+  color: darkred !important;
+  background: #FFFFFF !important;
+}
+
+code span.do {
+  color: #000000 !important;
+  font-style: italic;
+}
+
+/* Pre blocks in normal sections */
+.book .book-body .page-wrapper .page-inner section.normal pre {
+  word-break: normal;
+  font-size: 12px !important;
+  border: 2px solid #000000 !important;
+  white-space: pre-wrap;
+  background: #D7DDFD !important;
+}
+
+/* Details/Solution sections */
+details {
+  border: 3px solid #000000;
+  max-width: 100%;
+  background-color: #000080;
+  color: #FFFFFF;
+  border-radius: 4px;
+  padding: 0.5em 0.5em 0;
+  margin: 0 auto;
+}
+
+details[open] {
+  padding: 0.5em;
+  background-color: #D7DDFD;
+  color: #000080;
+}
+
+details summary {
+  background-color: #000080;
+  font-size: 12px !important;
+  color: #FFFFFF;
+  border-bottom: 1px solid #000000;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+details[open] summary {
+  background-color: #D7DDFD;
+  color: #000080;
+  margin-bottom: 0.5em;
+}
+
+details pre code {
+  white-space: pre-wrap !important;
+  overflow-x: visible !important;
+  max-width: 100%;
+  font-size: 12px;
+  background-color: #D7DDFD;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 10px;
+  word-wrap: break-word;
+}
+
+/* Fold functionality */
+.fold .s .o pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.showopt {
+  background-color: #000080;
+  color: #FFFFFF;
+  width: 100px;
+  height: 20px;
+  text-align: center;
+  vertical-align: middle !important;
+  float: right;
+  font-family: sans-serif;
+  border-radius: 8px;
+}
+
+pre.fold-hide {
+  display: none;
+}
+
+button.fold-hide-toggle {
+  display: block;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+button.fold-hide-toggle:hover {
+  background-color: #0056b3;
+}
+
+/* All text elements same size */
+.book .book-body .page-wrapper .page-inner section.normal * {
+  font-size: 12px !important;
+}
+
+/* Special margin for h1 only */
+.book .book-body .page-wrapper .page-inner section.normal h1 {
+  margin-top: 12px !important;
+}
+
+/* Layout and containers */
+.main-container {
+  max-width: 800px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.book .book-body .page-wrapper .page-inner {
+  max-width: 95%;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000080;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.3em !important;
+  color: #000080;
+}
+
+.subtitle {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000080;
+  font-size: 12px !important;
+}
+
+dt {
+  color: #000080;
+}
+
+/* Font families */
+.book.font-family-0 {
+  font-family: Georgia, serif;
+}
+
+.book.font-family-1 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Body styles */
+body {
+  font-family: Arial, Helvetica, sans-serif !important;
+  top: 0 !important;
+  color: #FFFFFF !important;
+  font-size: 12px !important;
+}
+
+/* Sidebar styles */
+.book .book-summary {
+  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  width: 250px !important;
+  position: absolute;
+  font-weight: bold !important;
+  top: 0px !important;
+  color: #FFFFFF !important;
+  background-color: #000080 !important;
+}
+
+.book .book-summary ul.summary li a,
+.book .book-summary ul.summary li span {
+  font-size: 12px !important;
+  color: #FFFFFF !important;
+  background-color: #000080 !important;
+  display: block;
+  padding: 10px 15px;
+  border-bottom: none;
+  text-overflow: ellipsis;
+  white-space: wrap;
+  position: relative;
+  font-weight: bold !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.book .book-summary ul.summary li a:hover {
+  color: #000080 !important;
+  background: #FFFFFF !important;
+}

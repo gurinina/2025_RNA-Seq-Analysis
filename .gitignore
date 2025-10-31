@@ -1,10 +1,11 @@
 # Ignore everything under student_notes, but keep a placeholder so the folder exists
 student_notes/*
 !student_notes/.gitkeep
+            # Need this for GitHub Pages!
 
 # Ignore the output folder (where the book is built)
 # bookdown files
-_book/
+
 _bookdown_files/
 data/res_tableOE.RDS
 data/res_tableKD.RDS

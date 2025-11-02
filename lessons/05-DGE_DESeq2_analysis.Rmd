@@ -107,8 +107,6 @@ This calculates fold changes as: **MOV10_overexpression / control**
 
 For example, log2FC = -2 means the gene has 4-fold lower expression in MOV10_overexpression compared to control.
 
-STOPPED HERE
-
 **MA Plot**
 
 A **MA plot** visualizes the relationship between the **mean expression** (on the x-axis) and the **log2 fold change** (on the y-axis) for all genes in a dataset. Genes that are significantly differentially expressed are highlighted, while most other genes cluster around zero log2 fold change. 

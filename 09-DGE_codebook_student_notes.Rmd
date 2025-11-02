@@ -5,7 +5,7 @@ editor_options:
 ---
 # Codebook
 
-34 total points
+32 total points
 
 
 ```{r, include = FALSE}
@@ -262,34 +262,35 @@ write.table(normalized_counts, file="../data/normalized_counts.txt", sep="\t", q
 
 **.Rmd file = 03-DGE_QC_analysis.Rmd**
 
-**Exercise** points = +5
+**Exercise** points = +3
 
-The figure below was generated from a time course experiment with sample groups 'Ctrl' and 'Sci' and the following timepoints: 0h, 2h, 8h, and 16h. 
+Practice PCA Analysis exercises
 
-![Alt text](img/PCA_example3.png){ width=600 }
+Now let's practice interpreting a PCA plot. In a typical RNA-seq experiment, you'll have multiple samples (different treatments, replicates, etc.) and thousands of genes. After PCA calculates the principal component scores, we plot the samples (not genes) in this new coordinate system.
 
-**Determine the sources explaining the variation represented by PC1 and PC2.** 
+Below is a practice dataset with 4 treatment groups (Control and 3 drugs) with 3 biological replicates each (12 samples total). Each point represents one sample, positioned based on its PC1 and PC2 scores.
+
+![Alt text](img/simplePCAplot.png){ width=600 }
+
+Analysis questions:
+
+**1. What are the main sources of variation in this dataset (PC1 and PC2)?** 
 
 - Ans: 
 
 
-**Do the sample groups separate well?**
+**2: Do the sample groups and replicates cluster appropriately?**
 
-- Ans: 
-  
-
-**Do the replicates cluster together for each sample group?**
 
 - Ans:
 
-**Are there any outliers in the data?**
+**3.  What concerns should be addressed before proceeding with analysis?**
 
 - Ans:
   
-**Should we have any other concerns regarding the samples in the dataset?**
-
-- Ans: 
   
+### Hierarchical Clustering Heatmap
+
 **Example of Variance Stabilization**
 Raw RNA-seq count data has different levels of variability:
 
@@ -1543,7 +1544,82 @@ This network analysis is based on [Cytoscape](https://cytoscape.org/), an open s
 
 2. Visualize the enriched GO terms using the `runNetwork` function from the `GOenrichment` package. Save the visualization setup in a variable called `kvis`.
 
+<details>
+<summary><strong>Solution</strong></summary>
 
+**Step 1: Load and prepare the knockdown data**
+```{r}
+# Load the knockdown differential expression results
+res_tableKD <- readRDS("../data/res_tableKD.RDS")
+
+# Convert to tibble and filter out genes with NA log2FoldChange
+res_tableKD_tb <- res_tableKD %>% 
+  data.frame() %>% 
+  rownames_to_column(var = "gene") %>% 
+  dplyr::filter(!is.na(log2FoldChange)) %>% 
+  as_tibble()
+
+# Identify significant genes using padj < 0.05
+sigKD <- dplyr::filter(res_tableKD_tb, padj < 0.05)
+
+# Extract significant gene names
+sigKD_genes <- sigKD$gene
+
+# Check how many significant genes we have
+cat("Number of significant genes:", length(sigKD_genes), "\n")
+```
+Step 2: Prepare the score matrix for runGORESP
+
+```{r}
+# Get all genes from the GO gene sets (already created earlier)
+all_genes <- unique(go_bp$gene_symbol)
+
+# Create score matrix
+# The 'index' column marks which genes are significant (1) vs background (0)
+scoreMat_kd <- data.frame(
+    gene = all_genes,
+    score = runif(length(all_genes)),      # Random scores (not used for ORA)
+    index = ifelse(all_genes %in% sigKD_genes, 1, 0),  # 1 = significant gene
+    stringsAsFactors = FALSE
+)
+
+# Check the score matrix
+head(scoreMat_kd)
+cat("Total genes in score matrix:", nrow(scoreMat_kd), "\n")
+cat("Significant genes marked:", sum(scoreMat_kd$index), "\n")
+```
+
+Step 3: Run GO enrichment analysis with runGORESP
+
+```{r}
+# Run runGORESP with FDR threshold of 0.0001
+kresp <- runGORESP(
+    scoreMat = scoreMat_kd,
+    bp_input = hGOBP.gmt,                  # GO gene sets (created earlier)
+    go_input = go_mapping,                 # GO term to ID mapping (created earlier)
+    fdrThresh = 0.0001,                    # Stringent FDR threshold
+    minSetSize = 20,                       # Minimum genes in a GO term
+    maxSetSize = 300                       # Maximum genes in a GO term
+)
+
+# Examine the results
+cat("Number of enriched GO terms:", nrow(kresp$enrichInfo), "\n")
+
+# View top enriched terms
+head(kresp$enrichInfo[, c("term", "nOverlap", "P", "FDR")])
+```
+Step 4: Create interactive network visualization
+
+```{r}
+# Prepare visualization data
+kvis <- visSetup(kresp$enrichInfo, kresp$edgeMat)
+
+# Generate interactive network
+runNetwork(kvis$nodes, kvis$edges, main = "MOV10 KD GO Enrichment Network")
+```
+</details>
+
+---
 
 ## Gene Set Enrichment Analysis (GSEA) - Optional
 

@@ -181,7 +181,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="quality-control-qc.html"><a href="quality-control-qc.html#sample-level-qc"><i class="fa fa-check"></i><b>3.1</b> Sample-level QC</a>
 <ul>
 <li class="chapter" data-level="3.1.1" data-path="quality-control-qc.html"><a href="quality-control-qc.html#principal-component-analysis"><i class="fa fa-check"></i><b>3.1.1</b> Principal Component Analysis</a></li>
-<li class="chapter" data-level="3.1.2" data-path="quality-control-qc.html"><a href="quality-control-qc.html#hierarchical-clustering-heatmap"><i class="fa fa-check"></i><b>3.1.2</b> Hierarchical Clustering Heatmap</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="quality-control-qc.html"><a href="quality-control-qc.html#gene-level-qc"><i class="fa fa-check"></i><b>3.2</b> Gene-level QC</a></li>
 <li class="chapter" data-level="3.3" data-path="quality-control-qc.html"><a href="quality-control-qc.html#mov10-quality-assessment-and-exploratory-analysis-using-deseq2"><i class="fa fa-check"></i><b>3.3</b> Mov10 quality assessment and exploratory analysis using DESeq2</a>
@@ -369,7 +368,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><strong>Negative log2FC</strong> → gene is downregulated in MOV10_overexpression (lower expression than control)</p></li>
 </ul>
 <p>For example, log2FC = -2 means the gene has 4-fold lower expression in MOV10_overexpression compared to control.</p>
-<p>STOPPED HERE</p>
 <p><strong>MA Plot</strong></p>
 <p>A <strong>MA plot</strong> visualizes the relationship between the <strong>mean expression</strong> (on the x-axis) and the <strong>log2 fold change</strong> (on the y-axis) for all genes in a dataset. Genes that are significantly differentially expressed are highlighted, while most other genes cluster around zero log2 fold change.</p>
 <p>When <strong>shrinkage</strong> is applied, as in DESeq2, large log2 fold change estimates for genes with low counts or high variability are pulled toward more moderate values, reducing the noise in the plot. This helps focus attention on the more reliable fold changes and makes the plot cleaner, especially for low-expression genes that tend to have more variable LFC estimates without shrinkage.</p>

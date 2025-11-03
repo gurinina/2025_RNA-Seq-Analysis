@@ -142,26 +142,10 @@ Below is a practice dataset with 4 treatment groups (Control and 3 drugs) with 3
 Analysis Questions
 
 **1. What are the main sources of variation in this dataset (PC1 and PC2)?**
-```{r results='asis', echo=FALSE}
-
-solution3("**Answer:** The main sources of variation are the drug treatments. PC1 (38% variance) captures the largest difference - primarily separating Control from Treatment B. PC2 (24% variance) captures the second largest difference - separating Treatment A from Treatment C. Together, these show that different treatments produce distinct gene expression patterns.")
-
-```
 
 **2: Do the sample groups and replicates cluster appropriately?**
-```{r results='asis', echo=FALSE}
-
-solution3("**Answer:** Most groups show good separation and tight replicate clustering (Control, Treatment A, Treatment B). However, Treatment C is problematic - the replicates don't cluster together, with TreatmentC_rep3 positioned far from the other two replicates near Treatment B samples. This suggests either a sample handling issue or high variability in this treatment.")
-
-```
 
 **3.  What concerns should be addressed before proceeding with analysis?**
-```{r results='asis', echo=FALSE}
-
-solution3("**Answer:** First, investigate TreatmentC_rep3 as a potential outlier - check for mislabeling or sample swap, and consider excluding it. Second, Treatment C shows high variability overall, which may indicate inconsistent drug effects. Finally, PC1 and PC2 only explain 62% of total variance, so examine PC3 and PC4 to ensure no important patterns are missed.")
-```
-
-
 ### Hierarchical Clustering Heatmap
 
 Similar to PCA, hierarchical clustering is another, complementary method for identifying strong patterns in a dataset and potential outliers. The heatmap displays **the correlation of gene expression for all pairwise combinations of samples** in the dataset. Since the majority of genes are not differentially expressed, samples generally have high correlations with each other (values higher than 0.80). Samples below 0.80 may indicate an outlier in your data and/or sample contamination.  
@@ -268,15 +252,4 @@ pheatmap(rld_cor,
 ```
 
 Identify what each of the added arguments is contributing to the plot.
-```{r, results = "asis", echo = FALSE}
-solutions(list(
-  quote({
-    cat("Explanation of changes:\n")
-    cat("- fontsize_row: Sets rownames font size to 12\n")
-    cat("- fontsize_col: Sets colnames font size to 10\n")
-    cat("- show_rownames: Shows the row names (sample names)\n")
-    cat("- show_colnames: Shows the column names (sample names)\n")
-  })
-))
-```
 
